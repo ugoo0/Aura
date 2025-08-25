@@ -25,4 +25,13 @@ public:
 
 	UPROPERTY(BlueprintReadOnly)
 	bool bHighlighted = false;
+
+	UPROPERTY(EditAnywhere)
+	float testNum;
+
+	UPROPERTY(EditAnywhere)
+	float testNum2;
+
+	virtual void PossessedBy(AController* NewController) override;
+	virtual void BeginPlay() override;
 };

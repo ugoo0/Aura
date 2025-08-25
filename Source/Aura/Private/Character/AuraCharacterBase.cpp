@@ -2,6 +2,9 @@
 
 
 #include "Character/AuraCharacterBase.h"
+#include "AbilitySystem/AuraAbilitySystemComponent.h"
+#include "AbilitySystem/AuraAttributeSet.h"
+
 
 // Sets default values
 AAuraCharacterBase::AAuraCharacterBase()
@@ -20,5 +23,12 @@ void AAuraCharacterBase::BeginPlay()
 	Super::BeginPlay();
 	
 }
+
+UAbilitySystemComponent* AAuraCharacterBase::GetAbilitySystemComponent() const
+{
+	return AbilitySystemComponent;
+}
+
+
 
 

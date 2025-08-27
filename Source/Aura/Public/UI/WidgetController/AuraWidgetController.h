@@ -44,6 +44,7 @@ public:
 	void SetWidgetControllerParams(const FWidgetControllerParams& WidgetParams);
 
 	virtual void BroadcastInitialValues();
+	virtual void BindCallbackToDependencies();
 protected:
 	UPROPERTY(BlueprintReadOnly, Category = "WidgetController")
 	TObjectPtr<APlayerState> PlayerState;

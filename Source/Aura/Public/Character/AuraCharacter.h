@@ -18,5 +18,5 @@ class AURA_API AAuraCharacter : public AAuraCharacterBase
 	virtual void OnRep_PlayerState() override;
 public:
 	AAuraCharacter();
-	void InitAbilityActorInfo();
+	virtual void InitAbilityActorInfo() override;
 };

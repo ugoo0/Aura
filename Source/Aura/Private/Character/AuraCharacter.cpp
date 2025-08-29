@@ -45,6 +45,7 @@ void AAuraCharacter::InitAbilityActorInfo()
 	check(AuraPlayerState);
 	AuraPlayerState->GetAbilitySystemComponent()->InitAbilityActorInfo(AuraPlayerState, this);
 	AbilitySystemComponent = AuraPlayerState->GetAbilitySystemComponent();
+	Cast<UAuraAbilitySystemComponent>(AbilitySystemComponent)->AblityActorInfoSet();
 	AttributeSet = AuraPlayerState->GetAttributeSet();
 
 	if (AAuraPlayerController* PC = Cast<AAuraPlayerController>(GetController()))

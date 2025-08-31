@@ -34,5 +34,15 @@ void AAuraCharacterBase::InitAbilityActorInfo()
 
 }
 
+void AAuraCharacterBase::InitalizePrimaryAttributes()
+{
+	UAbilitySystemComponent* TargetASC = GetAbilitySystemComponent();
+	if (TargetASC == nullptr) return;
+	check(DefaultPrimaryAttributesGameEffectClass);
+	FGameplayEffectContextHandle EffectContextHandle = TargetASC->MakeEffectContext();
+	FGameplayEffectSpecHandle EffectSpecHandle = TargetASC->MakeOutgoingSpec(DefaultPrimaryAttributesGameEffectClass, 1.0f, EffectContextHandle);
+	FActiveGameplayEffectHandle ActiveEffectHandle = TargetASC->ApplyGameplayEffectSpecToTarget(*EffectSpecHandle.Data.Get(), TargetASC);
+}
+
 
 

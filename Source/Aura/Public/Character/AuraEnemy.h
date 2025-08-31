@@ -5,7 +5,6 @@
 #include "CoreMinimal.h"
 #include "Character/AuraCharacterBase.h"
 #include "Interaction/EnemyInterface.h"
-
 #include "AuraEnemy.generated.h"
 
 
@@ -35,5 +34,13 @@ public:
 	virtual void PossessedBy(AController* NewController) override;
 	virtual void BeginPlay() override;
 	virtual void InitAbilityActorInfo() override;
+
+	FORCEINLINE virtual int32 GetPlayerLevel() const override;
+
+protected:
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Charcter Class Default")
+	int32 Level = 1;
+
 
 };

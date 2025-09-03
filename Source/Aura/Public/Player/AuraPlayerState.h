@@ -27,7 +27,7 @@ public:
 
 	FORCEINLINE virtual int32 GetPlayerLevel() const override;
 protected:
-	UPROPERTY()
+	UPROPERTY(VisibleAnywhere)
 	TObjectPtr<UAbilitySystemComponent> AbilitySystemComponent;
 
 	UPROPERTY()
@@ -36,7 +36,7 @@ protected:
 private:
 
 	UPROPERTY(VisibleAnywhere, ReplicatedUsing = OnRep_Level)
-	int32 Level;
+	int32 Level = 1;
 	
 	UFUNCTION()
 	void OnRep_Level(int32 OldLevel);

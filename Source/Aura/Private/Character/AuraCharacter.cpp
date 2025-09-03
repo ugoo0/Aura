@@ -52,10 +52,10 @@ void AAuraCharacter::InitAbilityActorInfo()
 	check(AuraPlayerState);
 	AuraPlayerState->GetAbilitySystemComponent()->InitAbilityActorInfo(AuraPlayerState, this);
 	AbilitySystemComponent = AuraPlayerState->GetAbilitySystemComponent();
-	Cast<UAuraAbilitySystemComponent>(AbilitySystemComponent)->AblityActorInfoSet();
+	Cast<UAuraAbilitySystemComponent>(AbilitySystemComponent)->AblityActorInfoSet();//绑定gameplayEffect事件
 	AttributeSet = AuraPlayerState->GetAttributeSet();
 
-	if (AAuraPlayerController* PC = Cast<AAuraPlayerController>(GetController()))
+	if (AAuraPlayerController* PC = Cast<AAuraPlayerController>(GetController()))//初始化OverlayWidget和OverlayWidgetController
 	{
 		if (AAuraHUD* AuraHUD = Cast<AAuraHUD>(PC->GetHUD()))
 		{
@@ -63,4 +63,6 @@ void AAuraCharacter::InitAbilityActorInfo()
 		}
 	}
 	InitalizePrimaryAttributes();
+	InitalizeSecondaryAttributes();
+	InitalizeVitalAttributes();
 }

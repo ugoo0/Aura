@@ -19,13 +19,11 @@ class AURA_API AAuraCharacterBase : public ACharacter, public IAbilitySystemInte
 	GENERATED_BODY()
 
 public:
-	// Sets default values for this character's properties
 	AAuraCharacterBase();
 	virtual UAbilitySystemComponent* GetAbilitySystemComponent() const override;
 	UAttributeSet* GetAttributeSet()  const {return AttributeSet;};
 
 protected:
-	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
 
 	UPROPERTY(EditAnywhere, Category = "Combat")
@@ -40,7 +38,16 @@ protected:
 	virtual void InitAbilityActorInfo();
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Attributes")
-	TSubclassOf<UGameplayEffect> DefaultPrimaryAttributesGameEffectClass;
+	TSubclassOf<UGameplayEffect> DefaultPrimaryAttributesGameEffectClass;//初始化PrimaryAttributes的gameplayEffect类
 
-	void InitalizePrimaryAttributes();
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Attributes")
+	TSubclassOf<UGameplayEffect> DefaultSecondaryAttributesGameEffectClass;//初始化SecondaryAttributes的gameplayEffect类
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Attributes")
+	TSubclassOf<UGameplayEffect> DefaultVitalAttributesGameEffectClass;//初始化VitalAttributes的gameplayEffect类
+	
+	void ApplyGameEffectByGameplayEffectClass(TSubclassOf<UGameplayEffect> GameplayEffect, float Level) const;
+	void InitalizePrimaryAttributes() const;
+	void InitalizeSecondaryAttributes() const;
+	void InitalizeVitalAttributes() const;
 };

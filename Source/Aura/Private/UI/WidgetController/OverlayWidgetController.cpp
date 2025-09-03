@@ -15,7 +15,7 @@ void UOverlayWidgetController::BroadcastInitialValues()
 	OnMaxManaChanged.Broadcast(AuraAttributeSet->GetMaxMana());
 }
 
-void UOverlayWidgetController::BindCallbackToDependencies()
+void UOverlayWidgetController::BindCallbackToDependencies()//绑定函数到属性变化会分发的事件，一旦属性变化会调用所绑定的lambda函数，函数里继续分发UI事件
 {
 	UAuraAttributeSet* AuraAttributeSet = Cast<UAuraAttributeSet>(AttributeSet);
 	AbilitySystemComponent->GetGameplayAttributeValueChangeDelegate(AuraAttributeSet->GetHealthAttribute()).AddLambda(

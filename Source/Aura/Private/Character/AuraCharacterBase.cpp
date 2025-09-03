@@ -34,14 +34,30 @@ void AAuraCharacterBase::InitAbilityActorInfo()
 
 }
 
-void AAuraCharacterBase::InitalizePrimaryAttributes()
+void AAuraCharacterBase::ApplyGameEffectByGameplayEffectClass(TSubclassOf<UGameplayEffect> GameplayEffect, float Level = 1.0f) const
 {
 	UAbilitySystemComponent* TargetASC = GetAbilitySystemComponent();
 	if (TargetASC == nullptr) return;
-	check(DefaultPrimaryAttributesGameEffectClass);
+	check(GameplayEffect);
 	FGameplayEffectContextHandle EffectContextHandle = TargetASC->MakeEffectContext();
-	FGameplayEffectSpecHandle EffectSpecHandle = TargetASC->MakeOutgoingSpec(DefaultPrimaryAttributesGameEffectClass, 1.0f, EffectContextHandle);
+	EffectContextHandle.AddSourceObject(this);
+	FGameplayEffectSpecHandle EffectSpecHandle = TargetASC->MakeOutgoingSpec(GameplayEffect, Level, EffectContextHandle);
 	FActiveGameplayEffectHandle ActiveEffectHandle = TargetASC->ApplyGameplayEffectSpecToTarget(*EffectSpecHandle.Data.Get(), TargetASC);
+}
+
+void AAuraCharacterBase::InitalizePrimaryAttributes() const
+{
+	ApplyGameEffectByGameplayEffectClass(DefaultPrimaryAttributesGameEffectClass);
+}
+
+void AAuraCharacterBase::InitalizeSecondaryAttributes() const
+{
+	ApplyGameEffectByGameplayEffectClass(DefaultSecondaryAttributesGameEffectClass);
+}
+
+void AAuraCharacterBase::InitalizeVitalAttributes() const
+{
+	ApplyGameEffectByGameplayEffectClass(DefaultVitalAttributesGameEffectClass);
 }
 
 

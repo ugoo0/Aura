@@ -56,6 +56,7 @@ protected:
 
 	UPROPERTY(BlueprintReadOnly, EditAnywhere, Category = "Applied Effects")
 	EEffectApplicationPolicy DurationEffectApplicationPolicy = EEffectApplicationPolicy::DoNotApply;
+	
 
 	UPROPERTY(BlueprintReadOnly, EditAnywhere, Category = "Applied Effects")
 	TSubclassOf<UGameplayEffect> InfiniteGamePlayEffectClass;
@@ -65,6 +66,9 @@ protected:
 
 	UPROPERTY(BlueprintReadOnly, EditAnywhere, Category = "Applied Effects")
 	EEffectRemovalPolicy InfiniteEffectRemovalPolicy = EEffectRemovalPolicy::RemoveOnEndOverlay;
+
+	UPROPERTY(BlueprintReadOnly, EditAnywhere, Category = "Applied Effects")
+	bool bDestroyOnEffectRemoval = false;
 
 	TMap<FActiveGameplayEffectHandle, UAbilitySystemComponent*> ActiveEffectHandles;
 

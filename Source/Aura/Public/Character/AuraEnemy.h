@@ -18,10 +18,17 @@ class AURA_API AAuraEnemy : public AAuraCharacterBase, public IEnemyInterface
 	
 public:
 	AAuraEnemy();
-
+	/** EnemyInterface **/
 	virtual void HighlightActor() override;
 	virtual void UnHighlightActor() override;
+	/** EnemyInterface **/
+	
 
+	/** CombatInterface **/
+	FORCEINLINE virtual int32 GetPlayerLevel() const override;
+	/** CombatInterface **/
+	
+	
 	UPROPERTY(BlueprintReadOnly)
 	bool bHighlighted = false;
 
@@ -35,7 +42,6 @@ public:
 	virtual void BeginPlay() override;
 	virtual void InitAbilityActorInfo() override;
 
-	FORCEINLINE virtual int32 GetPlayerLevel() const override;
 
 protected:
 

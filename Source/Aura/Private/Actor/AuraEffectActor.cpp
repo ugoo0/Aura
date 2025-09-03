@@ -76,7 +76,7 @@ void AAuraEffectActor::OnEndOverlay(AActor* Target)
 		{
 			if (Handle.Value == TargetASC)
 			{
-				TargetASC->RemoveActiveGameplayEffect(Handle.Key, 1);
+				TargetASC->RemoveActiveGameplayEffect(Handle.Key, 1);//默认移除所有stacks
 				HandleToRemove.Add(Handle.Key);
 			}
 		}

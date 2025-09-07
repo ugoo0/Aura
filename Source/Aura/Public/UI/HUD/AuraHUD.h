@@ -7,6 +7,8 @@
 #include <UI/Widget/AuraUserWidget.h>
 #include <UI/WidgetController/AuraWidgetController.h>
 #include <UI/WidgetController/OverlayWidgetController.h>
+
+#include "UI/WidgetController/AuraMenuWidgetController.h"
 #include "AuraHUD.generated.h"
 
 
@@ -27,6 +29,8 @@ public:
 
 	UOverlayWidgetController* GetOverlayWidgetController(const FWidgetControllerParams& FWCParams);
 
+	UAuraMenuWidgetController* GetMenuWidgetController(const FWidgetControllerParams& FWCParams);
+	
 	void InitOverlay(APlayerController* PC, APlayerState* PS, UAbilitySystemComponent* ASC, UAttributeSet* AS);
 
 private:
@@ -38,4 +42,10 @@ private:
 
 	UPROPERTY(EditAnywhere)
 	TSubclassOf<UOverlayWidgetController> OverlayWidgetControllerClass;
+
+	UPROPERTY()
+	TObjectPtr<UAuraMenuWidgetController> MenuWidgetController;
+
+	UPROPERTY(EditAnywhere)
+	TSubclassOf<UAuraMenuWidgetController> MenuWidgetControllerClass;
 };

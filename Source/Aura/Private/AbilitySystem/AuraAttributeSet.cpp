@@ -2,6 +2,8 @@
 
 
 #include "AbilitySystem/AuraAttributeSet.h"
+
+#include "AuraGameplayTags.h"
 #include "Net/UnrealNetwork.h"
 #include "GameFramework/Actor.h"
 #include "GameFramework/Character.h"
@@ -9,8 +11,22 @@
 
 UAuraAttributeSet::UAuraAttributeSet()
 {
-	InitHealth(50.0f);
-	InitMana(40.0f);
+	/* PrimaryAttributes */
+	TagToAttribute.Add(FAuraGameplayTags::Get().Attributes_Primary_Strength,GetStrengthAttribute);
+	TagToAttribute.Add(FAuraGameplayTags::Get().Attributes_Primary_Intelligence,GetIntelligenceAttribute);
+	TagToAttribute.Add(FAuraGameplayTags::Get().Attributes_Primary_Resilience,GetResilienceAttribute);
+	TagToAttribute.Add(FAuraGameplayTags::Get().Attributes_Primary_Vigor,GetVigorAttribute);
+
+	/* SecondaryAttributes */
+	TagToAttribute.Add(FAuraGameplayTags::Get().Attributes_Secondary_Armor,GetArmorAttribute);
+	TagToAttribute.Add(FAuraGameplayTags::Get().Attributes_Secondary_ArmorPenetration,GetArmorPenetrationAttribute);
+	TagToAttribute.Add(FAuraGameplayTags::Get().Attributes_Secondary_BlockChance,GetBlockChanceAttribute);
+	TagToAttribute.Add(FAuraGameplayTags::Get().Attributes_Secondary_CriticalHitChance,GetCriticalHitChanceAttribute);
+	TagToAttribute.Add(FAuraGameplayTags::Get().Attributes_Secondary_CriticalHitDamage,GetCriticalHitDamageAttribute);
+	TagToAttribute.Add(FAuraGameplayTags::Get().Attributes_Secondary_HealthRegeneration,GetHealthRegenerationAttribute);
+	TagToAttribute.Add(FAuraGameplayTags::Get().Attributes_Secondary_ManaRegeneration,GetManaRegenerationAttribute);
+	TagToAttribute.Add(FAuraGameplayTags::Get().Attributes_Secondary_MaxHealth,GetMaxHealthAttribute);
+	TagToAttribute.Add(FAuraGameplayTags::Get().Attributes_Secondary_MaxMana,GetManaAttribute);
 }
 
 void UAuraAttributeSet::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const

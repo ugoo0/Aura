@@ -51,6 +51,9 @@ struct FEffectProperties
 };
 
 
+template<typename T>
+using TStaticFuncPtr = typename  TBaseStaticDelegateInstance<T, FDefaultDelegateUserPolicy>::FFuncPtr;
+
 /**
  * 
  */
@@ -68,6 +71,8 @@ public:
 
 	void SetFEffectProperties(const FGameplayEffectModCallbackData& Data, FEffectProperties& EffectProperties) const;
 
+
+	TMap<FGameplayTag, TStaticFuncPtr<FGameplayAttribute()>> TagToAttribute; // 用于给AttributeMenuController获取对应Attribute的数值
 	/*
 		Vatail Attributes
 	*/

@@ -5,13 +5,18 @@
 #include "CoreMinimal.h"
 #include "GameFramework/PlayerController.h"
 #include "Interaction/EnemyInterface.h"
+#include "GameplayTagContainer.h"
+#include "AbilitySystem/AuraAbilitySystemComponent.h"
+#include "Components/SplineComponent.h"
 #include "AuraPlayerController.generated.h"
 
 
+struct FGameplayTag;
 class UInputMappingContext;
 class UInputAction;
 struct FInputActionValue;
 class IEnemyInterface;
+class UAuraInputConfig;
 /**
  * 
  */
@@ -37,6 +42,34 @@ private:
 
 	IEnemyInterface* LastActor;
 	IEnemyInterface* CurActor;
+private:
 
+	void AbilityInputPressed(FGameplayTag InputTag);
+	void AbilityInputHeld(FGameplayTag InputTag);
+	void AbilityInputReleased(FGameplayTag InputTag);
+
+	UPROPERTY(EditDefaultsOnly,Category = "Input")
+	TObjectPtr<UAuraInputConfig> InputConfig;
+
+	UPROPERTY()
+	TObjectPtr<UAuraAbilitySystemComponent>  AuraAbilitySystemComponent;
+
+	UAuraAbilitySystemComponent* GetASC();
+
+	FHitResult CursorHit;
+	/*移动相关*/
+	FVector CashedDestination = FVector::ZeroVector;
+	float FollowTime = 0.f;
+	float ShortPressThreshold = 0.5f;
+	bool bAutoRunning = false;
+	bool bTargeting = false;
+
+	UPROPERTY(EditDefaultsOnly)
+	float AutoRunAcceptanceRadius = 50.f;
+
+	UPROPERTY(VisibleAnywhere)
+	TObjectPtr<USplineComponent> Spline;
+
+	void AutoRun();
 };
  

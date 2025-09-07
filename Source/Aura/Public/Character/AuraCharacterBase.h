@@ -12,6 +12,7 @@
 class UAbilitySystemComponent;
 class UAttributeSet;
 class UGameplayEffect;
+class UGameplayAbility;
 
 UCLASS(Abstract)
 class AURA_API AAuraCharacterBase : public ACharacter, public IAbilitySystemInterface, public ICombatInterface
@@ -50,4 +51,10 @@ protected:
 	void InitalizePrimaryAttributes() const;
 	void InitalizeSecondaryAttributes() const;
 	void InitalizeVitalAttributes() const;
+
+	void AddCharacterAbilities() const;
+private:
+
+	UPROPERTY(EditAnywhere, Category = "ASC|Abilities")
+	TArray<TSubclassOf<UGameplayAbility>> StartupAbilities;
 };

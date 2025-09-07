@@ -16,7 +16,7 @@ public:
 		return AuraGameplayTags;
 	}
 	static  void InitializeNativeGameplayTags();
-
+	/*begin Attributes Tag*/
 	FGameplayTag Attributes_Primary_Strength;
 	FGameplayTag Attributes_Primary_Intelligence;
 	FGameplayTag Attributes_Primary_Resilience;
@@ -31,7 +31,16 @@ public:
 	FGameplayTag Attributes_Secondary_ManaRegeneration;
 	FGameplayTag Attributes_Secondary_MaxHealth;
 	FGameplayTag Attributes_Secondary_MaxMana;
+	/*end Attributes Tag*/
 	
+	/*begin AbilityInputTags*/
+	FGameplayTag InputTag_LMB;
+	FGameplayTag InputTag_RMB;
+	FGameplayTag InputTag_1;
+	FGameplayTag InputTag_2;
+	FGameplayTag InputTag_3;
+	FGameplayTag InputTag_4;
+	/*end AbilityInputTags*/
 	
 private:
 	static FAuraGameplayTags AuraGameplayTags;

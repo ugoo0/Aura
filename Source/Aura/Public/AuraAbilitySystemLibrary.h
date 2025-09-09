@@ -8,6 +8,7 @@
 #include "UI/WidgetController/OverlayWidgetController.h"
 #include "AuraAbilitySystemLibrary.generated.h"
 
+enum class ECharacterClassType : uint8;
 /**
  * 
  */
@@ -21,4 +22,6 @@ public:
 
 	UFUNCTION(BlueprintPure, Category = "AuraAbilitySystem|WidgetController")
 	static UAuraMenuWidgetController* GetMenuWidgetController(const UObject* WorldContextObject);
+
+	static void InitializeDefaultAttributes(const UObject* WorldContextObject,ECharacterClassType Type, float level, UAbilitySystemComponent* ASC);
 };

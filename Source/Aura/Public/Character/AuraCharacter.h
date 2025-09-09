@@ -23,4 +23,6 @@ class AURA_API AAuraCharacter : public AAuraCharacterBase
 public:
 	AAuraCharacter();
 	virtual void InitAbilityActorInfo() override;
+protected:
+	virtual void InitializaDefaultAttriutes() const override;
 };

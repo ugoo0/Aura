@@ -57,6 +57,8 @@ protected:
 	void InitalizeSecondaryAttributes() const;
 	void InitalizeVitalAttributes() const;
 
+	virtual void InitializaDefaultAttriutes() const;
+	
 	void AddCharacterAbilities() const;
 private:
 

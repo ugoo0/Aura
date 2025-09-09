@@ -73,6 +73,13 @@ void AAuraCharacterBase::InitalizeVitalAttributes() const
 	ApplyGameEffectByGameplayEffectClass(DefaultVitalAttributesGameEffectClass);
 }
 
+void AAuraCharacterBase::InitializaDefaultAttriutes() const
+{
+	InitalizePrimaryAttributes();
+	InitalizeSecondaryAttributes();
+	InitalizeVitalAttributes();
+}
+
 void AAuraCharacterBase::AddCharacterAbilities() const
 {
 	UAuraAbilitySystemComponent* AuraASC = Cast<UAuraAbilitySystemComponent>(AbilitySystemComponent);

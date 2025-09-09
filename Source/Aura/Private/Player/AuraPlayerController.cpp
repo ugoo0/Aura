@@ -48,6 +48,8 @@ void AAuraPlayerController::SetupInputComponent()
 	UAuraInputComponent* AuraInputComponent = CastChecked<UAuraInputComponent>(InputComponent);
 	AuraInputComponent->BindAction(MoveAction, ETriggerEvent::Triggered, this, &AAuraPlayerController::Move);
 	AuraInputComponent->BindAbilityActions(InputConfig,this,&ThisClass::AbilityInputPressed,&ThisClass::AbilityInputReleased,&ThisClass::AbilityInputHeld);
+	AuraInputComponent->BindAction(ShiftAction, ETriggerEvent::Started, this, &AAuraPlayerController::ShiftInputPressed);
+	AuraInputComponent->BindAction(ShiftAction, ETriggerEvent::Completed, this, &AAuraPlayerController::ShiftInputReleased);
 }
 
 void AAuraPlayerController::Move(const FInputActionValue& InputActionValue)
@@ -63,7 +65,6 @@ void AAuraPlayerController::Move(const FInputActionValue& InputActionValue)
 	{
 		ControllerPawn->AddMovementInput(ForwardDirection, InputAxisVector.Y);
 		ControllerPawn->AddMovementInput(RightDirection, InputAxisVector.X);
-
 	}
 
 }
@@ -106,7 +107,7 @@ void AAuraPlayerController::AbilityInputHeld(FGameplayTag InputTag)
 		return;
 	}
 
-	if (bTargeting)//释放技能
+	if (bTargeting || bShiftPressed)//释放技能
 	{
 		if (!GetASC()) return;
 		GetASC()->AbilityInputHeld(InputTag);
@@ -136,7 +137,7 @@ void AAuraPlayerController::AbilityInputReleased(FGameplayTag InputTag)
 		return;
 	}
 	
-	if (bTargeting)//释放技能
+	if (bTargeting || bShiftPressed)//释放技能
 	{
 		if (!GetASC()) return;
 		GetASC()->AbilityInputReleased(InputTag);

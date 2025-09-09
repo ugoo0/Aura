@@ -5,9 +5,11 @@
 #include "CoreMinimal.h"
 #include "Character/AuraCharacterBase.h"
 #include "Interaction/EnemyInterface.h"
+#include "UI/WidgetController/OverlayWidgetController.h"
 #include "AuraEnemy.generated.h"
 
 
+class UWidgetComponent;
 /**
  * 
  */
@@ -48,5 +50,12 @@ protected:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Charcter Class Default")
 	int32 Level = 1;
 
-
+	UPROPERTY(BlueprintAssignable,Category = "UserInterface|HealthBar")
+	FOnAttributeChangedSignature OnHealthChanged;
+	
+	UPROPERTY(BlueprintAssignable,Category = "UserInterface|HealthBar")
+	FOnAttributeChangedSignature OnMaxHealthChanged;
+	
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "UserInterface|HealthBar")
+	TObjectPtr<UWidgetComponent> HealthBarWidget;
 };

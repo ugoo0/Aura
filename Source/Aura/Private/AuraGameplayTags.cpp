@@ -38,4 +38,7 @@ void FAuraGameplayTags::InitializeNativeGameplayTags()
 	AuraGameplayTags.InputTag_4 = UGameplayTagsManager::Get().AddNativeGameplayTag(FName("InputTag.4"),FString("按键4触发的技能"));
 	
 	/*end AbilityInputTags*/
+
+	/* Ability Tag */
+	AuraGameplayTags.Damage = UGameplayTagsManager::Get().AddNativeGameplayTag(FName("Damage"),FString("能力里面传递伤害的Tag"));
 }

@@ -4,7 +4,6 @@
 #include "AuraAbilitySystemLibrary.h"
 
 #include "AbilitySystemComponent.h"
-#include "AttributeSet.h"
 #include "AbilitySystem/Data/CharacterClassInfo.h"
 #include "Game/AuraGameModeBase.h"
 #include "Kismet/GameplayStatics.h"

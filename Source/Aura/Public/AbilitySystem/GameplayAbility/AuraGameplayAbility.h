@@ -18,4 +18,7 @@ public:
 
 	UPROPERTY(EditDefaultsOnly,Category="Input")
 	FGameplayTag StartupTag;
+
+	UPROPERTY(EditDefaultsOnly,Category="Damage")
+	FScalableFloat Damage;
 };

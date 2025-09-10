@@ -45,7 +45,17 @@ public:
 	virtual void BeginPlay() override;
 	virtual void InitAbilityActorInfo() override;
 
+	UPROPERTY(EditDefaultsOnly, Category="Combat")
+	float TimeRemoveAfterDie;
+	virtual void Die() override;
 
+	UPROPERTY(BlueprintReadOnly, Category="Combat")
+	bool bHitReacting =false;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category="Combat")
+	float BaseWalkSpeed = 200.f;
+
+	
 protected:
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Charcter Class Default")
@@ -64,4 +74,8 @@ protected:
 	TObjectPtr<UWidgetComponent> HealthBarWidget;
 
 	virtual void InitializaDefaultAttriutes() const override;
+
+	void HitReactTagChanged(const FGameplayTag Tag, int32 NewTagCount);
+
+	virtual void Destroyed() override;
 };

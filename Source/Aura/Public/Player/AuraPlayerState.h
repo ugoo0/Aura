@@ -26,6 +26,8 @@ public:
 	UAttributeSet* GetAttributeSet() const { return AttributeSet; };
 
 	FORCEINLINE virtual int32 GetPlayerLevel() const override;
+
+	virtual void Die() override;
 protected:
 	UPROPERTY(VisibleAnywhere)
 	TObjectPtr<UAbilitySystemComponent> AbilitySystemComponent;

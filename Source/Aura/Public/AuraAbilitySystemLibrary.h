@@ -24,4 +24,6 @@ public:
 	static UAuraMenuWidgetController* GetMenuWidgetController(const UObject* WorldContextObject);
 
 	static void InitializeDefaultAttributes(const UObject* WorldContextObject,ECharacterClassType Type, float level, UAbilitySystemComponent* ASC);
+
+	static void GiveStartupAbilities(const UObject* WorldContextObject, UAbilitySystemComponent* ASC);
 };

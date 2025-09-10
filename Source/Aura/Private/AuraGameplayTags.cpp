@@ -41,4 +41,7 @@ void FAuraGameplayTags::InitializeNativeGameplayTags()
 
 	/* Ability Tag */
 	AuraGameplayTags.Damage = UGameplayTagsManager::Get().AddNativeGameplayTag(FName("Damage"),FString("能力里面传递伤害的Tag"));
+
+	/* Effect Tag */
+	AuraGameplayTags.Effect_HitReact = UGameplayTagsManager::Get().AddNativeGameplayTag(FName("Effect.HitReact"),FString("对造成伤害反应的Tag"));
 }

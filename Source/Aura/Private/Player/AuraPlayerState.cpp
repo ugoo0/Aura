@@ -31,6 +31,11 @@ int32 AAuraPlayerState::GetPlayerLevel() const
 	return Level;
 }
 
+void AAuraPlayerState::Die()
+{
+	
+}
+
 void AAuraPlayerState::OnRep_Level(int32 OldLevel)
 {
 

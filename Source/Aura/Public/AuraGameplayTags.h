@@ -44,6 +44,9 @@ public:
 
 	/*Ability Tag*/
 	FGameplayTag Damage;
+
+	/*Effect*/
+	FGameplayTag Effect_HitReact;
 	
 private:
 	static FAuraGameplayTags AuraGameplayTags;

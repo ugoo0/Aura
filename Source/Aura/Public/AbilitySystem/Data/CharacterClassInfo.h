@@ -6,6 +6,7 @@
 #include "Engine/DataAsset.h"
 #include "CharacterClassInfo.generated.h"
 
+class UGameplayAbility;
 class UGameplayEffect;
 
 UENUM(BlueprintType)
@@ -44,5 +45,8 @@ public:
 	UPROPERTY(EditDefaultsOnly,Category="Character Class Default")
 	TMap<ECharacterClassType,FCharacterClassDefaultInfo> CharacterClassInformation;
 
+	UPROPERTY(EditDefaultsOnly, Category = "Common Ability")
+	TArray<TSubclassOf<UGameplayAbility>> CommonAbility;
+	
 	FCharacterClassDefaultInfo GetCharacterClassDefaultInfoForType(const ECharacterClassType& Type);
 };

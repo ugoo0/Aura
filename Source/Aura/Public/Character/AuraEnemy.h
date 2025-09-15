@@ -10,6 +10,8 @@
 #include "AuraEnemy.generated.h"
 
 
+class AAuraAIController;
+class UBehaviorTree;
 class UWidgetComponent;
 /**
  * 
@@ -55,6 +57,20 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category="Combat")
 	float BaseWalkSpeed = 200.f;
 
+
+	UPROPERTY(EditAnywhere, Category="AI")
+	TObjectPtr<UBehaviorTree> BehaviorTree;
+
+	UPROPERTY()
+	TObjectPtr<AAuraAIController> AuraAIController;
+
+	UPROPERTY(BlueprintReadWrite, Category = "Combat")
+	AActor* CombatTarget;
+	
+	
+	void SetCombatTarget_Implementation(AActor* Target) override;
+	
+	AActor* GetCombatTarget_Implementation() override;
 	
 protected:
 

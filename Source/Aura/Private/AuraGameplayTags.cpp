@@ -23,10 +23,18 @@ void FAuraGameplayTags::InitializeNativeGameplayTags()
 	AuraGameplayTags.Attributes_Secondary_BlockChance = UGameplayTagsManager::Get().AddNativeGameplayTag(FName("Attribute.Secondary.BlockChance"),FString("闪避概率：概率减少受到的伤害"));
 	AuraGameplayTags.Attributes_Secondary_CriticalHitChance = UGameplayTagsManager::Get().AddNativeGameplayTag(FName("Attribute.Secondary.CriticalHitChance"),FString("暴击概率:概率提高单次伤害"));
 	AuraGameplayTags.Attributes_Secondary_CriticalHitDamage = UGameplayTagsManager::Get().AddNativeGameplayTag(FName("Attribute.Secondary.CriticalHitDamage"),FString("暴击伤害：暴击时提高的伤害"));
+	AuraGameplayTags.Attributes_Secondary_CriticalHitResistance = UGameplayTagsManager::Get().AddNativeGameplayTag(FName("Attribute.Secondary.CriticalHitResistance"),FString("暴击抗性：减少受暴击概率"));
 	AuraGameplayTags.Attributes_Secondary_HealthRegeneration = UGameplayTagsManager::Get().AddNativeGameplayTag(FName("Attribute.Secondary.HealthRegeneration"),FString("每秒恢复的血量"));
 	AuraGameplayTags.Attributes_Secondary_ManaRegeneration = UGameplayTagsManager::Get().AddNativeGameplayTag(FName("Attribute.Secondary.ManaRegeneration"),FString("每秒恢复的蓝量"));
 	AuraGameplayTags.Attributes_Secondary_MaxHealth = UGameplayTagsManager::Get().AddNativeGameplayTag(FName("Attribute.Secondary.MaxHealth"),FString("最大生命值"));
 	AuraGameplayTags.Attributes_Secondary_MaxMana = UGameplayTagsManager::Get().AddNativeGameplayTag(FName("Attribute.Secondary.MaxMana"),FString("最大蓝量"));
+
+	AuraGameplayTags.Attributes_Secondary_Resistance_Fire = UGameplayTagsManager::Get().AddNativeGameplayTag(FName("Attribute.Secondary.Resistance.Fire"),FString("火焰伤害抗性"));
+	AuraGameplayTags.Attributes_Secondary_Resistance_Lighting = UGameplayTagsManager::Get().AddNativeGameplayTag(FName("Attribute.Secondary.Resistance.Lighting"),FString("光属性伤害抗性"));
+	AuraGameplayTags.Attributes_Secondary_Resistance_Arcane = UGameplayTagsManager::Get().AddNativeGameplayTag(FName("Attribute.Secondary.Resistance.Arcane"),FString("魔法伤害抗性"));
+	AuraGameplayTags.Attributes_Secondary_Resistance_Physical = UGameplayTagsManager::Get().AddNativeGameplayTag(FName("Attribute.Secondary.Resistance.Physical"),FString("物理伤害抗性"));
+
+
 	/* SecondaryAttributesTags end */
 
 	/*begin AbilityInputTags*/
@@ -42,6 +50,46 @@ void FAuraGameplayTags::InitializeNativeGameplayTags()
 	/* Ability Tag */
 	AuraGameplayTags.Damage = UGameplayTagsManager::Get().AddNativeGameplayTag(FName("Damage"),FString("能力里面传递伤害的Tag"));
 
+	AuraGameplayTags.Damage_Fire = UGameplayTagsManager::Get().AddNativeGameplayTag(FName("Damage.Fire"),FString("能力里面传递火焰伤害的Tag"));
+	AuraGameplayTags.Damage_Lighting = UGameplayTagsManager::Get().AddNativeGameplayTag(FName("Damage.Lighting"),FString("能力里面传递闪电伤害的Tag"));
+	AuraGameplayTags.Damage_Arcane = UGameplayTagsManager::Get().AddNativeGameplayTag(FName("Damage.Arcane"),FString("能力里面传递魔法伤害的Tag"));
+	AuraGameplayTags.Damage_Physical = UGameplayTagsManager::Get().AddNativeGameplayTag(FName("Damage.Physical"),FString("能力里面传递物理伤害的Tag"));
+	
 	/* Effect Tag */
 	AuraGameplayTags.Effect_HitReact = UGameplayTagsManager::Get().AddNativeGameplayTag(FName("Effect.HitReact"),FString("对造成伤害反应的Tag"));
+
+	/* Enemy Abilities Tags */
+	AuraGameplayTags.Abilities_Attack = UGameplayTagsManager::Get().AddNativeGameplayTag(FName("Abilities.Attack"), FString("普通攻击Tag"));
+
+	/*Montage Tag*/
+	AuraGameplayTags.Montage_Weapon = UGameplayTagsManager::Get().AddNativeGameplayTag(FName("Montage.Weapon"), FString("使用武器攻击"));
+	AuraGameplayTags.Montage_LeftHand = UGameplayTagsManager::Get().AddNativeGameplayTag(FName("Montage.LeftHand"), FString("使用左手攻击"));
+	AuraGameplayTags.Montage_RightHand = UGameplayTagsManager::Get().AddNativeGameplayTag(FName("Montage.RightHand"), FString("使用右手攻击"));
+	
+	
+	AuraGameplayTags.AttributesTag.Reset();
+	AuraGameplayTags.AttributesTag.Add(AuraGameplayTags.Attributes_Primary_Intelligence);
+	AuraGameplayTags.AttributesTag.Add(AuraGameplayTags.Attributes_Primary_Strength);
+	AuraGameplayTags.AttributesTag.Add(AuraGameplayTags.Attributes_Primary_Resilience);
+	AuraGameplayTags.AttributesTag.Add(AuraGameplayTags.Attributes_Primary_Vigor);
+
+	AuraGameplayTags.AttributesTag.Add(AuraGameplayTags.Attributes_Secondary_MaxHealth);
+	AuraGameplayTags.AttributesTag.Add(AuraGameplayTags.Attributes_Secondary_MaxMana);
+	AuraGameplayTags.AttributesTag.Add(AuraGameplayTags.Attributes_Secondary_Armor);
+	AuraGameplayTags.AttributesTag.Add(AuraGameplayTags.Attributes_Secondary_ArmorPenetration);
+	AuraGameplayTags.AttributesTag.Add(AuraGameplayTags.Attributes_Secondary_BlockChance);
+	AuraGameplayTags.AttributesTag.Add(AuraGameplayTags.Attributes_Secondary_CriticalHitChance);
+	AuraGameplayTags.AttributesTag.Add(AuraGameplayTags.Attributes_Secondary_CriticalHitDamage);
+	AuraGameplayTags.AttributesTag.Add(AuraGameplayTags.Attributes_Secondary_CriticalHitResistance);
+	AuraGameplayTags.AttributesTag.Add(AuraGameplayTags.Attributes_Secondary_HealthRegeneration);
+	AuraGameplayTags.AttributesTag.Add(AuraGameplayTags.Attributes_Secondary_ManaRegeneration);
+	AuraGameplayTags.AttributesTag.Add(AuraGameplayTags.Attributes_Secondary_Resistance_Fire);
+	AuraGameplayTags.AttributesTag.Add(AuraGameplayTags.Attributes_Secondary_Resistance_Lighting);
+	AuraGameplayTags.AttributesTag.Add(AuraGameplayTags.Attributes_Secondary_Resistance_Arcane);
+	AuraGameplayTags.AttributesTag.Add(AuraGameplayTags.Attributes_Secondary_Resistance_Physical);
+
+	AuraGameplayTags.DamageTypeToResistance.Add(AuraGameplayTags.Damage_Fire, AuraGameplayTags.Attributes_Secondary_Resistance_Fire);
+	AuraGameplayTags.DamageTypeToResistance.Add(AuraGameplayTags.Damage_Lighting, AuraGameplayTags.Attributes_Secondary_Resistance_Lighting);
+	AuraGameplayTags.DamageTypeToResistance.Add(AuraGameplayTags.Damage_Arcane, AuraGameplayTags.Attributes_Secondary_Resistance_Arcane);
+	AuraGameplayTags.DamageTypeToResistance.Add(AuraGameplayTags.Damage_Physical, AuraGameplayTags.Attributes_Secondary_Resistance_Physical);
 }

@@ -23,19 +23,39 @@ public:
 	AAuraCharacterBase();
 	virtual UAbilitySystemComponent* GetAbilitySystemComponent() const override;
 	UAttributeSet* GetAttributeSet()  const {return AttributeSet;};
-
-
-	UPROPERTY(EditDefaultsOnly, Category="Combat")
-	UAnimMontage* HitReactMontage;
-
-	virtual UAnimMontage* GetHitReactMontage_Implementation();
-
-	virtual void Die() override;
-
+	
 	UFUNCTION(NetMulticast,Reliable)
 	virtual void MulticastHandleDeath();
+
+	void Dissolve();
+
+	UFUNCTION(BlueprintImplementableEvent)
+	void StartDissolveMeshTimeline(UMaterialInstanceDynamic* DynamicMaterial);
+
+	UFUNCTION(BlueprintImplementableEvent)
+	void StartDissolveWeaponTimeline(UMaterialInstanceDynamic* DynamicMaterial);
+	
+	UPROPERTY(EditAnywhere,BlueprintReadOnly, Category="Combat")
+	TObjectPtr<UMaterialInstance> MeshDissolvedMaterialInstance;
+
+	UPROPERTY(EditAnywhere,BlueprintReadOnly, Category="Combat")
+	TObjectPtr<UMaterialInstance> WeaponDissolvedMaterialInstance;
+
+	/*combat interface*/
+	virtual UAnimMontage* GetMelleAttackMontage_Implementation() override;
+	virtual UAnimMontage* GetHitReactMontage_Implementation() override;
+	virtual void Die() override;
+	virtual FVector GetCombatSocketLocation_Implementation(const FGameplayTag& GameplayTag) const override;
+
+	virtual  AActor* GetAvatarActor_Implementation() override;
+	virtual bool IsDead_Implementation() const override;
+	virtual TArray<FTagsToMontage> GetTagsToMontage_Implementation() const override;
+	virtual int32 GetPlayerLevel() const override;
+	/*end combat interface*/
+	
 	
 protected:
+	
 	virtual void BeginPlay() override;
 
 	UPROPERTY(EditAnywhere, Category = "Combat")
@@ -44,7 +64,22 @@ protected:
 	UPROPERTY(EditAnywhere, Category="Combat")
 	FName WeaponTipSocketName;
 
-	virtual FVector GetCombatSocketLocation() const override;
+	UPROPERTY(EditAnywhere, Category="Combat")
+	FName LeftHandSocketName;
+
+	UPROPERTY(EditAnywhere, Category="Combat")
+	FName RightHandSocketName;
+	
+	UPROPERTY(EditDefaultsOnly, Category="Combat")
+	UAnimMontage* HitReactMontage;
+	
+	UPROPERTY(EditDefaultsOnly, Category="Combat")
+	UAnimMontage* MelleAttackMontage;
+
+	UPROPERTY(EditDefaultsOnly, Category="Combat")
+	TArray<FTagsToMontage>  TagsToMontages;
+	
+	bool bDead = false;
 	
 	UPROPERTY()
 	TObjectPtr<UAbilitySystemComponent> AbilitySystemComponent;
@@ -76,3 +111,8 @@ private:
 	UPROPERTY(EditAnywhere, Category = "ASC|Abilities")
 	TArray<TSubclassOf<UGameplayAbility>> StartupAbilities;
 };
+
+inline int32 AAuraCharacterBase::GetPlayerLevel() const
+{
+	return 0;
+}

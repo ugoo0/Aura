@@ -3,8 +3,20 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "GameplayTagContainer.h"
 #include "UObject/Interface.h"
 #include "CombatInterface.generated.h"
+
+USTRUCT(BlueprintType)
+struct FTagsToMontage
+{
+	GENERATED_BODY()
+	UPROPERTY(EditDefaultsOnly,BlueprintReadOnly)
+	FGameplayTag GameplayTag;
+
+	UPROPERTY(EditDefaultsOnly,BlueprintReadOnly)
+	UAnimMontage* Montage;
+};
 
 // This class does not need to be modified.
 UINTERFACE(MinimalAPI,BlueprintType)
@@ -22,9 +34,10 @@ class AURA_API ICombatInterface
 
 	// Add interface functions to this class. This is the class that will be inherited to implement this interface.
 public:
-	virtual int32 GetPlayerLevel() const;
+	virtual int32 GetPlayerLevel() const = 0;
 
-	virtual FVector GetCombatSocketLocation() const;
+	UFUNCTION(BlueprintNativeEvent, BlueprintCallable)
+	FVector GetCombatSocketLocation(const FGameplayTag& GameplayTag) const;
 
 	UFUNCTION(BlueprintImplementableEvent,BlueprintCallable)
 	void FacingToTarget(const FVector& TargetLocation);
@@ -32,5 +45,22 @@ public:
 	UFUNCTION(BlueprintNativeEvent, BlueprintCallable)
 	UAnimMontage* GetHitReactMontage();
 
+	UFUNCTION(BlueprintNativeEvent, BlueprintCallable)
+	UAnimMontage* GetMelleAttackMontage();
+
+	UFUNCTION(BlueprintNativeEvent, BlueprintCallable)
+	void SetCombatTarget(AActor* Target);
+
+	UFUNCTION(BlueprintNativeEvent, BlueprintCallable)
+	AActor* GetCombatTarget();
 	virtual void Die() = 0;
+	
+	UFUNCTION(BlueprintNativeEvent, BlueprintCallable)
+    AActor* GetAvatarActor();
+    
+    UFUNCTION(BlueprintNativeEvent, BlueprintCallable)
+    bool IsDead() const;	
+
+	UFUNCTION(BlueprintNativeEvent, BlueprintCallable)
+	TArray<FTagsToMontage> GetTagsToMontage() const;
 };

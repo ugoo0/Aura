@@ -10,6 +10,8 @@
 #include "NavigationSystem.h"
 #include "Interaction/EnemyInterface.h"
 #include "Input/AuraInputComponent.h"
+#include "GameFramework/Character.h"
+#include "UI/Widget/DamageWidgetComponent.h"
 
 
 AAuraPlayerController::AAuraPlayerController()
@@ -18,9 +20,6 @@ AAuraPlayerController::AAuraPlayerController()
 
 	Spline = CreateDefaultSubobject<USplineComponent>(TEXT("Spline"));
 }
-
-
-
 void AAuraPlayerController::BeginPlay()
 {
 	Super::BeginPlay();
@@ -41,7 +40,6 @@ void AAuraPlayerController::BeginPlay()
 	InputModeData.SetHideCursorDuringCapture(false);
 	SetInputMode(InputModeData);
 }
-
 void AAuraPlayerController::SetupInputComponent()
 {
 	Super::SetupInputComponent();
@@ -51,7 +49,6 @@ void AAuraPlayerController::SetupInputComponent()
 	AuraInputComponent->BindAction(ShiftAction, ETriggerEvent::Started, this, &AAuraPlayerController::ShiftInputPressed);
 	AuraInputComponent->BindAction(ShiftAction, ETriggerEvent::Completed, this, &AAuraPlayerController::ShiftInputReleased);
 }
-
 void AAuraPlayerController::Move(const FInputActionValue& InputActionValue)
 {
 	const FVector2D InputAxisVector = InputActionValue.Get<FVector2D>();
@@ -68,12 +65,22 @@ void AAuraPlayerController::Move(const FInputActionValue& InputActionValue)
 	}
 
 }
-
 void AAuraPlayerController::PlayerTick(float DeltaTime)
 {
 	Super::PlayerTick(DeltaTime);
 	CursorTrace();
 	AutoRun();
+}
+void AAuraPlayerController::ShowDamageNumber_Implementation(float Damage, ACharacter* Target,const FDamageState& DamageState) const
+{
+	if (IsValid(Target) && DamageTextComponentClass)
+	{
+		UDamageWidgetComponent* DamageComponent = NewObject<UDamageWidgetComponent>(Target, DamageTextComponentClass);
+		DamageComponent->RegisterComponent();
+		DamageComponent->AttachToComponent(Target->GetRootComponent(),FAttachmentTransformRules::KeepRelativeTransform);
+		DamageComponent->DetachFromComponent(FDetachmentTransformRules::KeepWorldTransform);
+		DamageComponent->SetDamageText(Damage,DamageState);
+	}
 }
 
 void AAuraPlayerController::CursorTrace()
@@ -156,8 +163,12 @@ void AAuraPlayerController::AbilityInputReleased(FGameplayTag InputTag)
 					Spline->AddSplinePoint(Point,ESplineCoordinateSpace::World);
 					DrawDebugSphere(GetWorld(),Point,10.f,10,FColor::Red,false,5.f);
 				}
-				CashedDestination = NaviPath->PathPoints[NaviPath->PathPoints.Num()-1];
-				bAutoRunning = true;
+				if (NaviPath->PathPoints.Num() > 0)
+				{
+					CashedDestination = NaviPath->PathPoints[NaviPath->PathPoints.Num()-1];
+					bAutoRunning = true;
+				}
+
 			}
 		}
 		FollowTime = 0.f;

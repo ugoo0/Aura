@@ -25,6 +25,9 @@ struct FCharacterClassDefaultInfo
 
 	UPROPERTY(EditDefaultsOnly,Category="Class Default")
 	TSubclassOf<UGameplayEffect> PrimaryAttributes;
+
+	UPROPERTY(EditDefaultsOnly, Category = "Class Default")
+	TArray<TSubclassOf<UGameplayAbility>> StartupAbilities;
 };
 
 /**
@@ -47,6 +50,9 @@ public:
 
 	UPROPERTY(EditDefaultsOnly, Category = "Common Ability")
 	TArray<TSubclassOf<UGameplayAbility>> CommonAbility;
+
+	UPROPERTY(EditDefaultsOnly,Category="Common Class Default|Damage")
+	TObjectPtr<UCurveTable> DamageCalculationCoeffients;
 	
 	FCharacterClassDefaultInfo GetCharacterClassDefaultInfoForType(const ECharacterClassType& Type);
 };

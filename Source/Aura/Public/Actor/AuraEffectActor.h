@@ -75,6 +75,10 @@ protected:
 	UPROPERTY(BlueprintReadOnly, EditAnywhere, Category = "Applied Effects")
 	float ActorLevel = 1.f;
 
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category="Applied Effects")
+	TArray<FName> TagsCanEffect;
+
+	bool TargetCanBeEffected(AActor* Target);
 public:	
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;

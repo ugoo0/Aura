@@ -27,10 +27,17 @@ public:
 	FGameplayTag Attributes_Secondary_BlockChance;
 	FGameplayTag Attributes_Secondary_CriticalHitChance;
 	FGameplayTag Attributes_Secondary_CriticalHitDamage;
+	FGameplayTag Attributes_Secondary_CriticalHitResistance;
 	FGameplayTag Attributes_Secondary_HealthRegeneration;
 	FGameplayTag Attributes_Secondary_ManaRegeneration;
 	FGameplayTag Attributes_Secondary_MaxHealth;
 	FGameplayTag Attributes_Secondary_MaxMana;
+
+	FGameplayTag Attributes_Secondary_Resistance_Fire;
+	FGameplayTag Attributes_Secondary_Resistance_Lighting;
+	FGameplayTag Attributes_Secondary_Resistance_Arcane;
+	FGameplayTag Attributes_Secondary_Resistance_Physical;
+	
 	/*end Attributes Tag*/
 	
 	/*begin AbilityInputTags*/
@@ -42,12 +49,25 @@ public:
 	FGameplayTag InputTag_4;
 	/*end AbilityInputTags*/
 
-	/*Ability Tag*/
+	/*Ability Damage Tag*/
 	FGameplayTag Damage;
+	FGameplayTag Damage_Fire;
+	FGameplayTag Damage_Lighting;
+	FGameplayTag Damage_Arcane;
+	FGameplayTag Damage_Physical;
 
+	/* Ability Tag */
+	FGameplayTag Abilities_Attack;
 	/*Effect*/
 	FGameplayTag Effect_HitReact;
+
+	/*Montage Tag*/
+	FGameplayTag Montage_Weapon;
+	FGameplayTag Montage_LeftHand;
+	FGameplayTag Montage_RightHand;
 	
+	TMap<FGameplayTag, FGameplayTag> DamageTypeToResistance; // 用于计算伤害的时候找对应抗性
+	TSet<FGameplayTag> AttributesTag; //用于在Attributes Menu显示逻辑
 private:
 	static FAuraGameplayTags AuraGameplayTags;
 };

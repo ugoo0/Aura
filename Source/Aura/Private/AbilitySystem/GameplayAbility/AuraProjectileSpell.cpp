@@ -16,7 +16,7 @@ void UAuraProjectileSpell::SpawnProjectile(const FVector& TargetLocation)
 
 	if (ICombatInterface* CombatInterface = Cast<ICombatInterface>(GetAvatarActorFromActorInfo()))
 	{
-		const FVector SocketLocation = CombatInterface->GetCombatSocketLocation();
+		const FVector SocketLocation = ICombatInterface::Execute_GetCombatSocketLocation(GetAvatarActorFromActorInfo(), FAuraGameplayTags::Get().Montage_Weapon);
 		FRotator Rotation =  (TargetLocation- SocketLocation).Rotation();
 		FTransform SpawnTransform;
 		SpawnTransform.SetRotation(Rotation.Quaternion());
@@ -25,12 +25,27 @@ void UAuraProjectileSpell::SpawnProjectile(const FVector& TargetLocation)
 		//TODO:add Gameplay Effect Spec for Casuing Damage
 
 		UAbilitySystemComponent* SourceASC = UAbilitySystemBlueprintLibrary::GetAbilitySystemComponent(GetAvatarActorFromActorInfo());
-		FGameplayEffectSpecHandle SpecHandle = SourceASC->MakeOutgoingSpec(DamageEffectClass,GetAbilityLevel(),SourceASC->MakeEffectContext());
-
-		float ScaleDamage =  Damage.GetValueAtLevel(10);
-		// float ScaleDamage =  Damage.GetValueAtLevel(GetAbilityLevel());
+		FGameplayEffectContextHandle EffectContextHandle = SourceASC->MakeEffectContext();
 		
-		UAbilitySystemBlueprintLibrary::AssignTagSetByCallerMagnitude(SpecHandle,FAuraGameplayTags::Get().Damage,ScaleDamage);
+		EffectContextHandle.SetAbility(this);
+		EffectContextHandle.AddSourceObject(Projectile);
+		FHitResult HitResult;
+		HitResult.Location = TargetLocation;
+		EffectContextHandle.AddHitResult(HitResult);
+		TArray<TWeakObjectPtr<AActor>> Actors;
+		Actors.Add(Projectile);
+		EffectContextHandle.AddActors(Actors);
+		
+		FGameplayEffectSpecHandle SpecHandle = SourceASC->MakeOutgoingSpec(DamageEffectClass,GetAbilityLevel(),EffectContextHandle);
+
+		for (const TPair<FGameplayTag, FScalableFloat>& pair : DamageTypes)
+		{
+			float ScaleDamage =  pair.Value.GetValueAtLevel(10);
+			// float ScaleDamage =  Damage.GetValueAtLevel(GetAbilityLevel());
+			UAbilitySystemBlueprintLibrary::AssignTagSetByCallerMagnitude(SpecHandle,pair.Key,ScaleDamage);
+		}
+		
+
 		
 		Projectile->DamageEffectSpecHandle = SpecHandle;
 		

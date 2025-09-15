@@ -21,8 +21,21 @@ void AAuraEffectActor::BeginPlay()
 	Super::BeginPlay();
 }
 
+bool AAuraEffectActor::TargetCanBeEffected(AActor* Target)
+{
+	for (const auto& Tag : TagsCanEffect)
+	{
+		if (Target->ActorHasTag(Tag))
+		{
+			return  true;
+		}
+	}
+	return  false;
+}
+
 void AAuraEffectActor::ApplyEffectToTarget(AActor* Target, TSubclassOf<UGameplayEffect> GamePlayEffectClass)
 {
+	if (!TargetCanBeEffected(Target)) return;
 	UAbilitySystemComponent* TargetASC = UAbilitySystemBlueprintLibrary::GetAbilitySystemComponent(Target);
 	if (TargetASC == nullptr) return;
 	check(GamePlayEffectClass);
@@ -35,10 +48,15 @@ void AAuraEffectActor::ApplyEffectToTarget(AActor* Target, TSubclassOf<UGameplay
 	{
 		ActiveEffectHandles.Add(ActiveEffectHandle, TargetASC);
 	}
+	if (bDestroyOnEffectRemoval && !IsInfinite)
+	{
+		Destroy();
+	}
 }
 
 void AAuraEffectActor::OnOverlay(AActor* Target)
 {
+	if (!TargetCanBeEffected(Target)) return;
 	if (InstantEffectApplicationPolicy == EEffectApplicationPolicy::ApplyOnOverlay)
 	{
 		ApplyEffectToTarget(Target, InstantGamePlayEffectClass);
@@ -55,6 +73,7 @@ void AAuraEffectActor::OnOverlay(AActor* Target)
 
 void AAuraEffectActor::OnEndOverlay(AActor* Target)
 {
+	if (!TargetCanBeEffected(Target)) return;
 	if (InstantEffectApplicationPolicy == EEffectApplicationPolicy::ApplyOnEndOverlay)
 	{
 		ApplyEffectToTarget(Target, InstantGamePlayEffectClass);
@@ -86,6 +105,8 @@ void AAuraEffectActor::OnEndOverlay(AActor* Target)
 		}
 	}
 }
+
+
 
 // Called every frame
 void AAuraEffectActor::Tick(float DeltaTime)

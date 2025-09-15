@@ -2,6 +2,8 @@
 
 
 #include "Character/AuraCharacterBase.h"
+
+#include "AuraGameplayTags.h"
 #include "AbilitySystem/AuraAbilitySystemComponent.h"
 #include "AbilitySystem/AuraAttributeSet.h"
 #include "Aura/Aura.h"
@@ -36,6 +38,7 @@ void AAuraCharacterBase::MulticastHandleDeath_Implementation()
 	GetMesh()->SetCollisionResponseToChannel(ECC_WorldStatic,ECR_Block);
 
 	GetCapsuleComponent()->SetCollisionEnabled(ECollisionEnabled::NoCollision);
+	Dissolve();
 }
 
 UAnimMontage* AAuraCharacterBase::GetHitReactMontage_Implementation()
@@ -43,10 +46,32 @@ UAnimMontage* AAuraCharacterBase::GetHitReactMontage_Implementation()
 	return HitReactMontage;
 }
 
+UAnimMontage* AAuraCharacterBase::GetMelleAttackMontage_Implementation()
+{
+	return MelleAttackMontage;
+}
+
 void AAuraCharacterBase::Die()
 {
 	Weapon->DetachFromComponent(FDetachmentTransformRules(EDetachmentRule::KeepWorld,true));
 	MulticastHandleDeath();
+	bDead = true;
+}
+
+void AAuraCharacterBase::Dissolve()
+{
+	if (IsValid(MeshDissolvedMaterialInstance))
+	{
+		UMaterialInstanceDynamic* DynamicMeshMetarialInst = UMaterialInstanceDynamic::Create(MeshDissolvedMaterialInstance,this);
+		GetMesh()->SetMaterial(0,DynamicMeshMetarialInst);
+		StartDissolveMeshTimeline(DynamicMeshMetarialInst);
+	}
+	if (IsValid(WeaponDissolvedMaterialInstance))
+	{
+		UMaterialInstanceDynamic* DynamicWeaponMetarialInst = UMaterialInstanceDynamic::Create(WeaponDissolvedMaterialInstance,this);
+		Weapon->SetMaterial(0,DynamicWeaponMetarialInst);
+		StartDissolveWeaponTimeline(DynamicWeaponMetarialInst);
+	}
 }
 
 // Called when the game starts or when spawned
@@ -56,10 +81,36 @@ void AAuraCharacterBase::BeginPlay()
 	
 }
 
-FVector AAuraCharacterBase::GetCombatSocketLocation() const
+FVector AAuraCharacterBase::GetCombatSocketLocation_Implementation(const FGameplayTag& GameplayTag) const
 {
-	check(Weapon);
-	return Weapon->GetSocketLocation(WeaponTipSocketName);
+	if (GameplayTag.MatchesTagExact(FAuraGameplayTags::Get().Montage_Weapon) && IsValid(Weapon))
+	{
+		return Weapon->GetSocketLocation(WeaponTipSocketName);
+	}
+	else if (GameplayTag.MatchesTagExact(FAuraGameplayTags::Get().Montage_LeftHand))
+	{
+		return Weapon->GetSocketLocation(LeftHandSocketName);
+	}
+	else if (GameplayTag.MatchesTagExact(FAuraGameplayTags::Get().Montage_RightHand))
+	{
+		return Weapon->GetSocketLocation(RightHandSocketName);
+	}
+	return FVector();
+}
+
+AActor* AAuraCharacterBase::GetAvatarActor_Implementation()
+{
+	return this;
+}
+
+bool AAuraCharacterBase::IsDead_Implementation() const
+{
+	return bDead;
+}
+
+TArray<FTagsToMontage> AAuraCharacterBase::GetTagsToMontage_Implementation() const
+{
+	return TagsToMontages;
 }
 
 UAbilitySystemComponent* AAuraCharacterBase::GetAbilitySystemComponent() const

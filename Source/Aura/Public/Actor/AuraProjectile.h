@@ -51,4 +51,7 @@ private:
 
 	UPROPERTY(EditAnywhere)
 	float LifeSpan = 6.0f;
+
+	UPROPERTY(EditAnywhere)
+	TArray<FName> OverlayTags;
 };

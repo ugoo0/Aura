@@ -39,7 +39,16 @@ void AAuraProjectile::OnSphereOverlay(UPrimitiveComponent* OverlappedComponent, 
 	UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
 {
 	if (DamageEffectSpecHandle.Data.IsValid() && DamageEffectSpecHandle.Data.Get()->GetContext().GetEffectCauser() == OtherActor) return;
-	GEngine->AddOnScreenDebugMessage(5,5.f,FColor::Red,FString(OtherActor->GetName()));
+	bool bCanOverlay = false;
+	for (auto Tag:OverlayTags)
+	{
+		if (OtherActor->ActorHasTag(Tag))
+		{
+			bCanOverlay = true;
+			break;
+		}
+	}
+	if (!bCanOverlay) return;
 	UGameplayStatics::PlaySoundAtLocation(this,ImpactSound,GetActorLocation(),FRotator::ZeroRotator);
 	UNiagaraFunctionLibrary::SpawnSystemAtLocation(this,ImpactNiagara,GetActorLocation(),FRotator::ZeroRotator);
 	if (LoopingSoundComp) LoopingSoundComp->Stop();

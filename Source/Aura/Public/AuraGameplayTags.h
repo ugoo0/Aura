@@ -62,9 +62,15 @@ public:
 	FGameplayTag Effect_HitReact;
 
 	/*Montage Tag*/
-	FGameplayTag Montage_Weapon;
-	FGameplayTag Montage_LeftHand;
-	FGameplayTag Montage_RightHand;
+	FGameplayTag CombatSocket_Weapon;
+	FGameplayTag CombatSocket_LeftHand;
+	FGameplayTag CombatSocket_RightHand;
+
+	FGameplayTag Montage_Attack_1;
+	FGameplayTag Montage_Attack_2;
+	FGameplayTag Montage_Attack_3;
+	FGameplayTag Montage_Attack_4;
+	
 	
 	TMap<FGameplayTag, FGameplayTag> DamageTypeToResistance; // 用于计算伤害的时候找对应抗性
 	TSet<FGameplayTag> AttributesTag; //用于在Attributes Menu显示逻辑

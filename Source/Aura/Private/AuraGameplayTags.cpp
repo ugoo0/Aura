@@ -62,10 +62,14 @@ void FAuraGameplayTags::InitializeNativeGameplayTags()
 	AuraGameplayTags.Abilities_Attack = UGameplayTagsManager::Get().AddNativeGameplayTag(FName("Abilities.Attack"), FString("普通攻击Tag"));
 
 	/*Montage Tag*/
-	AuraGameplayTags.Montage_Weapon = UGameplayTagsManager::Get().AddNativeGameplayTag(FName("Montage.Weapon"), FString("使用武器攻击"));
-	AuraGameplayTags.Montage_LeftHand = UGameplayTagsManager::Get().AddNativeGameplayTag(FName("Montage.LeftHand"), FString("使用左手攻击"));
-	AuraGameplayTags.Montage_RightHand = UGameplayTagsManager::Get().AddNativeGameplayTag(FName("Montage.RightHand"), FString("使用右手攻击"));
-	
+	AuraGameplayTags.CombatSocket_Weapon = UGameplayTagsManager::Get().AddNativeGameplayTag(FName("CombatSocket.Weapon"), FString("使用武器攻击"));
+	AuraGameplayTags.CombatSocket_LeftHand = UGameplayTagsManager::Get().AddNativeGameplayTag(FName("CombatSocket.LeftHand"), FString("使用左手攻击"));
+	AuraGameplayTags.CombatSocket_RightHand = UGameplayTagsManager::Get().AddNativeGameplayTag(FName("CombatSocket.RightHand"), FString("使用右手攻击"));
+
+	AuraGameplayTags.Montage_Attack_1 = UGameplayTagsManager::Get().AddNativeGameplayTag(FName("Montage.Attack.1"), FString("Montage发生的攻击事件1"));
+	AuraGameplayTags.Montage_Attack_2 = UGameplayTagsManager::Get().AddNativeGameplayTag(FName("Montage.Attack.2"), FString("Montage发生的攻击事件2"));
+	AuraGameplayTags.Montage_Attack_3 = UGameplayTagsManager::Get().AddNativeGameplayTag(FName("Montage.Attack.3"), FString("Montage发生的攻击事件3"));
+	AuraGameplayTags.Montage_Attack_4 = UGameplayTagsManager::Get().AddNativeGameplayTag(FName("Montage.Attack.4"), FString("Montage发生的攻击事件4"));
 	
 	AuraGameplayTags.AttributesTag.Reset();
 	AuraGameplayTags.AttributesTag.Add(AuraGameplayTags.Attributes_Primary_Intelligence);

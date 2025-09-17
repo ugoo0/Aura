@@ -8,6 +8,7 @@
 #include "AbilitySystem/AuraAttributeSet.h"
 #include "Aura/Aura.h"
 #include "Components/CapsuleComponent.h"
+#include "Kismet/GameplayStatics.h"
 
 
 // Sets default values
@@ -28,6 +29,7 @@ AAuraCharacterBase::AAuraCharacterBase()
 
 void AAuraCharacterBase::MulticastHandleDeath_Implementation()
 {
+	UGameplayStatics::PlaySoundAtLocation(this, DeathSound, GetActorLocation(), GetActorRotation());
 	Weapon->SetSimulatePhysics(true);
 	Weapon->SetEnableGravity(true);
 	Weapon->SetCollisionEnabled(ECollisionEnabled::PhysicsOnly);
@@ -74,6 +76,23 @@ void AAuraCharacterBase::Dissolve()
 	}
 }
 
+UNiagaraSystem* AAuraCharacterBase::GetHitNiagaraSystem_Implementation() const
+{
+	return BloodEffect;
+}
+
+FTagsToMontage AAuraCharacterBase::GetTagsToMontageByMontageTag_Implementation(const FGameplayTag& MontageTag)
+{
+	for (const FTagsToMontage& TagToMontage : TagsToMontages)
+	{
+		if (TagToMontage.MontageGameplayTag.MatchesTagExact(MontageTag))
+		{
+			return TagToMontage;
+		}
+	}
+	return FTagsToMontage();
+}
+
 // Called when the game starts or when spawned
 void AAuraCharacterBase::BeginPlay()
 {
@@ -83,15 +102,15 @@ void AAuraCharacterBase::BeginPlay()
 
 FVector AAuraCharacterBase::GetCombatSocketLocation_Implementation(const FGameplayTag& GameplayTag) const
 {
-	if (GameplayTag.MatchesTagExact(FAuraGameplayTags::Get().Montage_Weapon) && IsValid(Weapon))
+	if (GameplayTag.MatchesTagExact(FAuraGameplayTags::Get().CombatSocket_Weapon) && IsValid(Weapon))
 	{
 		return Weapon->GetSocketLocation(WeaponTipSocketName);
 	}
-	else if (GameplayTag.MatchesTagExact(FAuraGameplayTags::Get().Montage_LeftHand))
+	else if (GameplayTag.MatchesTagExact(FAuraGameplayTags::Get().CombatSocket_LeftHand))
 	{
 		return Weapon->GetSocketLocation(LeftHandSocketName);
 	}
-	else if (GameplayTag.MatchesTagExact(FAuraGameplayTags::Get().Montage_RightHand))
+	else if (GameplayTag.MatchesTagExact(FAuraGameplayTags::Get().CombatSocket_RightHand))
 	{
 		return Weapon->GetSocketLocation(RightHandSocketName);
 	}

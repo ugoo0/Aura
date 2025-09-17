@@ -5,6 +5,7 @@
 
 #include "AbilitySystemBlueprintLibrary.h"
 #include "AbilitySystemComponent.h"
+#include "AuraAbilitySystemLibrary.h"
 #include "NiagaraFunctionLibrary.h"
 #include "Aura/Aura.h"
 #include "Components/AudioComponent.h"
@@ -38,17 +39,18 @@ AAuraProjectile::AAuraProjectile()
 void AAuraProjectile::OnSphereOverlay(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor,
 	UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
 {
-	if (DamageEffectSpecHandle.Data.IsValid() && DamageEffectSpecHandle.Data.Get()->GetContext().GetEffectCauser() == OtherActor) return;
-	bool bCanOverlay = false;
-	for (auto Tag:OverlayTags)
-	{
-		if (OtherActor->ActorHasTag(Tag))
-		{
-			bCanOverlay = true;
-			break;
-		}
-	}
-	if (!bCanOverlay) return;
+	if (!DamageEffectSpecHandle.Data.IsValid() || DamageEffectSpecHandle.Data.Get()->GetContext().GetEffectCauser() == OtherActor) return;
+	// bool bCanOverlay = false;
+	// for (auto Tag:OverlayTags)
+	// {
+	// 	if (OtherActor->ActorHasTag(Tag))
+	// 	{
+	// 		bCanOverlay = true;
+	// 		break;
+	// 	}
+	// }
+	// if (!bCanOverlay) return;
+	if (UAuraAbilitySystemLibrary::IsFriend(OtherActor,DamageEffectSpecHandle.Data.Get()->GetContext().GetEffectCauser())) return;
 	UGameplayStatics::PlaySoundAtLocation(this,ImpactSound,GetActorLocation(),FRotator::ZeroRotator);
 	UNiagaraFunctionLibrary::SpawnSystemAtLocation(this,ImpactNiagara,GetActorLocation(),FRotator::ZeroRotator);
 	if (LoopingSoundComp) LoopingSoundComp->Stop();

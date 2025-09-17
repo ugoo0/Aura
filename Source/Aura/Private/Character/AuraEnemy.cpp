@@ -109,6 +109,10 @@ void AAuraEnemy::InitAbilityActorInfo()
 void AAuraEnemy::Die()
 {
 	SetLifeSpan(TimeRemoveAfterDie);
+	if (AuraAIController && AuraAIController->GetBlackboardComponent())
+	{
+		AuraAIController->GetBlackboardComponent()->SetValueAsBool(FName("Dead"), true);
+	}
 	Super::Die();
 }
 

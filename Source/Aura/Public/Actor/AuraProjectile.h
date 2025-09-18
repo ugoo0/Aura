@@ -30,10 +30,12 @@ public:
 protected:
 	virtual void BeginPlay() override;
 	virtual void Destroyed() override;
+
+	UPROPERTY(VisibleAnywhere,BlueprintReadOnly)
+	TObjectPtr<USphereComponent> Sphere;
 private:
 
-	UPROPERTY(VisibleAnywhere)
-	TObjectPtr<USphereComponent> Sphere;
+
 
 	UPROPERTY(EditAnywhere)
 	TObjectPtr<UNiagaraSystem> ImpactNiagara;

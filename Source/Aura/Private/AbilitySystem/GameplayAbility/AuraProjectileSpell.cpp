@@ -9,7 +9,7 @@
 #include "Actor/AuraProjectile.h"
 #include "Interaction/CombatInterface.h"
 
-void UAuraProjectileSpell::SpawnProjectile(const FVector& TargetLocation, const FGameplayTag& SocketTag)
+void UAuraProjectileSpell::SpawnProjectile(const FVector& TargetLocation, const FGameplayTag& SocketTag,bool bOverridePitch, float OverridePitch)
 {
 	const bool bIsServer = GetAvatarActorFromActorInfo()->HasAuthority();
 	if (!bIsServer) return;
@@ -18,6 +18,10 @@ void UAuraProjectileSpell::SpawnProjectile(const FVector& TargetLocation, const 
 	{
 		const FVector SocketLocation = ICombatInterface::Execute_GetCombatSocketLocation(GetAvatarActorFromActorInfo(), SocketTag);
 		FRotator Rotation =  (TargetLocation- SocketLocation).Rotation();
+		if (bOverridePitch)
+		{
+			Rotation.Pitch = OverridePitch;
+		}
 		FTransform SpawnTransform;
 		SpawnTransform.SetRotation(Rotation.Quaternion());
 		SpawnTransform.SetLocation(SocketLocation);

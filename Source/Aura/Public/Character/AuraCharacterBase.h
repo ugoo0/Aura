@@ -54,6 +54,9 @@ public:
 	virtual int32 GetPlayerLevel() const override;
 	virtual UNiagaraSystem* GetHitNiagaraSystem_Implementation() const override;
 	virtual FTagsToMontage GetTagsToMontageByMontageTag_Implementation(const FGameplayTag& MontageTag) override;
+	virtual int32 GetMaxMinionCount_Implementation() override;
+	virtual void AddMinionCount_Implementation(int32 Amount) override;
+	virtual int32 GetMinionCount_Implementation() override;
 	/*end combat interface*/
 	
 	
@@ -90,7 +93,10 @@ protected:
 
 	UPROPERTY(EditDefaultsOnly, Category="Combat")
 	USoundBase* DeathSound;
-	
+
+	UPROPERTY(EditDefaultsOnly, Category="Combat")
+	int32 MaxMinionCount;
+	int32 MinionCount = 0;
 	bool bDead = false;
 	
 	UPROPERTY()

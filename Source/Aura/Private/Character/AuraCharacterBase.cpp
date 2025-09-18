@@ -93,6 +93,21 @@ FTagsToMontage AAuraCharacterBase::GetTagsToMontageByMontageTag_Implementation(c
 	return FTagsToMontage();
 }
 
+int32 AAuraCharacterBase::GetMaxMinionCount_Implementation()
+{
+	return MaxMinionCount;
+}
+
+void AAuraCharacterBase::AddMinionCount_Implementation(int32 Amount)
+{
+	MinionCount = MinionCount + Amount;
+}
+
+int32 AAuraCharacterBase::GetMinionCount_Implementation()
+{
+	return MinionCount;
+}
+
 // Called when the game starts or when spawned
 void AAuraCharacterBase::BeginPlay()
 {

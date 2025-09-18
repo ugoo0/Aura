@@ -115,7 +115,7 @@ void UExecCalc_Damage::Execute_Implementation(const FGameplayEffectCustomExecuti
 		checkf(TagsToDefs.Contains(ResistanceType), TEXT("TagsToDefs 不包含对应伤害类型的Tag: %s"),*ResistanceType.ToString());
 		ExecutionParams.AttemptCalculateCapturedAttributeMagnitude(TagsToDefs[ResistanceType],EvalParams,TargetDamageTypeResist);
 		TargetDamageTypeResist = FMath::Clamp(TargetDamageTypeResist,0.f,100.f);
-		float TypeDamage = Spec.GetSetByCallerMagnitude(DamageType) * (100.f-TargetDamageTypeResist)/100.f;
+		float TypeDamage = Spec.GetSetByCallerMagnitude(DamageType,false) * (100.f-TargetDamageTypeResist)/100.f;
 		
 		Damage += TypeDamage;
 	}

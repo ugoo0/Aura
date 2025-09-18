@@ -58,6 +58,8 @@ public:
 
 	/* Ability Tag */
 	FGameplayTag Abilities_Attack;
+	FGameplayTag Abilities_Summon;
+	
 	/*Effect*/
 	FGameplayTag Effect_HitReact;
 

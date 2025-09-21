@@ -58,9 +58,13 @@ void FAuraGameplayTags::InitializeNativeGameplayTags()
 	/* Effect Tag */
 	AuraGameplayTags.Effect_HitReact = UGameplayTagsManager::Get().AddNativeGameplayTag(FName("Effect.HitReact"),FString("对造成伤害反应的Tag"));
 
-	/* Enemy Abilities Tags */
+	/*Abilities Tags */
 	AuraGameplayTags.Abilities_Attack = UGameplayTagsManager::Get().AddNativeGameplayTag(FName("Abilities.Attack"), FString("普通攻击Tag"));
 	AuraGameplayTags.Abilities_Summon = UGameplayTagsManager::Get().AddNativeGameplayTag(FName("Abilities.Summon"), FString("召唤随处Tag"));
+	AuraGameplayTags.Abilities_Fire_FireBolt = UGameplayTagsManager::Get().AddNativeGameplayTag(FName("Abilities.Fire.FireBolt"), FString("火球术Tag"));
+
+	/*Abilities Cooldown Tags */
+	AuraGameplayTags.Cooldown_Fire_FireBolt = UGameplayTagsManager::Get().AddNativeGameplayTag(FName("Cooldown.Fire.FireBolt"), FString("火球术冷却Tag"));
 
 	/*Montage Tag*/
 	AuraGameplayTags.CombatSocket_Weapon = UGameplayTagsManager::Get().AddNativeGameplayTag(FName("CombatSocket.Weapon"), FString("使用武器攻击"));

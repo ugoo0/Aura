@@ -4,6 +4,7 @@
 #include "AbilitySystem/AuraAbilitySystemComponent.h"
 
 #include "AbilitySystem/GameplayAbility/AuraGameplayAbility.h"
+#include "Aura/AuraLogChannels.h"
 
 void UAuraAbilitySystemComponent::AblityActorInfoSet()
 {
@@ -21,6 +22,18 @@ void UAuraAbilitySystemComponent::AddCharacterAbilities(TArray<TSubclassOf<UGame
 			GiveAbility(AbilitySpec);
 		}
 		// GiveAbilityAndActivateOnce(AbilitySpec);
+	}
+	bStartupAbilitiesGiven = true;
+	AbilitiesGivenDelegate.Broadcast(this);
+}
+
+void UAuraAbilitySystemComponent::OnRep_ActivateAbilities()//客户端同步
+{
+	Super::OnRep_ActivateAbilities();
+	if (!bStartupAbilitiesGiven)
+	{
+		bStartupAbilitiesGiven = true;
+		AbilitiesGivenDelegate.Broadcast(this);
 	}
 }
 
@@ -53,6 +66,47 @@ void UAuraAbilitySystemComponent::AbilityInputReleased(FGameplayTag InputTag)
 		}
 	}
 }
+
+void UAuraAbilitySystemComponent::ForEachAbility(const FForEachAbility& Delegate)
+{
+	for (const FGameplayAbilitySpec& AbilitySpec : GetActivatableAbilities())
+	{
+		if (!Delegate.ExecuteIfBound(AbilitySpec))
+		{
+			UE_LOG(LogAura, Error, TEXT("Failed to execute delegate in %hs"), __FUNCTION__);
+		}
+	}
+}
+
+FGameplayTag UAuraAbilitySystemComponent::GetAbilityTagForAbilitySpec(const FGameplayAbilitySpec& AbilitySpec)
+{
+	if (AbilitySpec.Ability)
+	{
+		for (const FGameplayTag& Tag : AbilitySpec.Ability.Get()->AbilityTags)
+		{
+			if (Tag.MatchesTag(FGameplayTag::RequestGameplayTag("Abilities")))
+			{
+				return Tag;
+			}
+		}
+	}
+	return FGameplayTag();
+}
+
+FGameplayTag UAuraAbilitySystemComponent::GetInputTagForAbilitySpec(const FGameplayAbilitySpec& AbilitySpec)
+{
+	for (const FGameplayTag& Tag : AbilitySpec.DynamicAbilityTags)
+	{
+		if (Tag.MatchesTag(FGameplayTag::RequestGameplayTag("InputTag")))
+		{
+			return Tag;
+		}
+	}
+	return FGameplayTag();
+}
+
+
+
 
 void UAuraAbilitySystemComponent::ClientEffectApplied_Implementation(UAbilitySystemComponent* ASC, const FGameplayEffectSpec& EffectSpec, FActiveGameplayEffectHandle EffectHandle)
 {

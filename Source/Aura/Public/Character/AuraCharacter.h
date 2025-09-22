@@ -3,26 +3,55 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "NiagaraComponent.h"
 #include "Character/AuraCharacterBase.h"
+#include "Interaction/AuraInterface.h"
 #include "AuraCharacter.generated.h"
 
+class USpringArmComponent;
+class UCameraComponent;
 /**
  * 
  */
 UCLASS()
-class AURA_API AAuraCharacter : public AAuraCharacterBase
+class AURA_API AAuraCharacter : public AAuraCharacterBase, public  IAuraInterface
 {
 	GENERATED_BODY()
 	
 	virtual void PossessedBy(AController* NewController) override;
 	virtual void OnRep_PlayerState() override;
-	/**Combat Interface**/
-	FORCEINLINE virtual int32 GetPlayerLevel() const override;
-	/**Combat Interface**/
+
 	
 public:
 	AAuraCharacter();
 	virtual void InitAbilityActorInfo() override;
+	/**Combat Interface**/
+	virtual int32 GetPlayerLevel_Implementation() override;
+	/**Combat Interface**/
+
+	/**Aura Interface**/
+	virtual void AddToXP_Implementation(int32 InXP) override;;
+	virtual void AddToAttributePoints_Implementation(int32 InPoints) override;
+	virtual void AddToPlayerLevel_Implementation(int32 InLevel) const override;
+	virtual void AddToSpellPoints_Implementation(int32 InPoints) override;
+	virtual void LevelUp_Implementation(int32 CurLevel, int32 NewLevel) override;
+	virtual int32 GetSpellPointsReward_Implementation(int32 CurLevel, int32 NewLevel) const override;
+	virtual int32 GetAttributePointsReward_Implementation(int32 CurLevel, int32 NewLevel) const override;
+	virtual int32 FindLevelForExperience_Implementation(int32 Experience) const override;
+	virtual int32 GetXP_Implementation() const override;
+	/**Aura Interface**/
 protected:
 	virtual void InitializaDefaultAttriutes() const override;
+
+	UPROPERTY(EditDefaultsOnly)
+	UCameraComponent *TopDownCameraComponent;
+
+	UPROPERTY(EditDefaultsOnly)
+	USpringArmComponent* CameraBoom;
+
+	UPROPERTY(EditDefaultsOnly)
+	UNiagaraComponent* LevelUpNiagaraComponent;
+
+	UFUNCTION(NetMulticast, Reliable)
+	void MulticastLevelUpParticles() const;
 };

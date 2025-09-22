@@ -3,7 +3,6 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "AbilitySystem/Data/CharacterClassInfo.h"
 #include "Character/AuraCharacterBase.h"
 #include "Interaction/EnemyInterface.h"
 #include "UI/WidgetController/OverlayWidgetController.h"
@@ -30,7 +29,7 @@ public:
 	
 
 	/** CombatInterface **/
-	FORCEINLINE virtual int32 GetPlayerLevel() const override;
+	virtual int32 GetPlayerLevel_Implementation() override;
 	/** CombatInterface **/
 	
 	
@@ -68,17 +67,14 @@ public:
 	AActor* CombatTarget;
 	
 	
-	void SetCombatTarget_Implementation(AActor* Target) override;
+	virtual  void SetCombatTarget_Implementation(AActor* Target) override;
 	
-	AActor* GetCombatTarget_Implementation() override;
+	virtual AActor* GetCombatTarget_Implementation() override;
 	
 protected:
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Charcter Class Default")
 	int32 Level = 1;
-	
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Charcter Class Default")
-	ECharacterClassType CharacterClassType = ECharacterClassType::Warrior;
 	
 	UPROPERTY(BlueprintAssignable,Category = "UserInterface|HealthBar")
 	FOnAttributeChangedSignature OnHealthChanged;

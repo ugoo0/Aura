@@ -75,10 +75,15 @@ void UAuraAbilitySystemLibrary::GiveStartupAbilities(const UObject* WorldContext
 			ASC->GiveAbility(AbilitySpec);
 		}
 		FCharacterClassDefaultInfo DefaultInfo = ClassInfo->GetCharacterClassDefaultInfoForType(CharacterClassType);
-		ICombatInterface* CombatInterface = Cast<ICombatInterface>(ASC->GetAvatarActor());
+		int32 Level = 1;
+		if (ASC->GetAvatarActor()->Implements<UCombatInterface>())
+		{
+			Level = ICombatInterface::Execute_GetPlayerLevel(ASC->GetAvatarActor());
+		}
 		for (auto Ability : DefaultInfo.StartupAbilities)
 		{
-			FGameplayAbilitySpec AbilitySpec = FGameplayAbilitySpec(Ability,CombatInterface->GetPlayerLevel());	
+
+			FGameplayAbilitySpec AbilitySpec = FGameplayAbilitySpec(Ability,Level);	
 			ASC->GiveAbility(AbilitySpec);
 		}
 	}
@@ -93,6 +98,15 @@ UCharacterClassInfo* UAuraAbilitySystemLibrary::GetCharacterClassInfo(const UObj
 		return ClassInfo;
 	}
 	return nullptr;
+}
+
+int32 UAuraAbilitySystemLibrary::GetRewardXPForCharacterClassAndLevel(const UObject* WorldContextObject,
+	ECharacterClassType CharacterClassType, int32 Level)
+{
+	UCharacterClassInfo* ClassInfo = GetCharacterClassInfo(WorldContextObject);
+	if (!ClassInfo) return 0;
+	FCharacterClassDefaultInfo DefaultInfo = ClassInfo->GetCharacterClassDefaultInfoForType(CharacterClassType);
+	return static_cast<int32> (DefaultInfo.XPReward.GetValueAtLevel(Level));
 }
 
 bool UAuraAbilitySystemLibrary::IsBlockHit(const FGameplayEffectContextHandle& ContextHandle)
@@ -159,3 +173,5 @@ bool UAuraAbilitySystemLibrary::IsFriend(const AActor* Actor1, const AActor* Act
 	bool Actor2IsEnemy = Actor2->ActorHasTag("Enemy");
 	return (Actor1IsPlayer && Actor2IsPlayer) || (Actor1IsEnemy && Actor2IsEnemy);
 }
+
+

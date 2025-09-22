@@ -11,9 +11,9 @@ void UAuraAbilitySystemComponent::AblityActorInfoSet()
 	OnGameplayEffectAppliedDelegateToSelf.AddUObject(this, &UAuraAbilitySystemComponent::ClientEffectApplied);
 }
 
-void UAuraAbilitySystemComponent::AddCharacterAbilities(TArray<TSubclassOf<UGameplayAbility>> StartupAbilitys)
+void UAuraAbilitySystemComponent::AddCharacterAbilities(TArray<TSubclassOf<UGameplayAbility>> StartupAbilities)
 {
-	for (auto AbilityClass : StartupAbilitys)
+	for (auto AbilityClass : StartupAbilities)
 	{
 		FGameplayAbilitySpec AbilitySpec = FGameplayAbilitySpec(AbilityClass,1);
 		if (const UAuraGameplayAbility* AuraAbility = Cast<UAuraGameplayAbility>(AbilitySpec.Ability))
@@ -21,10 +21,18 @@ void UAuraAbilitySystemComponent::AddCharacterAbilities(TArray<TSubclassOf<UGame
 			AbilitySpec.DynamicAbilityTags.AddTag(AuraAbility->StartupTag);
 			GiveAbility(AbilitySpec);
 		}
-		// GiveAbilityAndActivateOnce(AbilitySpec);
 	}
 	bStartupAbilitiesGiven = true;
 	AbilitiesGivenDelegate.Broadcast(this);
+}
+
+void UAuraAbilitySystemComponent::AddCharacterPassiveAbilities(TArray<TSubclassOf<UGameplayAbility>> StartupPassiveAbilities)
+{
+	for (auto AbilityClass : StartupPassiveAbilities)
+	{
+		FGameplayAbilitySpec AbilitySpec = FGameplayAbilitySpec(AbilityClass,1);
+		GiveAbilityAndActivateOnce(AbilitySpec);//直接激活被动
+	}
 }
 
 void UAuraAbilitySystemComponent::OnRep_ActivateAbilities()//客户端同步

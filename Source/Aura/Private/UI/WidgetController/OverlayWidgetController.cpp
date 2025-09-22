@@ -6,6 +6,8 @@
 #include <AbilitySystem/AuraAbilitySystemComponent.h>
 
 #include "AbilitySystem/Data/AbilityInfo.h"
+#include "AbilitySystem/Data/LevelInfo.h"
+#include "Player/AuraPlayerState.h"
 
 void UOverlayWidgetController::BroadcastInitialValues()
 {
@@ -19,7 +21,16 @@ void UOverlayWidgetController::BroadcastInitialValues()
 
 void UOverlayWidgetController::BindCallbackToDependencies()//绑定函数到属性变化会分发的事件，一旦属性变化会调用所绑定的lambda函数，函数里继续分发UI事件
 {
-	UAuraAttributeSet* AuraAttributeSet = Cast<UAuraAttributeSet>(AttributeSet);
+	AAuraPlayerState* AuraPlayerState = CastChecked<AAuraPlayerState>(PlayerState);
+	AuraPlayerState->OnPlayerXPChangedDelegate.AddUObject(this, &UOverlayWidgetController::OnPlayerXPChanged);
+
+	AuraPlayerState->OnPlayerLevelChangedDelegate.AddLambda(
+		[this](int32 CurLevel, int32 NewLevel)
+		{
+			OnPlayerLevelChanged.Broadcast(CurLevel, NewLevel);
+		});
+	
+	UAuraAttributeSet* AuraAttributeSet = CastChecked<UAuraAttributeSet>(AttributeSet);
 	AbilitySystemComponent->GetGameplayAttributeValueChangeDelegate(AuraAttributeSet->GetHealthAttribute()).AddLambda(
 		[this](const FOnAttributeChangeData& Data)
 		{
@@ -84,6 +95,12 @@ void UOverlayWidgetController::OnInitializeStartupAbilities(UAuraAbilitySystemCo
 		FAbilityInfoDelegate.Broadcast(Info);
 	});
 	AuraASC->ForEachAbility(Delegate);
+}
+
+void UOverlayWidgetController::OnPlayerXPChanged(int32 InXP)
+{
+	AAuraPlayerState* AuraPlayerState = CastChecked<AAuraPlayerState>(PlayerState);
+	OnPlayerXPPercentChanged.Broadcast(AuraPlayerState->AuraLevelInfo->GetShowPercentForExperience(InXP));
 }
 
 

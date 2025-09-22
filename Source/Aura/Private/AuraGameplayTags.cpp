@@ -36,6 +36,12 @@ void FAuraGameplayTags::InitializeNativeGameplayTags()
 
 
 	/* SecondaryAttributesTags end */
+	
+	/* Meta AttributesTags begin */
+	AuraGameplayTags.Attributes_Meta_IncomingXP = UGameplayTagsManager::Get().AddNativeGameplayTag(FName("Attribute.Meta.IncomingXP"),FString("经验值"));
+	/* Meta AttributesTags end */
+
+	
 
 	/*begin AbilityInputTags*/
 	AuraGameplayTags.InputTag_LMB = UGameplayTagsManager::Get().AddNativeGameplayTag(FName("InputTag.LMB"),FString("鼠标左键触发的技能"));

@@ -108,6 +108,11 @@ int32 AAuraCharacterBase::GetMinionCount_Implementation()
 	return MinionCount;
 }
 
+ECharacterClassType AAuraCharacterBase::GetCharacterClassType_Implementation() const
+{
+	return CharacterClassType;
+}
+
 // Called when the game starts or when spawned
 void AAuraCharacterBase::BeginPlay()
 {
@@ -199,6 +204,7 @@ void AAuraCharacterBase::AddCharacterAbilities() const
 	UAuraAbilitySystemComponent* AuraASC = Cast<UAuraAbilitySystemComponent>(AbilitySystemComponent);
 	if (!HasAuthority()) return;
 	AuraASC->AddCharacterAbilities(StartupAbilities);
+	AuraASC->AddCharacterPassiveAbilities(StartupPassiveAbilities);
 }
 
 

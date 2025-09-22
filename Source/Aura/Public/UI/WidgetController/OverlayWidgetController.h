@@ -34,7 +34,9 @@ struct FUIWidgetRow :public FTableRowBase
 
 };
 
-DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnAttributeChangedSignature, float, NewHealth);//创建委托，事件， 类型为FOnAttributeChangedSignature 
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnAttributeChangedSignature, float, NewValue);//创建委托，事件， 类型为FOnAttributeChangedSignature
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_TwoParams(FOnPlayerLevelChangedSignature, float, CurLevel, float, NewLevel);
+
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FMessageWidgetRowSignature, FUIWidgetRow, Row);
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FAbilityInfoSignature, FAuraAbilityInfo, Info);
 
@@ -48,7 +50,7 @@ class AURA_API UOverlayWidgetController : public UAuraWidgetController
 public:
 	virtual void BroadcastInitialValues() override;
 	virtual void BindCallbackToDependencies() override;
-	
+	//属性
 	UPROPERTY(BlueprintAssignable, Category = "GAS|Attributes")
 	FOnAttributeChangedSignature OnHealthChanged;
 
@@ -61,15 +63,22 @@ public:
 	UPROPERTY(BlueprintAssignable, Category = "GAS|Attributes")
 	FOnAttributeChangedSignature OnMaxManaChanged;
 
-
-
+	//XP
+	UPROPERTY(BlueprintAssignable, Category = "GAS|XP")
+	FOnAttributeChangedSignature OnPlayerXPPercentChanged;
+	//Level
+	UPROPERTY(BlueprintAssignable, Category = "GAS|XP")
+	FOnPlayerLevelChangedSignature OnPlayerLevelChanged;
+	
 	UPROPERTY(BlueprintAssignable, Category = "GAS|Message")
 	FMessageWidgetRowSignature FMessageWidgetRowDelegate;
+	
 
 	UPROPERTY(BlueprintAssignable, Category = "GAS|Abilities")
 	FAbilityInfoSignature FAbilityInfoDelegate;
 	void OnInitializeStartupAbilities(UAuraAbilitySystemComponent* AuraASC);
-	
+
+	void OnPlayerXPChanged(int32 InXP);
 protected:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Widget Data")
 	TObjectPtr<UDataTable> MessageWidgetDataTable;

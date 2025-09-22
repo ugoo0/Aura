@@ -3,12 +3,14 @@
 
 #include "AbilitySystem/AuraAttributeSet.h"
 
+#include "AbilitySystemBlueprintLibrary.h"
 #include "AuraAbilitySystemLibrary.h"
 #include "AuraDamageStateStruct.h"
 #include "AuraGameplayTags.h"
 #include "Net/UnrealNetwork.h"
 #include "GameFramework/Actor.h"
 #include "GameFramework/Character.h"
+#include "Interaction/AuraInterface.h"
 #include "Interaction/CombatInterface.h"
 #include "Kismet/GameplayStatics.h"
 #include "Player/AuraPlayerController.h"
@@ -134,11 +136,11 @@ void UAuraAttributeSet::PostGameplayEffectExecute(const FGameplayEffectModCallba
 	SetFEffectProperties(Data, EffectProperties);
 	if (Data.EvaluatedData.Attribute == GetHealthAttribute())
 	{
-		SetHealth(FMath::Clamp(GetHealth(), 0.0f, GetMaxHealth()));;
+		SetHealth(FMath::Clamp(GetHealth(), 0.0f, GetMaxHealth()));
 	}
 	if (Data.EvaluatedData.Attribute == GetManaAttribute())
 	{
-		SetMana(FMath::Clamp(GetMana(), 0.0f, GetMaxMana()));;
+		SetMana(FMath::Clamp(GetMana(), 0.0f, GetMaxMana()));
 	}
 
 	if (Data.EvaluatedData.Attribute == GetIncomingDamageAttribute())//受伤害逻辑
@@ -157,6 +159,8 @@ void UAuraAttributeSet::PostGameplayEffectExecute(const FGameplayEffectModCallba
 				{
 					CombatInterface->Die();
 				}
+				//获取经验
+				SendXPRewardEvent(EffectProperties);
 			}
 			else
 			{
@@ -168,7 +172,30 @@ void UAuraAttributeSet::PostGameplayEffectExecute(const FGameplayEffectModCallba
 		}
 	}
 	
+	if (Data.EvaluatedData.Attribute == GetIncomingXPAttribute())//SourceCharacter是玩家
+	{
+		const int32 LocalIncomingXP = GetIncomingXP();
+		SetIncomingXP(0.f);
+		if (EffectProperties.SourceCharacter->Implements<UAuraInterface>())
+		{
 
+			int32 CurLevel = ICombatInterface::Execute_GetPlayerLevel(EffectProperties.SourceCharacter);
+			int32 CurXP = IAuraInterface::Execute_GetXP(EffectProperties.SourceCharacter);
+
+			int32 NewXP = CurXP + LocalIncomingXP;
+			int32 NewLevel = IAuraInterface::Execute_FindLevelForExperience(EffectProperties.SourceCharacter,NewXP);
+
+			int32 LevelUpCount = NewLevel - CurLevel;
+			IAuraInterface::Execute_AddToXP(EffectProperties.SourceCharacter,LocalIncomingXP);
+			if (LevelUpCount > 0)
+			{
+				// const int32 AttributePointsReward = IAuraInterface::Execute_GetAttributePointsReward(EffectProperties.SourceCharacter, CurLevel, NewLevel);
+				// const int32 SpellPointsReward = IAuraInterface::Execute_GetSpellPointsReward(EffectProperties.SourceCharacter, CurLevel, NewLevel);
+				IAuraInterface::Execute_LevelUp(EffectProperties.SourceCharacter,CurLevel, NewLevel);
+			}
+		}
+	}
+	
 }
 
 void UAuraAttributeSet::ShowFloatingText(float Damage, FEffectProperties& EffectProperties) const
@@ -189,6 +216,21 @@ void UAuraAttributeSet::ShowFloatingText(float Damage, FEffectProperties& Effect
 		DamageState.IsCriticalHit = UAuraAbilitySystemLibrary::IsCriticalHit(EffectProperties.EffectContextHandle);
 		PC->ShowDamageNumber(Damage,EffectProperties.TargetCharacter,DamageState);
 	}
+}
+
+void UAuraAttributeSet::SendXPRewardEvent(FEffectProperties& EffectProperties)
+{
+	if (EffectProperties.TargetCharacter->Implements<UCombatInterface>())
+	{
+		ECharacterClassType TargetClassType = ICombatInterface::Execute_GetCharacterClassType(EffectProperties.TargetCharacter);
+		int32 TargetLevel = ICombatInterface::Execute_GetPlayerLevel(EffectProperties.TargetCharacter);
+		int32 XPReward = UAuraAbilitySystemLibrary::GetRewardXPForCharacterClassAndLevel(EffectProperties.TargetCharacter,TargetClassType, TargetLevel);
+		FGameplayEventData Payload;
+		Payload.EventTag = FAuraGameplayTags::Get().Attributes_Meta_IncomingXP;
+		Payload.EventMagnitude = XPReward;
+		UAbilitySystemBlueprintLibrary::SendGameplayEventToActor(EffectProperties.SourceCharacter, Payload.EventTag, Payload);
+	}
+
 }
 
 /*

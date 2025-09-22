@@ -7,6 +7,7 @@
 #include "AbilitySystemInterface.h"
 #include "AbilitySystemComponent.h"
 #include "Interaction/CombatInterface.h"
+#include "AbilitySystem/Data/CharacterClassInfo.h"
 #include "AuraCharacterBase.generated.h"
 
 class UNiagaraSystem;
@@ -51,12 +52,12 @@ public:
 	virtual  AActor* GetAvatarActor_Implementation() override;
 	virtual bool IsDead_Implementation() const override;
 	virtual TArray<FTagsToMontage> GetTagsToMontage_Implementation() const override;
-	virtual int32 GetPlayerLevel() const override;
 	virtual UNiagaraSystem* GetHitNiagaraSystem_Implementation() const override;
 	virtual FTagsToMontage GetTagsToMontageByMontageTag_Implementation(const FGameplayTag& MontageTag) override;
 	virtual int32 GetMaxMinionCount_Implementation() override;
 	virtual void AddMinionCount_Implementation(int32 Amount) override;
 	virtual int32 GetMinionCount_Implementation() override;
+	virtual ECharacterClassType GetCharacterClassType_Implementation() const override;;
 	/*end combat interface*/
 	
 	
@@ -124,13 +125,15 @@ protected:
 	virtual void InitializaDefaultAttriutes() const;
 	
 	void AddCharacterAbilities() const;
-private:
 
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Charcter Class Default")
+	ECharacterClassType CharacterClassType = ECharacterClassType::Warrior;
+	
+private:
 	UPROPERTY(EditAnywhere, Category = "ASC|Abilities")
 	TArray<TSubclassOf<UGameplayAbility>> StartupAbilities;
+
+	UPROPERTY(EditAnywhere, Category = "ASC|Abilities")
+	TArray<TSubclassOf<UGameplayAbility>> StartupPassiveAbilities;
 };
 
-inline int32 AAuraCharacterBase::GetPlayerLevel() const
-{
-	return 0;
-}

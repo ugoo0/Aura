@@ -129,7 +129,7 @@ AActor* AAuraEnemy::GetCombatTarget_Implementation()
 
 void AAuraEnemy::InitializaDefaultAttriutes() const
 {
-	UAuraAbilitySystemLibrary::InitializeDefaultAttributes(this,CharacterClassType,GetPlayerLevel(), AbilitySystemComponent);
+	UAuraAbilitySystemLibrary::InitializeDefaultAttributes(this,CharacterClassType,Level, AbilitySystemComponent);
 }
 
 void AAuraEnemy::HitReactTagChanged(const FGameplayTag Tag, int32 NewTagCount)
@@ -147,7 +147,7 @@ void AAuraEnemy::Destroyed()
 	Super::Destroyed();
 }
 
-int32 AAuraEnemy::GetPlayerLevel() const
+int32 AAuraEnemy::GetPlayerLevel_Implementation()
 {
 	return Level;
 }

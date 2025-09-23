@@ -89,12 +89,16 @@ void AAuraCharacter::AddToPlayerLevel_Implementation(int32 InLevel) const
 
 void AAuraCharacter::AddToAttributePoints_Implementation(int32 InPoints)
 {
-	//TODO:
+	AAuraPlayerState* AuraPlayerState = GetPlayerState<AAuraPlayerState>();
+	check(AuraPlayerState);
+	AuraPlayerState->AddToAttributePoints(InPoints);
 }
 
 void AAuraCharacter::AddToSpellPoints_Implementation(int32 InPoints)
 {
-	//TODO:
+	AAuraPlayerState* AuraPlayerState = GetPlayerState<AAuraPlayerState>();
+	check(AuraPlayerState);
+	AuraPlayerState->AddToSpellPoints(InPoints);
 }
 
 void AAuraCharacter::MulticastLevelUpParticles_Implementation() const
@@ -109,11 +113,16 @@ void AAuraCharacter::MulticastLevelUpParticles_Implementation() const
 
 void AAuraCharacter::LevelUp_Implementation(int32 CurLevel, int32 NewLevel)
 {
-	//TODO:
+	
 	AAuraPlayerState* AuraPlayerState = GetPlayerState<AAuraPlayerState>();
 	check(AuraPlayerState);
-	AuraPlayerState->AddToLevel(NewLevel-CurLevel);
 
+	int32 AttributePointsReward = GetAttributePointsReward_Implementation(CurLevel, NewLevel);
+	int32 SpellPointsReward = GetSpellPointsReward_Implementation(CurLevel, NewLevel);
+	IAuraInterface::Execute_AddToAttributePoints(this,AttributePointsReward);
+	IAuraInterface::Execute_AddToSpellPoints(this,SpellPointsReward);
+
+	AddToPlayerLevel_Implementation(NewLevel-CurLevel);
 	MulticastLevelUpParticles();
 }
 
@@ -155,6 +164,20 @@ int32 AAuraCharacter::GetXP_Implementation() const
 	AAuraPlayerState* AuraPlayerState = GetPlayerState<AAuraPlayerState>();
 	check(AuraPlayerState);
 	return AuraPlayerState->GetXP();
+}
+
+int32 AAuraCharacter::GetAttributePoints_Implementation() const
+{
+	AAuraPlayerState* AuraPlayerState = GetPlayerState<AAuraPlayerState>();
+	check(AuraPlayerState);
+	return AuraPlayerState->GetAttributePoints();
+}
+
+int32 AAuraCharacter::GetSpellPoints_Implementation() const
+{
+	AAuraPlayerState* AuraPlayerState = GetPlayerState<AAuraPlayerState>();
+	check(AuraPlayerState);
+	return AuraPlayerState->GetSpellPoints();
 }
 
 void AAuraCharacter::InitAbilityActorInfo()

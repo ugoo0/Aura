@@ -39,6 +39,8 @@ public:
 	virtual int32 GetAttributePointsReward_Implementation(int32 CurLevel, int32 NewLevel) const override;
 	virtual int32 FindLevelForExperience_Implementation(int32 Experience) const override;
 	virtual int32 GetXP_Implementation() const override;
+	virtual int32 GetAttributePoints_Implementation() const override;
+	virtual int32 GetSpellPoints_Implementation() const override;
 	/**Aura Interface**/
 protected:
 	virtual void InitializaDefaultAttriutes() const override;

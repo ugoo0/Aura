@@ -129,6 +129,20 @@ void UAuraAttributeSet::SetFEffectProperties(const FGameplayEffectModCallbackDat
 	}
 }
 
+void UAuraAttributeSet::PostAttributeChange(const FGameplayAttribute& Attribute, float OldValue, float NewValue)//升级回满体和蓝 
+{
+	if (Attribute == GetMaxHealthAttribute() && bTopOffHealth)
+	{
+		SetHealth(GetMaxHealth());
+		bTopOffHealth = false;
+	}
+	if (Attribute == GetMaxManaAttribute() && bTopOffMana)
+	{
+		SetMana(GetMaxMana());
+		bTopOffMana = false;
+	}
+}
+
 void UAuraAttributeSet::PostGameplayEffectExecute(const FGameplayEffectModCallbackData& Data)
 {
 	Super::PostGameplayEffectExecute(Data);
@@ -192,6 +206,8 @@ void UAuraAttributeSet::PostGameplayEffectExecute(const FGameplayEffectModCallba
 				// const int32 AttributePointsReward = IAuraInterface::Execute_GetAttributePointsReward(EffectProperties.SourceCharacter, CurLevel, NewLevel);
 				// const int32 SpellPointsReward = IAuraInterface::Execute_GetSpellPointsReward(EffectProperties.SourceCharacter, CurLevel, NewLevel);
 				IAuraInterface::Execute_LevelUp(EffectProperties.SourceCharacter,CurLevel, NewLevel);
+				bTopOffHealth = true;
+				bTopOffMana = true;
 			}
 		}
 	}

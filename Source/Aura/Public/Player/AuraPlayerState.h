@@ -32,17 +32,24 @@ public:
 
 	virtual int32 GetPlayerLevel_Implementation() override;
 
-	FORCEINLINE void AddToLevel(int32 InLevel);
-	FORCEINLINE void SetLevel(int32 InLevel);
+	void AddToLevel(int32 InLevel);
+	void SetLevel(int32 InLevel);
+	void AddToXP(int32 InXP);
+	void SetXP(int32 InXP);
+	void AddToAttributePoints(int32 Points);
+	void AddToSpellPoints(int32 Points);
 	
-	FORCEINLINE void AddToXP(int32 InXP);
-	FORCEINLINE void SetXP(int32 InXP);
 	FORCEINLINE int32 GetXP() const;
-
+	FORCEINLINE int32 GetAttributePoints() const {return  AttributePoints;}
+	FORCEINLINE int32 GetSpellPoints() const {return SpellPoints;}
+	
+	
 	virtual void Die() override;
 
 	FOnPlayerStateChanged OnPlayerXPChangedDelegate;
 	FOnPlayerLevelChanged OnPlayerLevelChangedDelegate;
+	FOnPlayerStateChanged OnAttributePointsChangedDelegate;
+	FOnPlayerStateChanged OnSpellPointsDelegate;
 
 	UPROPERTY(EditDefaultsOnly, Category="GAS|LevelInfo")
 	TObjectPtr<ULevelInfo> AuraLevelInfo;
@@ -61,9 +68,21 @@ private:
 	UPROPERTY(VisibleAnywhere, ReplicatedUsing = OnRep_XP)
 	int32 XP = 0;
 	
+    UPROPERTY(VisibleAnywhere, ReplicatedUsing = OnRep_AttributePoints)
+    int32 AttributePoints = 0;
+
+    UPROPERTY(VisibleAnywhere, ReplicatedUsing = OnRep_SpellPoints)
+    int32 SpellPoints = 0;
+	
 	UFUNCTION()
 	void OnRep_Level(int32 OldLevel);
 	
 	UFUNCTION()
 	void OnRep_XP(int32 OldXP);
+
+	UFUNCTION()
+	void OnRep_AttributePoints(int32 Points);
+	
+	UFUNCTION()
+	void OnRep_SpellPoints(int32 Points);
 };

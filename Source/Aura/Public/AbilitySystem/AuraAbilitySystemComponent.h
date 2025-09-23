@@ -39,6 +39,11 @@ public:
 	void ForEachAbility(const FForEachAbility& Delegate);
 	static FGameplayTag GetAbilityTagForAbilitySpec(const FGameplayAbilitySpec& AbilitySpec);
 	static FGameplayTag GetInputTagForAbilitySpec(const FGameplayAbilitySpec& AbilitySpec);
+
+	void UpgradeAttribute(const FGameplayTag& GameplayTag);
+
+	UFUNCTION(Server, Reliable)
+	void ServerUpgradeAttribute(const FGameplayTag& GameplayTag);
 protected:
 
     virtual void OnRep_ActivateAbilities() override;

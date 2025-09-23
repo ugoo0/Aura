@@ -62,6 +62,4 @@ void UAuraProjectileSpell::ActivateAbility(const FGameplayAbilitySpecHandle Hand
                                            const FGameplayEventData* TriggerEventData)
 {
 	Super::ActivateAbility(Handle, ActorInfo, ActivationInfo, TriggerEventData);
-	GEngine->AddOnScreenDebugMessage(5,5.f,FColor::Red,FString("ActivateAbility!"));
-
 }

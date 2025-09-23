@@ -3,8 +3,11 @@
 
 #include "AbilitySystem/AuraAbilitySystemComponent.h"
 
+#include "AbilitySystemBlueprintLibrary.h"
+#include "AuraAbilitySystemLibrary.h"
 #include "AbilitySystem/GameplayAbility/AuraGameplayAbility.h"
 #include "Aura/AuraLogChannels.h"
+#include "Interaction/AuraInterface.h"
 
 void UAuraAbilitySystemComponent::AblityActorInfoSet()
 {
@@ -113,7 +116,28 @@ FGameplayTag UAuraAbilitySystemComponent::GetInputTagForAbilitySpec(const FGamep
 	return FGameplayTag();
 }
 
+void UAuraAbilitySystemComponent::UpgradeAttribute(const FGameplayTag& GameplayTag)
+{
+	if (GetAvatarActor()->Implements<UAuraInterface>())
+	{
+		if (IAuraInterface::Execute_GetAttributePoints(GetAvatarActor()) > 0)
+		{
+			ServerUpgradeAttribute(GameplayTag);
+		}
+	}
+}
 
+void UAuraAbilitySystemComponent::ServerUpgradeAttribute_Implementation(const FGameplayTag& GameplayTag)
+{
+	FGameplayEventData Payload;
+	Payload.EventTag = GameplayTag;
+	Payload.EventMagnitude = 1;
+	UAbilitySystemBlueprintLibrary::SendGameplayEventToActor(GetAvatarActor(), Payload.EventTag, Payload);
+	if (GetAvatarActor()->Implements<UAuraInterface>())
+	{
+		IAuraInterface::Execute_AddToAttributePoints(GetAvatarActor(),-1);
+	}
+}
 
 
 void UAuraAbilitySystemComponent::ClientEffectApplied_Implementation(UAbilitySystemComponent* ASC, const FGameplayEffectSpec& EffectSpec, FActiveGameplayEffectHandle EffectHandle)

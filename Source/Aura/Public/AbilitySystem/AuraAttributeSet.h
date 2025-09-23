@@ -71,6 +71,10 @@ public:
 
 	void SetFEffectProperties(const FGameplayEffectModCallbackData& Data, FEffectProperties& EffectProperties) const;
 
+	virtual void PostAttributeChange(const FGameplayAttribute& Attribute, float OldValue, float NewValue) override;
+
+	bool bTopOffHealth = false;
+	bool bTopOffMana = false;
 
 	TMap<FGameplayTag, TStaticFuncPtr<FGameplayAttribute()>> TagToAttribute; // 用于给AttributeMenuController获取对应Attribute的数值
 	/*

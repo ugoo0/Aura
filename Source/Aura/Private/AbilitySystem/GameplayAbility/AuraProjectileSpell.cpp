@@ -44,8 +44,7 @@ void UAuraProjectileSpell::SpawnProjectile(const FVector& TargetLocation, const 
 
 		for (const TPair<FGameplayTag, FScalableFloat>& pair : DamageTypes)
 		{
-			float ScaleDamage =  pair.Value.GetValueAtLevel(10);
-			// float ScaleDamage =  Damage.GetValueAtLevel(GetAbilityLevel());
+			float ScaleDamage =  pair.Value.GetValueAtLevel(GetAbilityLevel());
 			UAbilitySystemBlueprintLibrary::AssignTagSetByCallerMagnitude(SpecHandle,pair.Key,ScaleDamage);
 		}
 		
@@ -56,6 +55,7 @@ void UAuraProjectileSpell::SpawnProjectile(const FVector& TargetLocation, const 
 		Projectile->FinishSpawning(SpawnTransform);
 	}
 }
+
 
 void UAuraProjectileSpell::ActivateAbility(const FGameplayAbilitySpecHandle Handle,
                                            const FGameplayAbilityActorInfo* ActorInfo, const FGameplayAbilityActivationInfo ActivationInfo,

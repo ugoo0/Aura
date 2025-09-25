@@ -23,4 +23,7 @@ public:
 
 	UFUNCTION(BlueprintCallable, Category="Combat")
 	void CauseDamageToTarget(AActor* Target, UPARAM(ref) const TArray<FName>& TagsGetHurt);
+
+	int32 GetDamageByLevelAndDamageType(int32 Level, const FGameplayTag& DamageType) const;
+	
 };

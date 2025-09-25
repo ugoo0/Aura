@@ -18,5 +18,12 @@ public:
 
 	UPROPERTY(EditDefaultsOnly,Category="Input")
 	FGameplayTag StartupTag;
+	
+	virtual  FString GetDescription(int32 Level);
+	virtual FString GetNextLevelDescription(int32 Level);
 
+	static FString GetLockedDescription(int32 Level);
+
+	float GetCoolDown(int32 Level) const;
+	float GetManaCost(int32 Level) const;
 };

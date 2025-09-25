@@ -3,6 +3,8 @@
 
 #include "UI/HUD/AuraHUD.h"
 
+#include "UI/WidgetController/AuraSpellMenuController.h"
+
 void AAuraHUD::BeginPlay()
 {
 	Super::BeginPlay();
@@ -19,15 +21,26 @@ UOverlayWidgetController* AAuraHUD::GetOverlayWidgetController(const FWidgetCont
 	return OverlayWidgetController;
 }
 
-UAuraMenuWidgetController* AAuraHUD::GetMenuWidgetController(const FWidgetControllerParams& FWCParams)
+UAuraAttributeMenuController* AAuraHUD::GetAttributeMenuController(const FWidgetControllerParams& FWCParams)
 {
-	if (MenuWidgetController == nullptr)
+	if (AttributeMenuController == nullptr)
 	{
-		MenuWidgetController = NewObject<UAuraMenuWidgetController>(this, MenuWidgetControllerClass);
-		MenuWidgetController->SetWidgetControllerParams(FWCParams);
-		MenuWidgetController->BindCallbackToDependencies();
+		AttributeMenuController = NewObject<UAuraAttributeMenuController>(this, AttributeMenuControllerClass);
+		AttributeMenuController->SetWidgetControllerParams(FWCParams);
+		AttributeMenuController->BindCallbackToDependencies();
 	}
-	return MenuWidgetController;
+	return AttributeMenuController;
+}
+
+UAuraSpellMenuController* AAuraHUD::GetSpellMenuController(const FWidgetControllerParams& FWCParams)
+{
+	if (SpellMenuController == nullptr)
+	{
+		SpellMenuController = NewObject<UAuraSpellMenuController>(this, SpellMenuControllerClass);
+		SpellMenuController->SetWidgetControllerParams(FWCParams);
+		SpellMenuController->BindCallbackToDependencies();
+	}
+	return SpellMenuController;
 }
 
 void AAuraHUD::InitOverlay(APlayerController* PC, APlayerState* PS, UAbilitySystemComponent* ASC, UAttributeSet* AS)

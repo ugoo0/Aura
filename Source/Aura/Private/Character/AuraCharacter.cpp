@@ -85,6 +85,8 @@ void AAuraCharacter::AddToPlayerLevel_Implementation(int32 InLevel) const
 	AAuraPlayerState* AuraPlayerState = GetPlayerState<AAuraPlayerState>();
 	check(AuraPlayerState);
 	AuraPlayerState->AddToLevel(InLevel);
+	UAuraAbilitySystemComponent* AuraASC =  Cast<UAuraAbilitySystemComponent>(AuraPlayerState->GetAbilitySystemComponent());
+	AuraASC->ServerUpdateAbilityStatus(ICombatInterface::Execute_GetPlayerLevel(AuraPlayerState));
 }
 
 void AAuraCharacter::AddToAttributePoints_Implementation(int32 InPoints)
@@ -119,10 +121,12 @@ void AAuraCharacter::LevelUp_Implementation(int32 CurLevel, int32 NewLevel)
 
 	int32 AttributePointsReward = GetAttributePointsReward_Implementation(CurLevel, NewLevel);
 	int32 SpellPointsReward = GetSpellPointsReward_Implementation(CurLevel, NewLevel);
+
 	IAuraInterface::Execute_AddToAttributePoints(this,AttributePointsReward);
 	IAuraInterface::Execute_AddToSpellPoints(this,SpellPointsReward);
-
 	AddToPlayerLevel_Implementation(NewLevel-CurLevel);
+
+
 	MulticastLevelUpParticles();
 }
 

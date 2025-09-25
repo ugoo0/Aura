@@ -23,3 +23,9 @@ void UAuraDamageGameplayAbility::CauseDamageToTarget(AActor* Target, const TArra
 	}
 	GetAbilitySystemComponentFromActorInfo()->ApplyGameplayEffectSpecToTarget(*SpecHandle.Data.Get(), UAbilitySystemBlueprintLibrary::GetAbilitySystemComponent(Target));
 }
+
+int32 UAuraDamageGameplayAbility::GetDamageByLevelAndDamageType(int32 Level, const FGameplayTag& DamageType) const
+{
+	checkf(DamageTypes.Contains(DamageType), TEXT("GameplayAbility[%s] dose not contain DamageType[%s]"), *GetNameSafe(this), DamageType.GetTagName())
+	return DamageTypes[DamageType].GetValueAtLevel(Level);
+}

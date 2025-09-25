@@ -62,6 +62,7 @@ void AAuraPlayerController::Move(const FInputActionValue& InputActionValue)
 	{
 		ControllerPawn->AddMovementInput(ForwardDirection, InputAxisVector.Y);
 		ControllerPawn->AddMovementInput(RightDirection, InputAxisVector.X);
+		bAutoRunning = false;//自动寻路的时候按前后左右会终止寻路
 	}
 
 }
@@ -161,7 +162,6 @@ void AAuraPlayerController::AbilityInputReleased(FGameplayTag InputTag)
 				for (const FVector& Point:NaviPath->PathPoints)
 				{
 					Spline->AddSplinePoint(Point,ESplineCoordinateSpace::World);
-					DrawDebugSphere(GetWorld(),Point,10.f,10,FColor::Red,false,5.f);
 				}
 				if (NaviPath->PathPoints.Num() > 0)
 				{

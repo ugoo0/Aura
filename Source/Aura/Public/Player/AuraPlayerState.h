@@ -49,7 +49,7 @@ public:
 	FOnPlayerStateChanged OnPlayerXPChangedDelegate;
 	FOnPlayerLevelChanged OnPlayerLevelChangedDelegate;
 	FOnPlayerStateChanged OnAttributePointsChangedDelegate;
-	FOnPlayerStateChanged OnSpellPointsDelegate;
+	FOnPlayerStateChanged OnSpellPointsChangedDelegate;
 
 	UPROPERTY(EditDefaultsOnly, Category="GAS|LevelInfo")
 	TObjectPtr<ULevelInfo> AuraLevelInfo;

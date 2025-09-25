@@ -5,7 +5,7 @@
 
 #include "Aura/AuraLogChannels.h"
 
-FAuraAbilityInfo UAbilityInfo::FindAbilityIngoForAbilityTag(const FGameplayTag& AbilityTag, bool bLogNotFound) const
+FAuraAbilityInfo UAbilityInfo::FindAbilityInfoForAbilityTag(const FGameplayTag& AbilityTag, bool bLogNotFound) const
 {
 	for (const FAuraAbilityInfo& AbilityInfo : AbilityInfos)
 	{

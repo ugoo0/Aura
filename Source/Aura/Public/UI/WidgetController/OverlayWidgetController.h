@@ -7,7 +7,6 @@
 #include <GameplayEffect.h>
 #include <UI/Widget/AuraUserWidget.h>
 
-#include "AbilitySystem/Data/AbilityInfo.h"
 #include "OverlayWidgetController.generated.h"
 
 
@@ -36,9 +35,8 @@ struct FUIWidgetRow :public FTableRowBase
 
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnAttributeChangedSignature, float, NewValue);//创建委托，事件， 类型为FOnAttributeChangedSignature
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_TwoParams(FOnPlayerLevelChangedSignature, int32, CurLevel, int32, NewLevel);
-
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FMessageWidgetRowSignature, FUIWidgetRow, Row);
-DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FAbilityInfoSignature, FAuraAbilityInfo, Info);
+
 
 /**
  * 
@@ -67,24 +65,22 @@ public:
 	UPROPERTY(BlueprintAssignable, Category = "GAS|XP")
 	FOnAttributeChangedSignature OnPlayerXPPercentChanged;
 	//Level
-	UPROPERTY(BlueprintAssignable, Category = "GAS|XP")
+	UPROPERTY(BlueprintAssignable, Category = "GAS|Level")
 	FOnPlayerLevelChangedSignature OnPlayerLevelChanged;
 	
 	UPROPERTY(BlueprintAssignable, Category = "GAS|Message")
 	FMessageWidgetRowSignature FMessageWidgetRowDelegate;
 	
 
-	UPROPERTY(BlueprintAssignable, Category = "GAS|Abilities")
-	FAbilityInfoSignature FAbilityInfoDelegate;
-	void OnInitializeStartupAbilities(UAuraAbilitySystemComponent* AuraASC);
+
+	void OnInitializeStartupAbilities();
 
 	void OnPlayerXPChanged(int32 InXP);
 protected:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Widget Data")
 	TObjectPtr<UDataTable> MessageWidgetDataTable;
 
-	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Widget Data")
-	TObjectPtr<UAbilityInfo> AbilityInfos;
+
 	
 template<typename T>
 	T* GetDataTableRowByTag(UDataTable* DataTable, const FGameplayTag& Tag);

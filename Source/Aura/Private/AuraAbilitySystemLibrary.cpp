@@ -6,6 +6,7 @@
 #include "AbilitySystemComponent.h"
 #include "AuraAbilityTypes.h"
 #include "AbilitySystem/Data/CharacterClassInfo.h"
+#include "AbilitySystem/Data/AbilityInfo.h"
 #include "Game/AuraGameModeBase.h"
 #include "Kismet/GameplayStatics.h"
 #include "Player/AuraPlayerState.h"
@@ -27,7 +28,7 @@ UOverlayWidgetController* UAuraAbilitySystemLibrary::GetOverlayWidgetController(
 	return nullptr;
 }
 
-UAuraMenuWidgetController* UAuraAbilitySystemLibrary::GetMenuWidgetController(const UObject* WorldContextObject)
+UAuraAttributeMenuController* UAuraAbilitySystemLibrary::GetAttributeMenuController(const UObject* WorldContextObject)
 {
 	if (APlayerController* PC = UGameplayStatics::GetPlayerController(WorldContextObject,0))
 	{
@@ -37,14 +38,30 @@ UAuraMenuWidgetController* UAuraAbilitySystemLibrary::GetMenuWidgetController(co
 			UAbilitySystemComponent* ASC = PS->GetAbilitySystemComponent();
 			UAttributeSet* AS = PS->GetAttributeSet();
 			FWidgetControllerParams WidgetControllerParams(PC,PS,ASC,AS);
-			return HUD->GetMenuWidgetController(WidgetControllerParams);
+			return HUD->GetAttributeMenuController(WidgetControllerParams);
+		}
+	}
+	return nullptr;
+}
+
+UAuraSpellMenuController* UAuraAbilitySystemLibrary::GetSpellMenuController(const UObject* WorldContextObject)
+{
+	if (APlayerController* PC = UGameplayStatics::GetPlayerController(WorldContextObject,0))
+	{
+		if (AAuraHUD* HUD = Cast<AAuraHUD>(PC->GetHUD()))
+		{
+			AAuraPlayerState* PS = PC->GetPlayerState<AAuraPlayerState>();
+			UAbilitySystemComponent* ASC = PS->GetAbilitySystemComponent();
+			UAttributeSet* AS = PS->GetAttributeSet();
+			FWidgetControllerParams WidgetControllerParams(PC,PS,ASC,AS);
+			return HUD->GetSpellMenuController(WidgetControllerParams);
 		}
 	}
 	return nullptr;
 }
 
 void UAuraAbilitySystemLibrary::InitializeDefaultAttributes(const UObject* WorldContextObject,ECharacterClassType Type, float level,
-	UAbilitySystemComponent* ASC)
+                                                            UAbilitySystemComponent* ASC)
 {
 	if (AAuraGameModeBase* GameMode =  Cast<AAuraGameModeBase>(UGameplayStatics::GetGameMode(WorldContextObject)))
 	{
@@ -100,8 +117,18 @@ UCharacterClassInfo* UAuraAbilitySystemLibrary::GetCharacterClassInfo(const UObj
 	return nullptr;
 }
 
+UAbilityInfo* UAuraAbilitySystemLibrary::GetAbilityInfo(const UObject* WorldContextObject)
+{
+	if (AAuraGameModeBase* GameMode =  Cast<AAuraGameModeBase>(UGameplayStatics::GetGameMode(WorldContextObject)))
+	{
+		UAbilityInfo* AbilityInfo = GameMode->AbilityInfo;
+		return AbilityInfo;
+	}
+	return nullptr;
+}
+
 int32 UAuraAbilitySystemLibrary::GetRewardXPForCharacterClassAndLevel(const UObject* WorldContextObject,
-	ECharacterClassType CharacterClassType, int32 Level)
+                                                                      ECharacterClassType CharacterClassType, int32 Level)
 {
 	UCharacterClassInfo* ClassInfo = GetCharacterClassInfo(WorldContextObject);
 	if (!ClassInfo) return 0;

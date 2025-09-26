@@ -6,6 +6,7 @@
 #include "AbilitySystem/GameplayAbility/AuraGameplayAbility.h"
 #include "AuraDamageGameplayAbility.generated.h"
 
+struct FDamageEffectParams;
 /**
  * 
  */
@@ -15,15 +16,42 @@ class AURA_API UAuraDamageGameplayAbility : public UAuraGameplayAbility
 	GENERATED_BODY()
 
 public:
-	UPROPERTY(EditDefaultsOnly,BlueprintReadOnly, Category = "Projectile")
-	TSubclassOf<UGameplayEffect> DamageEffectClass;
+	UFUNCTION(BlueprintPure)
+	FDamageEffectParams GetDamageEffectParamsForTarget(AActor* Target = nullptr) const;
 	
-	UPROPERTY(EditDefaultsOnly,Category="Damage")
-	TMap<FGameplayTag,FScalableFloat>  DamageTypes;
+	UPROPERTY(EditDefaultsOnly,BlueprintReadOnly, Category = "Combat")
+	TSubclassOf<UGameplayEffect> DamageEffectClass;
 
+	UPROPERTY(EditDefaultsOnly,Category="Combat")
+	FGameplayTag DamageType;
+	
+	UPROPERTY(EditDefaultsOnly,Category="Combat")
+	FScalableFloat DamageScalableFloat;
+	
+	UPROPERTY(EditDefaultsOnly,Category="Combat")
+	float DebuffChance = 20.f;
+	
+	UPROPERTY(EditDefaultsOnly,Category="Combat")
+	float DebuffDamage = 2.0f;
+	
+	UPROPERTY(EditDefaultsOnly,Category="Combat")
+	float DebuffDuration = 5.0f;
+	
+	UPROPERTY(EditDefaultsOnly,Category="Combat")
+	float DebuffFrequency = 1.0f;
+
+	UPROPERTY(EditDefaultsOnly,Category="Combat")
+	float DeathImpulseMagnitude = 1000.0f;
+
+	UPROPERTY(EditDefaultsOnly,Category="Combat")
+	float KnockbackForceMagnitude = 1000.0f;
+
+	UPROPERTY(EditDefaultsOnly,Category="Combat")
+	float KnockbackChance = 20.f;
+	
 	UFUNCTION(BlueprintCallable, Category="Combat")
 	void CauseDamageToTarget(AActor* Target, UPARAM(ref) const TArray<FName>& TagsGetHurt);
 
-	int32 GetDamageByLevelAndDamageType(int32 Level, const FGameplayTag& DamageType) const;
+	int32 GetDamageByLevel(int32 Level) const;
 	
 };

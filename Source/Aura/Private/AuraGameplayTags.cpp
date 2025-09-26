@@ -61,6 +61,17 @@ void FAuraGameplayTags::InitializeNativeGameplayTags()
 	AuraGameplayTags.Damage_Lighting = UGameplayTagsManager::Get().AddNativeGameplayTag(FName("Damage.Lighting"),FString("能力里面传递闪电伤害的Tag"));
 	AuraGameplayTags.Damage_Arcane = UGameplayTagsManager::Get().AddNativeGameplayTag(FName("Damage.Arcane"),FString("能力里面传递魔法伤害的Tag"));
 	AuraGameplayTags.Damage_Physical = UGameplayTagsManager::Get().AddNativeGameplayTag(FName("Damage.Physical"),FString("能力里面传递物理伤害的Tag"));
+
+	/* Debuff Tag */
+	AuraGameplayTags.Debuff_Burn = UGameplayTagsManager::Get().AddNativeGameplayTag(FName("Debuff.Burn"),FString("持续燃烧Debuff Tag"));
+	AuraGameplayTags.Debuff_Stun = UGameplayTagsManager::Get().AddNativeGameplayTag(FName("Debuff.Stun"),FString("眩晕Debuff Tag"));
+	AuraGameplayTags.Debuff_Physical = UGameplayTagsManager::Get().AddNativeGameplayTag(FName("Debuff.Physical"),FString("物理伤害Debuff Tag"));
+	AuraGameplayTags.Debuff_Arcane = UGameplayTagsManager::Get().AddNativeGameplayTag(FName("Debuff.Arcane"),FString("奥术伤害Debuff Tag"));
+	
+	AuraGameplayTags.Debuff_Chance = UGameplayTagsManager::Get().AddNativeGameplayTag(FName("Debuff.Chance"),FString("Debuff触发概率 Tag"));
+	AuraGameplayTags.Debuff_Damage = UGameplayTagsManager::Get().AddNativeGameplayTag(FName("Debuff.Damage"),FString("Debuff每次造成的伤害 Tag"));
+	AuraGameplayTags.Debuff_Duration = UGameplayTagsManager::Get().AddNativeGameplayTag(FName("Debuff.Duration"),FString("Debuff持续时间 Tag"));
+	AuraGameplayTags.Debuff_Frequency = UGameplayTagsManager::Get().AddNativeGameplayTag(FName("Debuff.Frequency"),FString("Debuff生效频率 Tag"));
 	
 	/* Effect Tag */
 	AuraGameplayTags.Effect_HitReact = UGameplayTagsManager::Get().AddNativeGameplayTag(FName("Effect.HitReact"),FString("对造成伤害反应的Tag"));
@@ -122,8 +133,14 @@ void FAuraGameplayTags::InitializeNativeGameplayTags()
 	AuraGameplayTags.AttributesTag.Add(AuraGameplayTags.Attributes_Secondary_Resistance_Arcane);
 	AuraGameplayTags.AttributesTag.Add(AuraGameplayTags.Attributes_Secondary_Resistance_Physical);
 
+	/*DamageTypeToResistance*/
 	AuraGameplayTags.DamageTypeToResistance.Add(AuraGameplayTags.Damage_Fire, AuraGameplayTags.Attributes_Secondary_Resistance_Fire);
 	AuraGameplayTags.DamageTypeToResistance.Add(AuraGameplayTags.Damage_Lighting, AuraGameplayTags.Attributes_Secondary_Resistance_Lighting);
 	AuraGameplayTags.DamageTypeToResistance.Add(AuraGameplayTags.Damage_Arcane, AuraGameplayTags.Attributes_Secondary_Resistance_Arcane);
 	AuraGameplayTags.DamageTypeToResistance.Add(AuraGameplayTags.Damage_Physical, AuraGameplayTags.Attributes_Secondary_Resistance_Physical);
+	/*DamageTypeToDebuffType */
+	AuraGameplayTags.DamageTypeToDebuffType.Add(AuraGameplayTags.Damage_Fire, AuraGameplayTags.Debuff_Burn);
+	AuraGameplayTags.DamageTypeToDebuffType.Add(AuraGameplayTags.Damage_Lighting, AuraGameplayTags.Debuff_Stun);
+	AuraGameplayTags.DamageTypeToDebuffType.Add(AuraGameplayTags.Damage_Arcane, AuraGameplayTags.Debuff_Arcane);
+	AuraGameplayTags.DamageTypeToDebuffType.Add(AuraGameplayTags.Damage_Physical, AuraGameplayTags.Debuff_Physical);
 }

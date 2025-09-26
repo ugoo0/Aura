@@ -48,7 +48,7 @@ public:
 
 	UPROPERTY(EditDefaultsOnly, Category="Combat")
 	float TimeRemoveAfterDie;
-	virtual void Die() override;
+	virtual void Die(const FVector& DeathImpulse) override;
 
 	UPROPERTY(BlueprintReadOnly, Category="Combat")
 	bool bHitReacting =false;

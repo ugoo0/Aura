@@ -19,19 +19,16 @@ class UAttributeSet;
  * 
  */
 UCLASS()
-class AURA_API AAuraPlayerState : public APlayerState, public IAbilitySystemInterface, public ICombatInterface
+class AURA_API AAuraPlayerState : public APlayerState, public IAbilitySystemInterface
 {
 	GENERATED_BODY()
 public:
 	AAuraPlayerState();
 	virtual UAbilitySystemComponent* GetAbilitySystemComponent() const override;
-	
 	virtual void GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const override;
-
 	UAttributeSet* GetAttributeSet() const { return AttributeSet; };
 
-	virtual int32 GetPlayerLevel_Implementation() override;
-
+	int32 GetPlayerLevel() const {return Level;}
 	void AddToLevel(int32 InLevel);
 	void SetLevel(int32 InLevel);
 	void AddToXP(int32 InXP);
@@ -42,9 +39,6 @@ public:
 	FORCEINLINE int32 GetXP() const;
 	FORCEINLINE int32 GetAttributePoints() const {return  AttributePoints;}
 	FORCEINLINE int32 GetSpellPoints() const {return SpellPoints;}
-	
-	
-	virtual void Die() override;
 
 	FOnPlayerStateChanged OnPlayerXPChangedDelegate;
 	FOnPlayerLevelChanged OnPlayerLevelChangedDelegate;
@@ -59,9 +53,7 @@ protected:
 
 	UPROPERTY()
 	TObjectPtr<UAttributeSet> AttributeSet;
-
 private:
-
 	UPROPERTY(VisibleAnywhere, ReplicatedUsing = OnRep_Level)
 	int32 Level = 1;
 

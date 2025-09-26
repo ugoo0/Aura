@@ -10,6 +10,7 @@
 #include "AbilitySystem/Data/CharacterClassInfo.h"
 #include "AuraCharacterBase.generated.h"
 
+class UDebuffNiagaraComponent;
 class UNiagaraSystem;
 class UAbilitySystemComponent;
 class UAttributeSet;
@@ -27,7 +28,7 @@ public:
 	UAttributeSet* GetAttributeSet()  const {return AttributeSet;};
 	
 	UFUNCTION(NetMulticast,Reliable)
-	virtual void MulticastHandleDeath();
+	virtual void MulticastHandleDeath(const FVector& DeathImpulse);
 
 	void Dissolve();
 
@@ -46,7 +47,7 @@ public:
 	/*combat interface*/
 	virtual UAnimMontage* GetMelleAttackMontage_Implementation() override;
 	virtual UAnimMontage* GetHitReactMontage_Implementation() override;
-	virtual void Die() override;
+	virtual void Die(const FVector& DeathImpulse) override;
 	virtual FVector GetCombatSocketLocation_Implementation(const FGameplayTag& GameplayTag) const override;
 
 	virtual  AActor* GetAvatarActor_Implementation() override;
@@ -57,10 +58,17 @@ public:
 	virtual int32 GetMaxMinionCount_Implementation() override;
 	virtual void AddMinionCount_Implementation(int32 Amount) override;
 	virtual int32 GetMinionCount_Implementation() override;
-	virtual ECharacterClassType GetCharacterClassType_Implementation() const override;;
+	virtual ECharacterClassType GetCharacterClassType_Implementation() const override;
+
+	FOnASCRegistered OnAscRegistered;
+	FOnActorDead OnActorDead;
+
+	virtual FOnActorDead& GetActorDeadDelegate() override;
+	virtual FOnASCRegistered& GetASCRegisteredDelegate() override;
 	/*end combat interface*/
-	
-	
+
+	UPROPERTY(EditDefaultsOnly)
+	TObjectPtr<UDebuffNiagaraComponent>  DebuffNiagaraComponent;
 protected:
 	
 	virtual void BeginPlay() override;

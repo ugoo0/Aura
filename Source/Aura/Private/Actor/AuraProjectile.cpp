@@ -39,18 +39,9 @@ AAuraProjectile::AAuraProjectile()
 void AAuraProjectile::OnSphereOverlay(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor,
 	UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
 {
-	if (!DamageEffectSpecHandle.Data.IsValid() || DamageEffectSpecHandle.Data.Get()->GetContext().GetEffectCauser() == OtherActor) return;
-	// bool bCanOverlay = false;
-	// for (auto Tag:OverlayTags)
-	// {
-	// 	if (OtherActor->ActorHasTag(Tag))
-	// 	{
-	// 		bCanOverlay = true;
-	// 		break;
-	// 	}
-	// }
-	// if (!bCanOverlay) return;
-	if (UAuraAbilitySystemLibrary::IsFriend(OtherActor,DamageEffectSpecHandle.Data.Get()->GetContext().GetEffectCauser())) return;
+	if (DamageEffectParams.SourceASC->GetAvatarActor() == OtherActor) return;
+
+	if (UAuraAbilitySystemLibrary::IsFriend(OtherActor,DamageEffectParams.SourceASC->GetAvatarActor())) return;
 	UGameplayStatics::PlaySoundAtLocation(this,ImpactSound,GetActorLocation(),FRotator::ZeroRotator);
 	UNiagaraFunctionLibrary::SpawnSystemAtLocation(this,ImpactNiagara,GetActorLocation(),FRotator::ZeroRotator);
 	if (LoopingSoundComp) LoopingSoundComp->Stop();
@@ -61,7 +52,16 @@ void AAuraProjectile::OnSphereOverlay(UPrimitiveComponent* OverlappedComponent, 
 		{
 			if (UAbilitySystemComponent* TargetASC = UAbilitySystemBlueprintLibrary::GetAbilitySystemComponent(OtherActor))
 			{
-				TargetASC->ApplyGameplayEffectSpecToSelf(*DamageEffectSpecHandle.Data.Get());
+				FVector DeathImpulse = GetActorForwardVector() * DamageEffectParams.DeathImpulseMagnitude;
+				DamageEffectParams.TargetASC = TargetASC;
+				DamageEffectParams.DeathImpulse = DeathImpulse;
+
+
+				FRotator ActorRotate = GetActorRotation();
+				ActorRotate.Pitch = 45.f;
+				DamageEffectParams.KnockbackForce = ActorRotate.Vector() * DamageEffectParams.KnockbackForceMagnitude;
+				
+				UAuraAbilitySystemLibrary::ApplyDamageEffectForDamageEffectParms(DamageEffectParams.TargetASC->GetAvatarActor() ,DamageEffectParams);
 			}
 		
 			Destroy();

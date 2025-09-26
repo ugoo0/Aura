@@ -2,10 +2,9 @@
 
 
 #include "Character/AuraCharacterBase.h"
-
 #include "AuraGameplayTags.h"
 #include "AbilitySystem/AuraAbilitySystemComponent.h"
-#include "AbilitySystem/AuraAttributeSet.h"
+#include "AbilitySystem/Debuff/DebuffNiagaraComponent.h"
 #include "Aura/Aura.h"
 #include "Components/CapsuleComponent.h"
 #include "Kismet/GameplayStatics.h"
@@ -17,6 +16,10 @@ AAuraCharacterBase::AAuraCharacterBase()
  	// Set this character to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = false;
 
+	DebuffNiagaraComponent = CreateDefaultSubobject<UDebuffNiagaraComponent>("DebuffNiagaraComponent");
+	DebuffNiagaraComponent->DebuffType = FAuraGameplayTags::Get().Debuff_Burn;
+	DebuffNiagaraComponent->SetupAttachment(GetRootComponent());
+	
 	GetCapsuleComponent()->SetCollisionResponseToChannel(ECC_Camera,ECR_Ignore);
 	GetCapsuleComponent()->SetGenerateOverlapEvents(false);
 	GetMesh()->SetCollisionResponseToChannel(ECC_Camera,ECR_Ignore);
@@ -27,18 +30,18 @@ AAuraCharacterBase::AAuraCharacterBase()
 	Weapon->SetCollisionEnabled(ECollisionEnabled::NoCollision);
 }
 
-void AAuraCharacterBase::MulticastHandleDeath_Implementation()
+void AAuraCharacterBase::MulticastHandleDeath_Implementation(const FVector& DeathImpulse)
 {
 	UGameplayStatics::PlaySoundAtLocation(this, DeathSound, GetActorLocation(), GetActorRotation());
 	Weapon->SetSimulatePhysics(true);
 	Weapon->SetEnableGravity(true);
 	Weapon->SetCollisionEnabled(ECollisionEnabled::PhysicsOnly);
-
+	Weapon->AddImpulse(DeathImpulse*0.1,NAME_None, true);
 	GetMesh()->SetSimulatePhysics(true);
 	GetMesh()->SetEnableGravity(true);
 	GetMesh()->SetCollisionEnabled(ECollisionEnabled::PhysicsOnly);
 	GetMesh()->SetCollisionResponseToChannel(ECC_WorldStatic,ECR_Block);
-
+	GetMesh()->AddImpulse(DeathImpulse,NAME_None, true);
 	GetCapsuleComponent()->SetCollisionEnabled(ECollisionEnabled::NoCollision);
 	Dissolve();
 }
@@ -53,11 +56,12 @@ UAnimMontage* AAuraCharacterBase::GetMelleAttackMontage_Implementation()
 	return MelleAttackMontage;
 }
 
-void AAuraCharacterBase::Die()
+void AAuraCharacterBase::Die(const FVector& DeathImpulse)
 {
 	Weapon->DetachFromComponent(FDetachmentTransformRules(EDetachmentRule::KeepWorld,true));
-	MulticastHandleDeath();
+	MulticastHandleDeath(DeathImpulse);
 	bDead = true;
+	OnActorDead.Broadcast(this);
 }
 
 void AAuraCharacterBase::Dissolve()
@@ -111,6 +115,16 @@ int32 AAuraCharacterBase::GetMinionCount_Implementation()
 ECharacterClassType AAuraCharacterBase::GetCharacterClassType_Implementation() const
 {
 	return CharacterClassType;
+}
+
+FOnActorDead& AAuraCharacterBase::GetActorDeadDelegate()
+{
+	return OnActorDead;
+}
+
+FOnASCRegistered& AAuraCharacterBase::GetASCRegisteredDelegate()
+{
+	return OnAscRegistered;
 }
 
 // Called when the game starts or when spawned

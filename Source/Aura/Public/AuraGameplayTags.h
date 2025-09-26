@@ -64,6 +64,17 @@ public:
 	FGameplayTag Damage_Arcane;
 	FGameplayTag Damage_Physical;
 
+	/*Debuff Tag*/
+	FGameplayTag Debuff_Burn;
+	FGameplayTag Debuff_Stun;
+	FGameplayTag Debuff_Physical;
+	FGameplayTag Debuff_Arcane;
+
+	FGameplayTag Debuff_Chance;
+	FGameplayTag Debuff_Damage;
+	FGameplayTag Debuff_Duration;
+	FGameplayTag Debuff_Frequency;
+	
 	/* Ability Tag */
 	FGameplayTag Abilities_None;
 	FGameplayTag Abilities_Attack;
@@ -105,6 +116,9 @@ public:
 	
 	
 	TMap<FGameplayTag, FGameplayTag> DamageTypeToResistance; // 用于计算伤害的时候找对应抗性
+	TMap<FGameplayTag, FGameplayTag> DamageTypeToDebuffType; // 用于计算伤害的时候找对应抗性
+	
+	
 	TSet<FGameplayTag> AttributesTag; //用于在Attributes Menu显示逻辑
 private:
 	static FAuraGameplayTags AuraGameplayTags;

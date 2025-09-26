@@ -72,7 +72,11 @@ public:
 	void SetFEffectProperties(const FGameplayEffectModCallbackData& Data, FEffectProperties& EffectProperties) const;
 
 	virtual void PostAttributeChange(const FGameplayAttribute& Attribute, float OldValue, float NewValue) override;
+	void HandleIncomingDamage(const FEffectProperties& EffectProperties);
+	void HandleIncomingXP(const FEffectProperties& EffectProperties);
 
+	void HandleDebuff(const FEffectProperties& EffectProperties);
+	
 	bool bTopOffHealth = false;
 	bool bTopOffMana = false;
 
@@ -240,9 +244,9 @@ public:
 	FGameplayAttributeData IncomingXP;
 	ATTRIBUTE_ACCESSORS(UAuraAttributeSet, IncomingXP);
 
-	void ShowFloatingText(float Damage, FEffectProperties& EffectProperties) const;
+	void ShowFloatingText(float Damage,const FEffectProperties& EffectProperties) const;
 
-	void SendXPRewardEvent(FEffectProperties& EffectProperties);
+	void SendXPRewardEvent(const FEffectProperties& EffectProperties);
 };
 
 

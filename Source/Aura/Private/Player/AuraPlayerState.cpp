@@ -28,11 +28,6 @@ void AAuraPlayerState::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& Out
 	
 }
 
-int32 AAuraPlayerState::GetPlayerLevel_Implementation()
-{
-	return Level;
-}
-
 void AAuraPlayerState::AddToLevel(int32 InLevel)
 {
 	int32 CurLevel = Level;
@@ -74,11 +69,6 @@ void AAuraPlayerState::AddToSpellPoints(int32 Points)
 int32 AAuraPlayerState::GetXP() const
 {
 	return  XP;
-}
-
-void AAuraPlayerState::Die()
-{
-	
 }
 
 void AAuraPlayerState::OnRep_Level(int32 OldLevel)

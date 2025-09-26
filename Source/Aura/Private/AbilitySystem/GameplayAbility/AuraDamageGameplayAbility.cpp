@@ -5,6 +5,36 @@
 
 #include "AbilitySystemBlueprintLibrary.h"
 #include "AbilitySystemComponent.h"
+#include "AuraAbilityTypes.h"
+
+FDamageEffectParams UAuraDamageGameplayAbility::GetDamageEffectParamsForTarget(AActor* Target) const
+{
+	FDamageEffectParams Params;
+	Params.WorldContext = GetAvatarActorFromActorInfo();
+	Params.DamageEffectClass = DamageEffectClass;
+	Params.SourceASC = GetAbilitySystemComponentFromActorInfo();
+	Params.TargetASC = UAbilitySystemBlueprintLibrary::GetAbilitySystemComponent(Target);
+	Params.BaseDamage = DamageScalableFloat.GetValueAtLevel(GetAbilityLevel());
+	Params.DamageType = DamageType;
+	Params.AbilityLevel = GetAbilityLevel();
+
+	Params.DebuffChance = DebuffChance;
+	Params.DebuffDuration = DebuffDuration;
+	Params.DebuffDamage = DebuffDamage;
+	Params.DebuffFrequency = DebuffFrequency;
+	Params.DeathImpulseMagnitude = DeathImpulseMagnitude;
+	Params.KnockbackForceMagnitude = KnockbackForceMagnitude;
+	Params.KnockbackChance = KnockbackChance;
+	if (IsValid(Target))
+	{
+		FRotator Rotation = (Target->GetActorLocation()-GetAvatarActorFromActorInfo()->GetActorLocation()).Rotation();
+		Rotation.Pitch = 45.f;
+		const FVector ToTarget = Rotation.Vector();
+		Params.KnockbackForce = ToTarget * KnockbackForceMagnitude;
+		Params.DeathImpulse = ToTarget * DeathImpulseMagnitude;
+	}
+	return  Params;
+}
 
 void UAuraDamageGameplayAbility::CauseDamageToTarget(AActor* Target, const TArray<FName>& TagsGetHurt)
 {
@@ -15,17 +45,12 @@ void UAuraDamageGameplayAbility::CauseDamageToTarget(AActor* Target, const TArra
 	}
 	if (!bHasTag) return;
 	FGameplayEffectSpecHandle SpecHandle = MakeOutgoingGameplayEffectSpec(DamageEffectClass);
-
-	for (const TTuple<FGameplayTag, FScalableFloat>& pair : DamageTypes)
-	{
-		float ScaleDamage =  pair.Value.GetValueAtLevel(GetAbilityLevel());
-		UAbilitySystemBlueprintLibrary::AssignTagSetByCallerMagnitude(SpecHandle,pair.Key,ScaleDamage);
-	}
+	float ScaleDamage =  DamageScalableFloat.GetValueAtLevel(GetAbilityLevel());
+	UAbilitySystemBlueprintLibrary::AssignTagSetByCallerMagnitude(SpecHandle,DamageType,ScaleDamage);
 	GetAbilitySystemComponentFromActorInfo()->ApplyGameplayEffectSpecToTarget(*SpecHandle.Data.Get(), UAbilitySystemBlueprintLibrary::GetAbilitySystemComponent(Target));
 }
 
-int32 UAuraDamageGameplayAbility::GetDamageByLevelAndDamageType(int32 Level, const FGameplayTag& DamageType) const
+int32 UAuraDamageGameplayAbility::GetDamageByLevel(int32 Level) const
 {
-	checkf(DamageTypes.Contains(DamageType), TEXT("GameplayAbility[%s] dose not contain DamageType[%s]"), *GetNameSafe(this), DamageType.GetTagName())
-	return DamageTypes[DamageType].GetValueAtLevel(Level);
+	return DamageScalableFloat.GetValueAtLevel(Level);
 }

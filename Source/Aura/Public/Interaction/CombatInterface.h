@@ -2,10 +2,16 @@
 
 #pragma once
 
+
 #include "CoreMinimal.h"
 #include "GameplayTagContainer.h"
 #include "UObject/Interface.h"
 #include "CombatInterface.generated.h"
+
+class UAbilitySystemComponent;
+
+DECLARE_MULTICAST_DELEGATE_OneParam(FOnASCRegistered, UAbilitySystemComponent*)
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnActorDead, AActor*, Actor);
 
 enum class ECharacterClassType : uint8;
 class UNiagaraSystem;
@@ -26,6 +32,8 @@ struct FTagsToMontage
 	UPROPERTY(EditDefaultsOnly,BlueprintReadOnly)
 	USoundBase* ImpactSound = nullptr;
 };
+
+
 
 // This class does not need to be modified.
 UINTERFACE(MinimalAPI,BlueprintType)
@@ -63,7 +71,7 @@ public:
 
 	UFUNCTION(BlueprintNativeEvent, BlueprintCallable)
 	AActor* GetCombatTarget();
-	virtual void Die() = 0;
+	virtual void Die(const FVector& DeathImpulse) = 0;
 	
 	UFUNCTION(BlueprintNativeEvent, BlueprintCallable)
     AActor* GetAvatarActor();
@@ -91,4 +99,8 @@ public:
 
 	UFUNCTION(BlueprintNativeEvent, BlueprintCallable)
 	ECharacterClassType GetCharacterClassType() const;
+
+	virtual  FOnASCRegistered& GetASCRegisteredDelegate() = 0;
+
+	virtual FOnActorDead& GetActorDeadDelegate() = 0;
 };

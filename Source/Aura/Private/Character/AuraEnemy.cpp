@@ -105,16 +105,17 @@ void AAuraEnemy::InitAbilityActorInfo()
 	{
 		InitializaDefaultAttriutes();
 	}
+	OnAscRegistered.Broadcast(AbilitySystemComponent);
 }
 
-void AAuraEnemy::Die()
+void AAuraEnemy::Die(const FVector& DeathImpulse)
 {
 	SetLifeSpan(TimeRemoveAfterDie);
 	if (AuraAIController && AuraAIController->GetBlackboardComponent())
 	{
 		AuraAIController->GetBlackboardComponent()->SetValueAsBool(FName("Dead"), true);
 	}
-	Super::Die();
+	Super::Die(DeathImpulse);
 }
 
 void AAuraEnemy::SetCombatTarget_Implementation(AActor* Target)

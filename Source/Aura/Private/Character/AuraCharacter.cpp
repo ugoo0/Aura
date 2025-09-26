@@ -66,7 +66,7 @@ int32 AAuraCharacter::GetPlayerLevel_Implementation()
 	check(AuraPlayerState);
 	if (AuraPlayerState->Implements<UCombatInterface>())
 	{
-		return ICombatInterface::Execute_GetPlayerLevel(AuraPlayerState);
+		return AuraPlayerState->GetPlayerLevel();
 	}
 	return  1;
 }
@@ -86,7 +86,7 @@ void AAuraCharacter::AddToPlayerLevel_Implementation(int32 InLevel) const
 	check(AuraPlayerState);
 	AuraPlayerState->AddToLevel(InLevel);
 	UAuraAbilitySystemComponent* AuraASC =  Cast<UAuraAbilitySystemComponent>(AuraPlayerState->GetAbilitySystemComponent());
-	AuraASC->ServerUpdateAbilityStatus(ICombatInterface::Execute_GetPlayerLevel(AuraPlayerState));
+	AuraASC->ServerUpdateAbilityStatus(AuraPlayerState->GetPlayerLevel());
 }
 
 void AAuraCharacter::AddToAttributePoints_Implementation(int32 InPoints)
@@ -201,6 +201,7 @@ void AAuraCharacter::InitAbilityActorInfo()
 		}
 	}
 	InitializaDefaultAttriutes();
+	OnAscRegistered.Broadcast(AbilitySystemComponent);
 }
 
 void AAuraCharacter::InitializaDefaultAttriutes() const

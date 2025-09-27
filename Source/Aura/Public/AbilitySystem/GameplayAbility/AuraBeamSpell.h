@@ -19,6 +19,12 @@ public:
 
 	UFUNCTION(BlueprintCallable)
 	void StoreOwnerVariables();
+
+	UFUNCTION(BlueprintCallable)
+	void TraceFirstTarget(const FVector& BeamTargetLocation);
+
+	UFUNCTION(BlueprintCallable)
+	void StoreAdditionalTarget(TArray<AActor*>& OutAdditionalTargets);
 protected:
 	UPROPERTY(BlueprintReadWrite, Category = "Beam Spell")
 	FVector MouseHitLocation;
@@ -32,4 +38,10 @@ protected:
 
 	UPROPERTY(BlueprintReadWrite, Category = "Beam Spell")
 	TObjectPtr<ACharacter> OwnerCharacter;
+
+	UPROPERTY(EditDefaultsOnly, Category = "Beam Spell")
+	float BeamRadius = 800.f;
+
+	UPROPERTY(EditDefaultsOnly, Category = "Beam Spell")
+	int32 MaxBeamSpreadNum = 5;
 };

@@ -127,6 +127,11 @@ FOnASCRegistered& AAuraCharacterBase::GetASCRegisteredDelegate()
 	return OnAscRegistered;
 }
 
+USkeletalMeshComponent* AAuraCharacterBase::GetWeapon_Implementation() const
+{
+	return  Weapon;
+}
+
 // Called when the game starts or when spawned
 void AAuraCharacterBase::BeginPlay()
 {

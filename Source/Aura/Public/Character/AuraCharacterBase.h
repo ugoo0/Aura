@@ -65,6 +65,7 @@ public:
 
 	virtual FOnActorDead& GetActorDeadDelegate() override;
 	virtual FOnASCRegistered& GetASCRegisteredDelegate() override;
+	virtual USkeletalMeshComponent* GetWeapon_Implementation() const override;
 	/*end combat interface*/
 
 	UPROPERTY(EditDefaultsOnly)

@@ -53,7 +53,7 @@ void AAuraPlayerController::SetupInputComponent()
 }
 void AAuraPlayerController::Move(const FInputActionValue& InputActionValue)
 {
-	if (GetASC()->HasMatchingGameplayTag(FAuraGameplayTags::Get().Player_Block_Move))
+	if (GetASC() && GetASC()->HasMatchingGameplayTag(FAuraGameplayTags::Get().Player_Block_Move))
 	{
 		return;
 	}
@@ -92,7 +92,7 @@ void AAuraPlayerController::ShowDamageNumber_Implementation(float Damage, AChara
 
 void AAuraPlayerController::CursorTrace()
 {
-	if (GetASC()->HasMatchingGameplayTag(FAuraGameplayTags::Get().Player_Block_CursorTrace))
+	if (GetASC() && GetASC()->HasMatchingGameplayTag(FAuraGameplayTags::Get().Player_Block_CursorTrace))
 	{
 		if (LastActor)	LastActor->UnHighlightActor();
 		if (CurActor)	CurActor->UnHighlightActor();
@@ -113,7 +113,7 @@ void AAuraPlayerController::CursorTrace()
 
 void AAuraPlayerController::AbilityInputPressed(FGameplayTag InputTag)
 {
-	if (GetASC()->HasMatchingGameplayTag(FAuraGameplayTags::Get().Player_Block_InputPressed))
+	if (GetASC() && GetASC()->HasMatchingGameplayTag(FAuraGameplayTags::Get().Player_Block_InputPressed))
 	{
 		return;
 	}
@@ -128,7 +128,7 @@ void AAuraPlayerController::AbilityInputPressed(FGameplayTag InputTag)
 
 void AAuraPlayerController::AbilityInputHeld(FGameplayTag InputTag)
 {
-	if (GetASC()->HasMatchingGameplayTag(FAuraGameplayTags::Get().Player_Block_InputHeld))
+	if (GetASC() && GetASC()->HasMatchingGameplayTag(FAuraGameplayTags::Get().Player_Block_InputHeld))
 	{
 		return;
 	}
@@ -162,7 +162,7 @@ void AAuraPlayerController::AbilityInputHeld(FGameplayTag InputTag)
 
 void AAuraPlayerController::AbilityInputReleased(FGameplayTag InputTag)
 {
-	if (GetASC()->HasMatchingGameplayTag(FAuraGameplayTags::Get().Player_Block_InputReleased))
+	if (GetASC() && GetASC()->HasMatchingGameplayTag(FAuraGameplayTags::Get().Player_Block_InputReleased))
 	{
 		return;
 	}
@@ -197,7 +197,7 @@ void AAuraPlayerController::AbilityInputReleased(FGameplayTag InputTag)
 					bAutoRunning = true;
 				}
 			}
-			if (!GetASC()->HasMatchingGameplayTag(FAuraGameplayTags::Get().Player_Block_CursorTrace))
+			if (GetASC() && !GetASC()->HasMatchingGameplayTag(FAuraGameplayTags::Get().Player_Block_CursorTrace))
 			{
 				UNiagaraFunctionLibrary::SpawnSystemAtLocation(this, ClickNiagaraSystem, CashedDestination);
 			}
@@ -219,7 +219,7 @@ UAuraAbilitySystemComponent* AAuraPlayerController::GetASC()
 
 void AAuraPlayerController::AutoRun()
 {
-	if (GetASC()->HasMatchingGameplayTag(FAuraGameplayTags::Get().Player_Block_Move))
+	if (GetASC() && GetASC()->HasMatchingGameplayTag(FAuraGameplayTags::Get().Player_Block_Move))
 	{
 		bAutoRunning =false;
 		return;

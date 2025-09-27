@@ -386,7 +386,6 @@ void UAuraAbilitySystemLibrary::GetLivePlayersWithRadius(const UObject* WorldCon
 			}
 		}
 	}
-	TArray<FOverlapResult> a1111;
 }
 
 bool UAuraAbilitySystemLibrary::IsFriend(const AActor* Actor1, const AActor* Actor2)

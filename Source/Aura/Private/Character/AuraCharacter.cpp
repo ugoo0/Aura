@@ -64,11 +64,7 @@ int32 AAuraCharacter::GetPlayerLevel_Implementation()
 {
 	TObjectPtr<AAuraPlayerState> AuraPlayerState = GetPlayerState<AAuraPlayerState>();
 	check(AuraPlayerState);
-	if (AuraPlayerState->Implements<UCombatInterface>())
-	{
-		return AuraPlayerState->GetPlayerLevel();
-	}
-	return  1;
+	return AuraPlayerState->GetPlayerLevel();
 }
 
 void AAuraCharacter::AddToXP_Implementation(int32 InXP)

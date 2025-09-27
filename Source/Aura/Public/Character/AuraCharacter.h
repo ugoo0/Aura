@@ -42,6 +42,8 @@ public:
 	virtual int32 GetAttributePoints_Implementation() const override;
 	virtual int32 GetSpellPoints_Implementation() const override;
 	/**Aura Interface**/
+
+
 protected:
 	virtual void InitializaDefaultAttriutes() const override;
 

@@ -41,6 +41,7 @@ void UAuraAbilitySystemComponent::AddCharacterPassiveAbilities(TArray<TSubclassO
 	}
 }
 
+
 void UAuraAbilitySystemComponent::ServerSpendSpellPoints_Implementation(const FGameplayTag& AbilityTag)
 {
 	FAuraGameplayTags AuraGameplayTags = FAuraGameplayTags::Get();
@@ -161,6 +162,24 @@ void UAuraAbilitySystemComponent::AbilityInputHeld(FGameplayTag InputTag)
 	}
 }
 
+
+void UAuraAbilitySystemComponent::AbilityInputPressed(FGameplayTag InputTag)
+{
+	if (!InputTag.IsValid()) return;
+	TArray<FGameplayAbilitySpec> AbilitySpecs =  GetActivatableAbilities();
+	for (FGameplayAbilitySpec& AbilitySpec : AbilitySpecs)
+	{
+		if (AbilitySpec.DynamicAbilityTags.HasTagExact(InputTag))
+		{
+			AbilitySpecInputPressed(AbilitySpec);
+			if (AbilitySpec.IsActive())
+			{
+				InvokeReplicatedEvent(EAbilityGenericReplicatedEvent::InputPressed, AbilitySpec.Handle, AbilitySpec.ActivationInfo.GetActivationPredictionKey());
+			}
+		}
+	}
+}
+
 void UAuraAbilitySystemComponent::AbilityInputReleased(FGameplayTag InputTag)
 {
 	if (!InputTag.IsValid()) return;
@@ -170,6 +189,10 @@ void UAuraAbilitySystemComponent::AbilityInputReleased(FGameplayTag InputTag)
 		if (AbilitySpec.DynamicAbilityTags.HasTagExact(InputTag))
 		{
 			AbilitySpecInputReleased(AbilitySpec);
+			if (AbilitySpec.IsActive())
+			{
+				InvokeReplicatedEvent(EAbilityGenericReplicatedEvent::InputReleased, AbilitySpec.Handle, AbilitySpec.ActivationInfo.GetActivationPredictionKey());
+			}
 		}
 	}
 }

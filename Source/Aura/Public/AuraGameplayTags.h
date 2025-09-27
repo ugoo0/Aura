@@ -113,7 +113,13 @@ public:
 	FGameplayTag Montage_Attack_2;
 	FGameplayTag Montage_Attack_3;
 	FGameplayTag Montage_Attack_4;
-	
+
+	/*Player Block Tag*/
+	FGameplayTag Player_Block_CursorTrace;
+	FGameplayTag Player_Block_InputPressed;
+	FGameplayTag Player_Block_InputReleased;
+	FGameplayTag Player_Block_InputHeld;
+	FGameplayTag Player_Block_Move;
 	
 	TMap<FGameplayTag, FGameplayTag> DamageTypeToResistance; // 用于计算伤害的时候找对应抗性
 	TMap<FGameplayTag, FGameplayTag> DamageTypeToDebuffType; // 用于计算伤害的时候找对应抗性

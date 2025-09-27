@@ -111,6 +111,14 @@ void FAuraGameplayTags::InitializeNativeGameplayTags()
 	AuraGameplayTags.Montage_Attack_2 = UGameplayTagsManager::Get().AddNativeGameplayTag(FName("Montage.Attack.2"), FString("Montage发生的攻击事件2"));
 	AuraGameplayTags.Montage_Attack_3 = UGameplayTagsManager::Get().AddNativeGameplayTag(FName("Montage.Attack.3"), FString("Montage发生的攻击事件3"));
 	AuraGameplayTags.Montage_Attack_4 = UGameplayTagsManager::Get().AddNativeGameplayTag(FName("Montage.Attack.4"), FString("Montage发生的攻击事件4"));
+
+
+	AuraGameplayTags.Player_Block_CursorTrace = UGameplayTagsManager::Get().AddNativeGameplayTag(FName("Player.Block.CursorTrace"), FString("阻塞鼠标光线追踪的Tag"));
+	AuraGameplayTags.Player_Block_InputHeld = UGameplayTagsManager::Get().AddNativeGameplayTag(FName("Player.Block.InputHeld"), FString("阻塞按住Tag"));
+	AuraGameplayTags.Player_Block_InputPressed = UGameplayTagsManager::Get().AddNativeGameplayTag(FName("Player.Block.InputPressed"), FString("阻塞按下Tag"));
+	AuraGameplayTags.Player_Block_InputReleased = UGameplayTagsManager::Get().AddNativeGameplayTag(FName("Player.Block.InputReleased"), FString("阻塞放开Tag"));
+	AuraGameplayTags.Player_Block_Move = UGameplayTagsManager::Get().AddNativeGameplayTag(FName("Player.Block.Move"), FString("阻塞玩家移动Tag"));
+
 	
 	AuraGameplayTags.AttributesTag.Reset();
 	AuraGameplayTags.AttributesTag.Add(AuraGameplayTags.Attributes_Primary_Intelligence);

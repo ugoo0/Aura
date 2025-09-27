@@ -103,4 +103,7 @@ public:
 	virtual  FOnASCRegistered& GetASCRegisteredDelegate() = 0;
 
 	virtual FOnActorDead& GetActorDeadDelegate() = 0;
+
+	UFUNCTION(BlueprintImplementableEvent, BlueprintCallable)
+	void SetInShockLoop(bool InShockLoop);
 };

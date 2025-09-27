@@ -138,8 +138,50 @@ int32 UAuraAbilitySystemLibrary::GetRewardXPForCharacterClassAndLevel(const UObj
 	return static_cast<int32> (DefaultInfo.XPReward.GetValueAtLevel(Level));
 }
 
+TArray<FVector> UAuraAbilitySystemLibrary::EvenlyRotatedVectors(const FVector& Forward, const FVector& Axis,
+	float Spread, int32 SpreadNum)
+{
+	TArray<FVector> Result;
+	if (SpreadNum > 1)
+	{
+		float SpreadDelta = Spread/(SpreadNum - 1);
+		FVector RightVector = Forward.RotateAngleAxis(-Spread/2, Axis);
+		for (int32 i = 0; i < SpreadNum; i++)
+		{
+			FVector Direction = RightVector.RotateAngleAxis(i * SpreadDelta, Axis);
+			Result.Add(Direction);
+		}
+	}
+	else
+	{
+		Result.Add(Forward);
+	}
+	return Result;
+}
+
+TArray<FRotator> UAuraAbilitySystemLibrary::EvenlyRotatedRotators(const FVector& Forward, const FVector& Axis,
+	float Spread, int32 SpreadNum)
+{
+	TArray<FRotator> Result;
+	if (SpreadNum > 1)
+	{
+		float SpreadDelta = Spread/(SpreadNum - 1);
+		FVector RightVector = Forward.RotateAngleAxis(-Spread/2, Axis);
+		for (int32 i = 0; i < SpreadNum; i++)
+		{
+			FVector Direction = RightVector.RotateAngleAxis(i * SpreadDelta, Axis);
+			Result.Add(Direction.Rotation());
+		}
+	}
+	else
+	{
+		Result.Add(Forward.Rotation());
+	}
+	return Result;
+}
+
 FGameplayEffectContextHandle UAuraAbilitySystemLibrary::ApplyDamageEffectForDamageEffectParms(const UObject* WorldContextObject,
-	const FDamageEffectParams& Params)
+                                                                                              const FDamageEffectParams& Params)
 {
 	FAuraGameplayTags AuraGameplayTags = FAuraGameplayTags::Get();
 	AActor* SourceAvatarActor = Params.SourceASC->GetAvatarActor();

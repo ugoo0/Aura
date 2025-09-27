@@ -34,7 +34,7 @@ public:
 	void AddCharacterPassiveAbilities(TArray<TSubclassOf<UGameplayAbility>> StartupPassiveAbilities);
 
 	
-
+	void AbilityInputPressed(FGameplayTag InputTag);
 	void AbilityInputHeld(FGameplayTag InputTag);
 	void AbilityInputReleased(FGameplayTag InputTag);
 

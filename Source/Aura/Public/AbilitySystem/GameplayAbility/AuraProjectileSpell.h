@@ -29,10 +29,12 @@ protected:
 
 	UPROPERTY(EditDefaultsOnly)
 	int32 NumProjectiles = 5;
-private:
 
 	UPROPERTY(EditAnywhere, Category = "Projectile")
 	TSubclassOf<AAuraProjectile> ProjectileClass;
+private:
+
+
 
 
 };

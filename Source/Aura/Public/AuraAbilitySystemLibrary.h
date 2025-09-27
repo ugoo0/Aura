@@ -63,8 +63,6 @@ public:
 
 	UFUNCTION(BlueprintCallable, Category="AuraAbilitySystemLibrary|GameplayEffects")
 	static FGameplayTag GetDebuffDamageType(const FGameplayEffectContextHandle& ContextHandle);
-
-
 	
 	UFUNCTION(BlueprintCallable, Category="AuraAbilitySystemLibrary|GameplayEffects")
 	static void SetIsBlockHit(UPARAM(ref) FGameplayEffectContextHandle& ContextHandle, bool bIsBlockHit);
@@ -110,6 +108,12 @@ public:
 	static int32 GetRewardXPForCharacterClassAndLevel(const UObject* WorldContextObject, ECharacterClassType CharacterClassType, int32 Level);
 
 
+	UFUNCTION(BlueprintCallable, Category="AuraAbilitySystemLibrary|GameplayMechanics")
+	static TArray<FVector> EvenlyRotatedVectors(const FVector& Forward, const FVector& Axis, float Spread, int32 SpreadNum);
+
+	UFUNCTION(BlueprintCallable, Category="AuraAbilitySystemLibrary|GameplayMechanics")
+	static TArray<FRotator> EvenlyRotatedRotators(const FVector& Forward, const FVector& Axis, float Spread, int32 SpreadNum);
+	
 	UFUNCTION(BlueprintCallable, Category="AuraAbilitySystemLibrary|GameplayEffects")
 	static FGameplayEffectContextHandle ApplyDamageEffectForDamageEffectParms(const UObject* WorldContextObject, const FDamageEffectParams& Params);
 };

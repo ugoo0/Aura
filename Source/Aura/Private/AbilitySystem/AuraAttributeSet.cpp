@@ -284,14 +284,18 @@ void UAuraAttributeSet::PostGameplayEffectExecute(const FGameplayEffectModCallba
 
 void UAuraAttributeSet::ShowFloatingText(float Damage,const FEffectProperties& EffectProperties) const
 {
+
 	
-	if (AAuraPlayerController* PC= Cast<AAuraPlayerController>(EffectProperties.SourceCharacter->Controller))//玩家攻击敌人
+	if (EffectProperties.SourceCharacter)//玩家攻击敌人
 	{
-		FDamageState DamageState;
-		DamageState.IsBlockHit = UAuraAbilitySystemLibrary::IsBlockHit(EffectProperties.EffectContextHandle);
-		DamageState.IsCriticalHit = UAuraAbilitySystemLibrary::IsCriticalHit(EffectProperties.EffectContextHandle);
-		PC->ShowDamageNumber(Damage,EffectProperties.TargetCharacter,DamageState);
-		return;
+		if (AAuraPlayerController* PC= Cast<AAuraPlayerController>(EffectProperties.SourceCharacter->Controller))
+		{
+			FDamageState DamageState;
+			DamageState.IsBlockHit = UAuraAbilitySystemLibrary::IsBlockHit(EffectProperties.EffectContextHandle);
+			DamageState.IsCriticalHit = UAuraAbilitySystemLibrary::IsCriticalHit(EffectProperties.EffectContextHandle);
+			PC->ShowDamageNumber(Damage,EffectProperties.TargetCharacter,DamageState);
+			return;
+		}
 	}
 	if (AAuraPlayerController* PC= Cast<AAuraPlayerController>(EffectProperties.TargetCharacter->Controller))//Enemy攻击玩家
 	{

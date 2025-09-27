@@ -8,6 +8,8 @@
 #include "EnhancedInputSubsystems.h"
 #include "NavigationPath.h"
 #include "NavigationSystem.h"
+#include "NiagaraFunctionLibrary.h"
+#include "NiagaraSystem.h"
 #include "Interaction/EnemyInterface.h"
 #include "Input/AuraInputComponent.h"
 #include "GameFramework/Character.h"
@@ -51,6 +53,10 @@ void AAuraPlayerController::SetupInputComponent()
 }
 void AAuraPlayerController::Move(const FInputActionValue& InputActionValue)
 {
+	if (GetASC()->HasMatchingGameplayTag(FAuraGameplayTags::Get().Player_Block_Move))
+	{
+		return;
+	}
 	const FVector2D InputAxisVector = InputActionValue.Get<FVector2D>();
 	const FRotator Rotation = GetControlRotation();
 	const FRotator YawRotation(0.f, Rotation.Yaw, 0.f);
@@ -86,6 +92,14 @@ void AAuraPlayerController::ShowDamageNumber_Implementation(float Damage, AChara
 
 void AAuraPlayerController::CursorTrace()
 {
+	if (GetASC()->HasMatchingGameplayTag(FAuraGameplayTags::Get().Player_Block_CursorTrace))
+	{
+		if (LastActor)	LastActor->UnHighlightActor();
+		if (CurActor)	CurActor->UnHighlightActor();
+		LastActor = nullptr;
+		CurActor = nullptr;
+		return;
+	}
 	GetHitResultUnderCursor(ECollisionChannel::ECC_Visibility, false, CursorHit);
 	if (!CursorHit.bBlockingHit) return;
 	LastActor = CurActor;
@@ -99,15 +113,25 @@ void AAuraPlayerController::CursorTrace()
 
 void AAuraPlayerController::AbilityInputPressed(FGameplayTag InputTag)
 {
+	if (GetASC()->HasMatchingGameplayTag(FAuraGameplayTags::Get().Player_Block_InputPressed))
+	{
+		return;
+	}
+	
 	if (InputTag.MatchesTagExact(FAuraGameplayTags::Get().InputTag_LMB))
 	{
 		bTargeting = CurActor?true:false;
 		bAutoRunning = false;
 	}
+	GetASC()->AbilityInputPressed(InputTag);
 }
 
 void AAuraPlayerController::AbilityInputHeld(FGameplayTag InputTag)
 {
+	if (GetASC()->HasMatchingGameplayTag(FAuraGameplayTags::Get().Player_Block_InputHeld))
+	{
+		return;
+	}
 	if (!InputTag.MatchesTagExact(FAuraGameplayTags::Get().InputTag_LMB))
 	{
 		if (!GetASC()) return;
@@ -138,6 +162,10 @@ void AAuraPlayerController::AbilityInputHeld(FGameplayTag InputTag)
 
 void AAuraPlayerController::AbilityInputReleased(FGameplayTag InputTag)
 {
+	if (GetASC()->HasMatchingGameplayTag(FAuraGameplayTags::Get().Player_Block_InputReleased))
+	{
+		return;
+	}
 	if (!InputTag.MatchesTagExact(FAuraGameplayTags::Get().InputTag_LMB))
 	{
 		if (!GetASC()) return;
@@ -168,8 +196,12 @@ void AAuraPlayerController::AbilityInputReleased(FGameplayTag InputTag)
 					CashedDestination = NaviPath->PathPoints[NaviPath->PathPoints.Num()-1];
 					bAutoRunning = true;
 				}
-
 			}
+			if (!GetASC()->HasMatchingGameplayTag(FAuraGameplayTags::Get().Player_Block_CursorTrace))
+			{
+				UNiagaraFunctionLibrary::SpawnSystemAtLocation(this, ClickNiagaraSystem, CashedDestination);
+			}
+			
 		}
 		FollowTime = 0.f;
 		bTargeting = false;
@@ -187,6 +219,11 @@ UAuraAbilitySystemComponent* AAuraPlayerController::GetASC()
 
 void AAuraPlayerController::AutoRun()
 {
+	if (GetASC()->HasMatchingGameplayTag(FAuraGameplayTags::Get().Player_Block_Move))
+	{
+		bAutoRunning =false;
+		return;
+	}
 	if (!bAutoRunning) return;
 	if (APawn* ControllerPawn = GetPawn())
 	{

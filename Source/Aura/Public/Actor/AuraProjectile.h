@@ -27,7 +27,11 @@ public:
 
 	UPROPERTY(BlueprintReadWrite, meta=(ExposeOnSpawn = true))
 	FDamageEffectParams DamageEffectParams;
-	
+
+	TWeakObjectPtr<AActor> HomingTarget;
+
+	UFUNCTION()
+	void HomingTargetDead(AActor* Actor);
 protected:
 	virtual void BeginPlay() override;
 	virtual void Destroyed() override;
@@ -57,4 +61,5 @@ private:
 
 	UPROPERTY(EditAnywhere)
 	TArray<FName> OverlayTags;
+	
 };

@@ -57,6 +57,16 @@ void UAuraBeamSpell::TraceFirstTarget(const FVector& BeamTargetLocation)
 			{
 				MouseHitActor = HitResult.GetActor();
 				MouseHitLocation = HitResult.ImpactPoint;
+
+				ICombatInterface* CombatInterface = Cast<ICombatInterface>(MouseHitActor);
+				if (CombatInterface && !CombatInterface->GetActorDeadDelegate().IsAlreadyBound(this, &UAuraBeamSpell::MouseHitActorDead))
+				{
+					CombatInterface->GetActorDeadDelegate().AddDynamic(this, &UAuraBeamSpell::MouseHitActorDead);
+					if (CombatInterface->GetActorDeadDelegate().IsAlreadyBound(this, &UAuraBeamSpell::AdditionalActorDead))
+					{
+						CombatInterface->GetActorDeadDelegate().RemoveDynamic(this, &UAuraBeamSpell::AdditionalActorDead);
+					}
+				}
 			}
 		}
 		
@@ -93,7 +103,16 @@ void UAuraBeamSpell::StoreAdditionalTarget(TArray<AActor*>& OutAdditionalTargets
 		for (int32 i = 0; i < SpreadNum; i++)
 		{
 			OutAdditionalTargets.AddUnique(OutOverlayActors[i]);
-			UKismetSystemLibrary::DrawDebugSphere(GetAvatarActorFromActorInfo(), OutOverlayActors[i]->GetActorLocation(),20,12,FLinearColor::Red,10);
+			//UKismetSystemLibrary::DrawDebugSphere(GetAvatarActorFromActorInfo(), OutOverlayActors[i]->GetActorLocation(),20,12,FLinearColor::Red,10);
+			ICombatInterface* CombatInterface = Cast<ICombatInterface>(OutOverlayActors[i]);
+			if (CombatInterface && !CombatInterface->GetActorDeadDelegate().IsAlreadyBound(this, &UAuraBeamSpell::AdditionalActorDead))
+			{
+				CombatInterface->GetActorDeadDelegate().AddDynamic(this, &UAuraBeamSpell::AdditionalActorDead);
+				if (CombatInterface->GetActorDeadDelegate().IsAlreadyBound(this, &UAuraBeamSpell::MouseHitActorDead))
+				{
+					CombatInterface->GetActorDeadDelegate().RemoveDynamic(this, &UAuraBeamSpell::MouseHitActorDead);
+				}
+			}
 		}
 	}
 }

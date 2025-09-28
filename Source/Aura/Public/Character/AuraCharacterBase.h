@@ -44,6 +44,7 @@ public:
 	UPROPERTY(EditAnywhere,BlueprintReadOnly, Category="Combat")
 	TObjectPtr<UMaterialInstance> WeaponDissolvedMaterialInstance;
 
+	virtual void GetLifetimeReplicatedProps(TArray< FLifetimeProperty > & OutLifetimeProps) const override;
 	/*combat interface*/
 	virtual UAnimMontage* GetMelleAttackMontage_Implementation() override;
 	virtual UAnimMontage* GetHitReactMontage_Implementation() override;
@@ -69,7 +70,10 @@ public:
 	/*end combat interface*/
 
 	UPROPERTY(EditDefaultsOnly)
-	TObjectPtr<UDebuffNiagaraComponent>  DebuffNiagaraComponent;
+	TObjectPtr<UDebuffNiagaraComponent>  DebuffBurnNiagaraComponent;
+
+	UPROPERTY(EditDefaultsOnly)
+	TObjectPtr<UDebuffNiagaraComponent>  DebuffStunNiagaraComponent;
 protected:
 	
 	virtual void BeginPlay() override;
@@ -137,6 +141,33 @@ protected:
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Charcter Class Default")
 	ECharacterClassType CharacterClassType = ECharacterClassType::Warrior;
+
+	/*Debuff States*/
+	UPROPERTY(BlueprintReadOnly,ReplicatedUsing = OnRep_BurnStateChanged)
+	bool bIsBurn = false;
+
+	UFUNCTION()
+	void OnRep_BurnStateChanged();
+
+	UPROPERTY(BlueprintReadOnly,ReplicatedUsing = OnRep_StunStateChanged)
+	bool bIsStun = false;
+
+	UFUNCTION()
+	virtual void OnRep_StunStateChanged();
+
+	UFUNCTION()
+	virtual  void OnStunTagCountChanged(const FGameplayTag GameplayTag, int32 Count);
+
+	UPROPERTY(BlueprintReadOnly,Replicated)
+	bool bIsBeingShock = false;
+
+	virtual void SetIsBeingShock_Implementation(bool InIsBeingShock) override;
+	virtual bool GetIsBeingShock_Implementation() const override;
+	/*Debuff States*/
+
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category="Combat")
+	float BaseWalkSpeed = 600.f;
 	
 private:
 	UPROPERTY(EditAnywhere, Category = "ASC|Abilities")

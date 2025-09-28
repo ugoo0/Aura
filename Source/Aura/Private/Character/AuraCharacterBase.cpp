@@ -8,6 +8,7 @@
 #include "Aura/Aura.h"
 #include "Components/CapsuleComponent.h"
 #include "Kismet/GameplayStatics.h"
+#include "Net/UnrealNetwork.h"
 
 
 // Sets default values
@@ -16,9 +17,13 @@ AAuraCharacterBase::AAuraCharacterBase()
  	// Set this character to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = false;
 
-	DebuffNiagaraComponent = CreateDefaultSubobject<UDebuffNiagaraComponent>("DebuffNiagaraComponent");
-	DebuffNiagaraComponent->DebuffType = FAuraGameplayTags::Get().Debuff_Burn;
-	DebuffNiagaraComponent->SetupAttachment(GetRootComponent());
+	DebuffBurnNiagaraComponent = CreateDefaultSubobject<UDebuffNiagaraComponent>("DebuffBurnNiagaraComponent");
+	DebuffBurnNiagaraComponent->DebuffType = FAuraGameplayTags::Get().Debuff_Burn;
+	DebuffBurnNiagaraComponent->SetupAttachment(GetRootComponent());
+
+	DebuffStunNiagaraComponent = CreateDefaultSubobject<UDebuffNiagaraComponent>("DebuffStunNiagaraComponent");
+	DebuffStunNiagaraComponent->DebuffType = FAuraGameplayTags::Get().Debuff_Stun;
+	DebuffStunNiagaraComponent->SetupAttachment(GetRootComponent());
 	
 	GetCapsuleComponent()->SetCollisionResponseToChannel(ECC_Camera,ECR_Ignore);
 	GetCapsuleComponent()->SetGenerateOverlapEvents(false);
@@ -44,11 +49,21 @@ void AAuraCharacterBase::MulticastHandleDeath_Implementation(const FVector& Deat
 	GetMesh()->AddImpulse(DeathImpulse,NAME_None, true);
 	GetCapsuleComponent()->SetCollisionEnabled(ECollisionEnabled::NoCollision);
 	Dissolve();
+	
 }
 
 UAnimMontage* AAuraCharacterBase::GetHitReactMontage_Implementation()
 {
 	return HitReactMontage;
+}
+
+void AAuraCharacterBase::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const
+{
+	Super::GetLifetimeReplicatedProps(OutLifetimeProps);
+	DOREPLIFETIME(AAuraCharacterBase, bIsBurn);
+	DOREPLIFETIME(AAuraCharacterBase, bIsStun);
+	DOREPLIFETIME(AAuraCharacterBase, bIsBeingShock);
+	
 }
 
 UAnimMontage* AAuraCharacterBase::GetMelleAttackMontage_Implementation()
@@ -224,6 +239,45 @@ void AAuraCharacterBase::AddCharacterAbilities() const
 	if (!HasAuthority()) return;
 	AuraASC->AddCharacterAbilities(StartupAbilities);
 	AuraASC->AddCharacterPassiveAbilities(StartupPassiveAbilities);
+}
+
+void AAuraCharacterBase::OnRep_BurnStateChanged()
+{
+	if (bIsBurn)
+	{
+		DebuffBurnNiagaraComponent->Activate();
+	}
+	else
+	{
+		DebuffBurnNiagaraComponent->Deactivate();
+	}
+}
+
+void AAuraCharacterBase::OnRep_StunStateChanged()
+{
+	if (bIsStun)
+	{
+		DebuffStunNiagaraComponent->Activate();
+	}
+	else
+	{
+		DebuffStunNiagaraComponent->Deactivate();
+	}
+}
+
+void AAuraCharacterBase::OnStunTagCountChanged(const FGameplayTag GameplayTag, int32 Count)
+{
+	
+}
+
+void AAuraCharacterBase::SetIsBeingShock_Implementation(bool InIsBeingShock)
+{
+	bIsBeingShock = InIsBeingShock;
+}
+
+bool AAuraCharacterBase::GetIsBeingShock_Implementation() const
+{
+	return bIsBeingShock;
 }
 
 

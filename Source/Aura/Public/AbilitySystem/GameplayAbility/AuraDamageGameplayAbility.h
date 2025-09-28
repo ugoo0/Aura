@@ -52,6 +52,7 @@ public:
 	UFUNCTION(BlueprintCallable, Category="Combat")
 	void CauseDamageToTarget(AActor* Target, UPARAM(ref) const TArray<FName>& TagsGetHurt);
 
-	int32 GetDamageByLevel(int32 Level) const;
+	UFUNCTION(BlueprintCallable, Category="Combat")
+	float GetDamageByLevel(int32 Level) const;
 	
 };

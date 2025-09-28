@@ -2,6 +2,8 @@
 
 #pragma once
 
+DECLARE_MULTICAST_DELEGATE(FOnControlledStateChanged);
+
 #include "CoreMinimal.h"
 #include "NiagaraComponent.h"
 #include "Character/AuraCharacterBase.h"
@@ -43,7 +45,19 @@ public:
 	virtual int32 GetSpellPoints_Implementation() const override;
 	/**Aura Interface**/
 
+	virtual void GetLifetimeReplicatedProps(TArray< FLifetimeProperty > & OutLifetimeProps) const override;
+	virtual  void OnStunTagCountChanged(const FGameplayTag GameplayTag, int32 Count) override;
+	
+	
+	UPROPERTY(BlueprintReadOnly,ReplicatedUsing = OnRep_IsControlled)
+	bool bIsControlled = false;
+	bool GetIsControlled() const {return bIsControlled; }
 
+	UFUNCTION()
+	void OnRep_IsControlled();
+	FOnControlledStateChanged OnControlledStateChanged;
+	
+	void UpdateIsControlled();
 protected:
 	virtual void InitializaDefaultAttriutes() const override;
 

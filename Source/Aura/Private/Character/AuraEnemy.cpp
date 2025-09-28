@@ -31,6 +31,7 @@ AAuraEnemy::AAuraEnemy()
 	bUseControllerRotationPitch = false;
 	bUseControllerRotationYaw = false;
 	bUseControllerRotationRoll = false;
+	BaseWalkSpeed = 200.f;
 	GetCharacterMovement()->bUseControllerDesiredRotation = true;
 	GetCharacterMovement()->MaxWalkSpeed = BaseWalkSpeed;
 }
@@ -106,6 +107,7 @@ void AAuraEnemy::InitAbilityActorInfo()
 		InitializaDefaultAttriutes();
 	}
 	OnAscRegistered.Broadcast(AbilitySystemComponent);
+	AbilitySystemComponent->RegisterGameplayTagEvent(FAuraGameplayTags::Get().Debuff_Stun, EGameplayTagEventType::NewOrRemoved).AddUObject(this, &AAuraEnemy::OnStunTagCountChanged);
 }
 
 void AAuraEnemy::Die(const FVector& DeathImpulse)
@@ -126,6 +128,16 @@ void AAuraEnemy::SetCombatTarget_Implementation(AActor* Target)
 AActor* AAuraEnemy::GetCombatTarget_Implementation()
 {
 	return CombatTarget;
+}
+
+void AAuraEnemy::OnStunTagCountChanged(const FGameplayTag GameplayTag, int32 Count)
+{
+	bIsStun = Count > 0;
+	GetCharacterMovement()->MaxWalkSpeed = bIsStun ? 0.f : BaseWalkSpeed;
+	if (AuraAIController && AuraAIController->GetBlackboardComponent())
+	{
+		AuraAIController->GetBlackboardComponent()->SetValueAsBool(FName("bIsStun"), bIsStun);
+	}
 }
 
 void AAuraEnemy::InitializaDefaultAttriutes() const

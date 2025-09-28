@@ -88,5 +88,8 @@ private:
 
 	UPROPERTY(EditDefaultsOnly, Category="Combat")
 	TSubclassOf<UDamageWidgetComponent> DamageTextComponentClass;
+
+	UFUNCTION()
+	bool CharacterIsControlled() const;//玩家状态是否被控制 比如 眩晕
 };
  

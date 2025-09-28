@@ -127,6 +127,9 @@ void UAuraFireBolt::SpawnProjectiles(const FVector& TargetLocation, const FGamep
 			if (IsValid(HomingTarget) && HomingTarget->Implements<UCombatInterface>())
 			{
 				Projectile->ProjectileMovement->HomingTargetComponent = HomingTarget->GetRootComponent();
+				Projectile->HomingTarget = HomingTarget;
+				ICombatInterface* TargetCombatInterface = Cast<ICombatInterface>(HomingTarget);
+				TargetCombatInterface->GetActorDeadDelegate().AddDynamic(Projectile, &AAuraProjectile::HomingTargetDead);
 			}
 			else
 			{
@@ -138,7 +141,7 @@ void UAuraFireBolt::SpawnProjectiles(const FVector& TargetLocation, const FGamep
 			Projectile->ProjectileMovement->HomingAccelerationMagnitude = FMath::FRandRange(HomingAccelerationMin, HomingAccelerationMax);
 			
 			Projectile->FinishSpawning(SpawnTransform);
-
+			
 			
 		}
 

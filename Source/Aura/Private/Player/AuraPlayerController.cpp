@@ -10,6 +10,7 @@
 #include "NavigationSystem.h"
 #include "NiagaraFunctionLibrary.h"
 #include "NiagaraSystem.h"
+#include "Character/AuraCharacter.h"
 #include "Interaction/EnemyInterface.h"
 #include "Input/AuraInputComponent.h"
 #include "GameFramework/Character.h"
@@ -53,7 +54,7 @@ void AAuraPlayerController::SetupInputComponent()
 }
 void AAuraPlayerController::Move(const FInputActionValue& InputActionValue)
 {
-	if (GetASC() && GetASC()->HasMatchingGameplayTag(FAuraGameplayTags::Get().Player_Block_Move))
+	if ((GetASC() && GetASC()->HasMatchingGameplayTag(FAuraGameplayTags::Get().Player_Block_Move)) || CharacterIsControlled())
 	{
 		return;
 	}
@@ -113,7 +114,7 @@ void AAuraPlayerController::CursorTrace()
 
 void AAuraPlayerController::AbilityInputPressed(FGameplayTag InputTag)
 {
-	if (GetASC() && GetASC()->HasMatchingGameplayTag(FAuraGameplayTags::Get().Player_Block_InputPressed))
+	if ((GetASC() && GetASC()->HasMatchingGameplayTag(FAuraGameplayTags::Get().Player_Block_InputPressed)) || CharacterIsControlled())
 	{
 		return;
 	}
@@ -128,7 +129,7 @@ void AAuraPlayerController::AbilityInputPressed(FGameplayTag InputTag)
 
 void AAuraPlayerController::AbilityInputHeld(FGameplayTag InputTag)
 {
-	if (GetASC() && GetASC()->HasMatchingGameplayTag(FAuraGameplayTags::Get().Player_Block_InputHeld))
+	if ((GetASC() && GetASC()->HasMatchingGameplayTag(FAuraGameplayTags::Get().Player_Block_InputHeld)) || CharacterIsControlled() )
 	{
 		return;
 	}
@@ -162,7 +163,7 @@ void AAuraPlayerController::AbilityInputHeld(FGameplayTag InputTag)
 
 void AAuraPlayerController::AbilityInputReleased(FGameplayTag InputTag)
 {
-	if (GetASC() && GetASC()->HasMatchingGameplayTag(FAuraGameplayTags::Get().Player_Block_InputReleased))
+	if ((GetASC() && GetASC()->HasMatchingGameplayTag(FAuraGameplayTags::Get().Player_Block_InputReleased)) || CharacterIsControlled() )
 	{
 		return;
 	}
@@ -219,7 +220,7 @@ UAuraAbilitySystemComponent* AAuraPlayerController::GetASC()
 
 void AAuraPlayerController::AutoRun()
 {
-	if (GetASC() && GetASC()->HasMatchingGameplayTag(FAuraGameplayTags::Get().Player_Block_Move))
+	if ((GetASC() && GetASC()->HasMatchingGameplayTag(FAuraGameplayTags::Get().Player_Block_Move)) || CharacterIsControlled())
 	{
 		bAutoRunning =false;
 		return;
@@ -237,4 +238,13 @@ void AAuraPlayerController::AutoRun()
 			bAutoRunning = false;
 		}
 	}
+}
+
+bool AAuraPlayerController::CharacterIsControlled() const
+{
+	if (AAuraCharacter* Aura = Cast<AAuraCharacter>(GetCharacter()))
+	{
+		return Aura->GetIsControlled();
+	}
+	return false;
 }

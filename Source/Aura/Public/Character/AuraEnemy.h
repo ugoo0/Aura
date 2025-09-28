@@ -53,8 +53,7 @@ public:
 	UPROPERTY(BlueprintReadOnly, Category="Combat")
 	bool bHitReacting =false;
 
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category="Combat")
-	float BaseWalkSpeed = 200.f;
+
 
 
 	UPROPERTY(EditAnywhere, Category="AI")
@@ -70,7 +69,8 @@ public:
 	virtual  void SetCombatTarget_Implementation(AActor* Target) override;
 	
 	virtual AActor* GetCombatTarget_Implementation() override;
-	
+
+	virtual  void OnStunTagCountChanged(const FGameplayTag GameplayTag, int32 Count) override;
 protected:
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Charcter Class Default")

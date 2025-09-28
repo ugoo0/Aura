@@ -8,10 +8,13 @@
 #include <Player/AuraPlayerController.h>
 #include <UI/HUD/AuraHUD.h>
 
+#include "AuraGameplayTags.h"
 #include "AbilitySystem/Data/LevelInfo.h"
+#include "AbilitySystem/Debuff/DebuffNiagaraComponent.h"
 #include "Camera/CameraComponent.h"
 #include "GameFramework/CharacterMovementComponent.h"
 #include "GameFramework/SpringArmComponent.h"
+#include "Net/UnrealNetwork.h"
 
 
 AAuraCharacter::AAuraCharacter()
@@ -51,6 +54,8 @@ void AAuraCharacter::PossessedBy(AController* NewController)
 	Super::PossessedBy(NewController);
 	InitAbilityActorInfo();
 	AddCharacterAbilities();//添加开始能力
+
+	OnControlledStateChanged.AddUObject(this, &AAuraCharacter::UpdateIsControlled);
 }
 
 void AAuraCharacter::OnRep_PlayerState()
@@ -180,6 +185,22 @@ int32 AAuraCharacter::GetSpellPoints_Implementation() const
 	return AuraPlayerState->GetSpellPoints();
 }
 
+void AAuraCharacter::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const
+{
+	Super::GetLifetimeReplicatedProps(OutLifetimeProps);
+	DOREPLIFETIME(AAuraCharacter, bIsControlled);
+	
+}
+
+void AAuraCharacter::OnStunTagCountChanged(const FGameplayTag GameplayTag, int32 Count)
+{
+	bIsStun = Count > 0;
+	GetCharacterMovement()->MaxWalkSpeed = bIsStun ? 0.f : BaseWalkSpeed;
+	OnControlledStateChanged.Broadcast();
+
+}
+
+
 void AAuraCharacter::InitAbilityActorInfo()
 {
 	TObjectPtr<AAuraPlayerState> AuraPlayerState = GetPlayerState<AAuraPlayerState>();
@@ -198,6 +219,17 @@ void AAuraCharacter::InitAbilityActorInfo()
 	}
 	InitializaDefaultAttriutes();
 	OnAscRegistered.Broadcast(AbilitySystemComponent);
+
+	AbilitySystemComponent->RegisterGameplayTagEvent(FAuraGameplayTags::Get().Debuff_Stun, EGameplayTagEventType::NewOrRemoved).AddUObject(this, &AAuraCharacter::OnStunTagCountChanged);
+}
+
+void AAuraCharacter::OnRep_IsControlled()
+{
+}
+
+void AAuraCharacter::UpdateIsControlled()//是否控制不能按键， 走路等
+{
+	bIsControlled = bIsStun;
 }
 
 void AAuraCharacter::InitializaDefaultAttriutes() const

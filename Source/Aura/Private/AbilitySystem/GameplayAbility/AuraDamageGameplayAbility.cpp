@@ -50,7 +50,7 @@ void UAuraDamageGameplayAbility::CauseDamageToTarget(AActor* Target, const TArra
 	GetAbilitySystemComponentFromActorInfo()->ApplyGameplayEffectSpecToTarget(*SpecHandle.Data.Get(), UAbilitySystemBlueprintLibrary::GetAbilitySystemComponent(Target));
 }
 
-int32 UAuraDamageGameplayAbility::GetDamageByLevel(int32 Level) const
+float UAuraDamageGameplayAbility::GetDamageByLevel(int32 Level) const
 {
 	return DamageScalableFloat.GetValueAtLevel(Level);
 }

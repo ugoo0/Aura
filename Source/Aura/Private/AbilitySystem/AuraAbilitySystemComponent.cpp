@@ -15,6 +15,12 @@ void UAuraAbilitySystemComponent::AblityActorInfoSet()
 	OnGameplayEffectAppliedDelegateToSelf.AddUObject(this, &UAuraAbilitySystemComponent::ClientEffectApplied);
 }
 
+void UAuraAbilitySystemComponent::MulticastBroadcastPassiveState_Implementation(const FGameplayTag& AbilityTag,
+	bool IsActive)
+{
+	OnPassiveStateChanged.Broadcast(AbilityTag, IsActive);
+}
+
 void UAuraAbilitySystemComponent::AddCharacterAbilities(TArray<TSubclassOf<UGameplayAbility>> StartupAbilities)
 {
 	for (auto AbilityClass : StartupAbilities)
@@ -24,7 +30,6 @@ void UAuraAbilitySystemComponent::AddCharacterAbilities(TArray<TSubclassOf<UGame
 		{
 			AbilitySpec.DynamicAbilityTags.AddTag(AuraAbility->StartupTag);
 			AbilitySpec.DynamicAbilityTags.AddTag(FAuraGameplayTags::Get().Abilities_Status_Equipped);
-			
 			GiveAbility(AbilitySpec);
 		}
 	}
@@ -37,6 +42,12 @@ void UAuraAbilitySystemComponent::AddCharacterPassiveAbilities(TArray<TSubclassO
 	for (auto AbilityClass : StartupPassiveAbilities)
 	{
 		FGameplayAbilitySpec AbilitySpec = FGameplayAbilitySpec(AbilityClass,1);
+		if (const UAuraGameplayAbility* AuraAbility = Cast<UAuraGameplayAbility>(AbilitySpec.Ability))
+		{
+			AbilitySpec.DynamicAbilityTags.AddTag(AuraAbility->StartupTag);
+			AbilitySpec.DynamicAbilityTags.AddTag(FAuraGameplayTags::Get().Abilities_Status_Equipped);
+			
+		}
 		GiveAbilityAndActivateOnce(AbilitySpec);//直接激活被动
 	}
 }
@@ -74,6 +85,7 @@ void UAuraAbilitySystemComponent::ServerEquippedAbility_Implementation(const FGa
 	//GetActivatableAbilities() 究极大雷函数  FGameplayAbilitySpec& Spec 和 auto  Spec 调用的是不同版本的函数
 	if (FGameplayAbilitySpec* AbilitySpec = GetSpecFromAbilityTag(AbilityTag))
 	{
+		FScopedAbilityListLock ActiveScopeLock(*this);
 		for (FGameplayAbilitySpec& Spec : GetActivatableAbilities())//移除要装载位置的  输入tag和改变status Tag
 		{
 			if (Spec.DynamicAbilityTags.HasTagExact(SlotTag))
@@ -84,7 +96,16 @@ void UAuraAbilitySystemComponent::ServerEquippedAbility_Implementation(const FGa
 				{
 					Spec.DynamicAbilityTags.RemoveTag(FAuraGameplayTags::Get().Abilities_Status_Equipped);
 					Spec.DynamicAbilityTags.AddTag(FAuraGameplayTags::Get().Abilities_Status_Unlocked);
+
+					if (CheckIsPassiveAbility(Spec))//被动需要deactivate
+					{
+						DeactivatePassiveAbility.Broadcast(GetAbilityTagForAbilitySpec(Spec));
+						MulticastBroadcastPassiveState(GetAbilityTagForAbilitySpec(Spec), false);
+						MarkAbilitySpecDirty(Spec);
+					}
 				}
+
+
 				MarkAbilitySpecDirty(Spec);
 			}
 		}
@@ -94,12 +115,21 @@ void UAuraAbilitySystemComponent::ServerEquippedAbility_Implementation(const FGa
 		{
 			AbilitySpec->DynamicAbilityTags.RemoveTag(FAuraGameplayTags::Get().Abilities_Status_Unlocked);//修改status
 			AbilitySpec->DynamicAbilityTags.AddTag(FAuraGameplayTags::Get().Abilities_Status_Equipped);
+
+			if (CheckIsPassiveAbility(*AbilitySpec))//被动需要activate Ability
+			{
+				TryActivateAbility(AbilitySpec->Handle);
+				MulticastBroadcastPassiveState(GetAbilityTagForAbilitySpec(*AbilitySpec), true);
+				MarkAbilitySpecDirty(*AbilitySpec);
+			}
 		}
 		else
 		{
 			AbilitySpec->DynamicAbilityTags.RemoveTag(PreSlotTag);//移除之前的inputtag
 		}
 		AbilitySpec->DynamicAbilityTags.AddTag(SlotTag);
+
+
 		
 		MarkAbilitySpecDirty(*AbilitySpec);
 		ClientEquippedAbility(AbilityTag,PreSlotTag, SlotTag);
@@ -112,7 +142,7 @@ void UAuraAbilitySystemComponent::ClientEquippedAbility_Implementation(const FGa
 }
 
 bool UAuraAbilitySystemComponent::GetDescriptionByAbilityTag(const FGameplayTag& GameplayTag, FString& OutDescription,
-                                                             FString& OutNextLevelDescription)
+                                                             FString& OutNextLevelDescription, int32 LevelRequirement)
 {
 	if (!GameplayTag.IsValid() || GameplayTag.MatchesTagExact(FAuraGameplayTags::Get().Abilities_None))
 	{
@@ -127,8 +157,8 @@ bool UAuraAbilitySystemComponent::GetDescriptionByAbilityTag(const FGameplayTag&
 		OutNextLevelDescription = Ability->GetNextLevelDescription(AbilitySpec->Level + 1);
 		return  true;
 	}
-	FAuraAbilityInfo AbilityInfo = UAuraAbilitySystemLibrary::GetAbilityInfo(GetAvatarActor())->FindAbilityInfoForAbilityTag(GameplayTag);
-	OutDescription = UAuraGameplayAbility::GetLockedDescription(AbilityInfo.LevelRequirement);
+	
+	OutDescription = UAuraGameplayAbility::GetLockedDescription(LevelRequirement);
 	OutNextLevelDescription = FString();
 	return  false;
 }
@@ -148,6 +178,7 @@ void UAuraAbilitySystemComponent::OnRep_ActivateAbilities()//客户端同步
 void UAuraAbilitySystemComponent::AbilityInputHeld(FGameplayTag InputTag)
 {
 	if (!InputTag.IsValid()) return;
+	FScopedAbilityListLock ActiveScopeLock(*this);
 	TArray<FGameplayAbilitySpec> AbilitySpecs =  GetActivatableAbilities();
 	for (FGameplayAbilitySpec& AbilitySpec : AbilitySpecs)
 	{
@@ -166,7 +197,9 @@ void UAuraAbilitySystemComponent::AbilityInputHeld(FGameplayTag InputTag)
 void UAuraAbilitySystemComponent::AbilityInputPressed(FGameplayTag InputTag)
 {
 	if (!InputTag.IsValid()) return;
+	
 	TArray<FGameplayAbilitySpec> AbilitySpecs =  GetActivatableAbilities();
+	FScopedAbilityListLock ActiveScopeLock(*this);
 	for (FGameplayAbilitySpec& AbilitySpec : AbilitySpecs)
 	{
 		if (AbilitySpec.DynamicAbilityTags.HasTagExact(InputTag))
@@ -184,6 +217,7 @@ void UAuraAbilitySystemComponent::AbilityInputReleased(FGameplayTag InputTag)
 {
 	if (!InputTag.IsValid()) return;
 	TArray<FGameplayAbilitySpec> AbilitySpecs =  GetActivatableAbilities();
+	FScopedAbilityListLock ActiveScopeLock(*this);
 	for (FGameplayAbilitySpec& AbilitySpec : AbilitySpecs)
 	{
 		if (AbilitySpec.DynamicAbilityTags.HasTagExact(InputTag))
@@ -199,6 +233,7 @@ void UAuraAbilitySystemComponent::AbilityInputReleased(FGameplayTag InputTag)
 
 void UAuraAbilitySystemComponent::ForEachAbility(const FForEachAbility& Delegate)
 {
+	FScopedAbilityListLock ActiveScopeLock(*this);
 	for (const FGameplayAbilitySpec& AbilitySpec : GetActivatableAbilities())
 	{
 		if (!Delegate.ExecuteIfBound(AbilitySpec))
@@ -232,6 +267,21 @@ FGameplayTag UAuraAbilitySystemComponent::GetAbilityTagForAbilitySpec(const FGam
 	return GetMatchTagForAbilitySpecAndFName(AbilitySpec, FName("Abilities"));
 }
 
+bool UAuraAbilitySystemComponent::CheckIsPassiveAbility(const FGameplayAbilitySpec& AbilitySpec)
+{
+	if (AbilitySpec.Ability)
+	{
+		for (const FGameplayTag& Tag : AbilitySpec.Ability.Get()->AbilityTags)
+		{
+			if (Tag.MatchesTag(FGameplayTag::RequestGameplayTag(FName("Abilities.Passive"))))
+			{
+				return true;
+			}
+		}
+	}
+	return false;
+}
+
 FGameplayTag UAuraAbilitySystemComponent::GetInputTagForAbilitySpec(const FGameplayAbilitySpec& AbilitySpec) const
 {
 	if (!AbilitySpec.DynamicAbilityTags.IsEmpty())
@@ -262,8 +312,9 @@ FGameplayTag UAuraAbilitySystemComponent::GetStatusTagForAbilitySpec(const FGame
 	return FGameplayTag();
 }
 
-FGameplayTag UAuraAbilitySystemComponent::GetAbilityTagForInputTag(const FGameplayTag& InputTag) const
+FGameplayTag UAuraAbilitySystemComponent::GetAbilityTagForInputTag(const FGameplayTag& InputTag)
 {
+	FScopedAbilityListLock ActiveScopeLock(*this);
 	for (const FGameplayAbilitySpec& AbilitySpec : GetActivatableAbilities())
 	{
 		if (AbilitySpec.DynamicAbilityTags.HasTagExact(InputTag))
@@ -275,8 +326,9 @@ FGameplayTag UAuraAbilitySystemComponent::GetAbilityTagForInputTag(const FGamepl
 	return  FGameplayTag();
 }
 
-FGameplayTag UAuraAbilitySystemComponent::GetStatusTagForInputTag(const FGameplayTag& InputTag) const
+FGameplayTag UAuraAbilitySystemComponent::GetStatusTagForInputTag(const FGameplayTag& InputTag)
 {
+	FScopedAbilityListLock ActiveScopeLock(*this);
 	for (const FGameplayAbilitySpec& AbilitySpec : GetActivatableAbilities())
 	{
 		if (AbilitySpec.DynamicAbilityTags.HasTagExact(InputTag))
@@ -287,6 +339,8 @@ FGameplayTag UAuraAbilitySystemComponent::GetStatusTagForInputTag(const FGamepla
 
 	return  FGameplayTag();
 }
+
+
 
 void UAuraAbilitySystemComponent::UpgradeAttribute(const FGameplayTag& GameplayTag)
 {
@@ -321,7 +375,6 @@ void UAuraAbilitySystemComponent::ServerUpdateAbilityStatus_Implementation(int32
 			FGameplayAbilitySpec AbilitySpec = FGameplayAbilitySpec(Info.AbilityClass, 1);
 			AbilitySpec.DynamicAbilityTags.AddTag(FAuraGameplayTags::Get().Abilities_Status_Eligible);
 			GiveAbility(AbilitySpec);
-			GEngine->AddOnScreenDebugMessage(1,10.f,FColor::Red,FString("GiveAbilityGiveAbility"));
 			MarkAbilitySpecDirty(AbilitySpec);
 			ClientAbilityStatusChanged(Info.AbilityTag, FAuraGameplayTags::Get().Abilities_Status_Eligible, AbilitySpec.Level);
 		}

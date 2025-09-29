@@ -5,6 +5,8 @@
 #include "AuraGameplayTags.h"
 #include "AbilitySystem/AuraAbilitySystemComponent.h"
 #include "AbilitySystem/Debuff/DebuffNiagaraComponent.h"
+#include "AbilitySystem/GameplayAbility/PassiveSpell/PassiveNiagaraComponent.h"
+
 #include "Aura/Aura.h"
 #include "Components/CapsuleComponent.h"
 #include "Kismet/GameplayStatics.h"
@@ -33,6 +35,21 @@ AAuraCharacterBase::AAuraCharacterBase()
 	Weapon = CreateDefaultSubobject<USkeletalMeshComponent>("Weapon");
 	Weapon->SetupAttachment(GetMesh(), FName("WeaponHandSocket"));
 	Weapon->SetCollisionEnabled(ECollisionEnabled::NoCollision);
+
+	PassiveAttachComponent = CreateDefaultSubobject<USceneComponent>("PassiveDetachComponent");
+	PassiveAttachComponent->SetupAttachment(GetRootComponent());
+
+	HaloOfProtectionNiagaraComponent1 = CreateDefaultSubobject<UPassiveNiagaraComponent>("HaloOfProtectionNiagaraComponent1");
+	HaloOfProtectionNiagaraComponent1->PassiveTag = FAuraGameplayTags::Get().Abilities_Passive_HaloOfProtection;
+	HaloOfProtectionNiagaraComponent1->SetupAttachment(PassiveAttachComponent);
+	
+	LifeSiphonNiagaraComponent1 = CreateDefaultSubobject<UPassiveNiagaraComponent>("LifeSiphonNiagaraComponent1");
+	LifeSiphonNiagaraComponent1->PassiveTag = FAuraGameplayTags::Get().Abilities_Passive_LifeSiphon;
+	LifeSiphonNiagaraComponent1->SetupAttachment(PassiveAttachComponent);
+	
+	ManaSiphonNiagaraComponent1 = CreateDefaultSubobject<UPassiveNiagaraComponent>("ManaSiphonNiagaraComponent1");
+	ManaSiphonNiagaraComponent1->PassiveTag = FAuraGameplayTags::Get().Abilities_Passive_ManaSiphon;
+	ManaSiphonNiagaraComponent1->SetupAttachment(PassiveAttachComponent);
 }
 
 void AAuraCharacterBase::MulticastHandleDeath_Implementation(const FVector& DeathImpulse)
@@ -237,8 +254,8 @@ void AAuraCharacterBase::AddCharacterAbilities() const
 {
 	UAuraAbilitySystemComponent* AuraASC = Cast<UAuraAbilitySystemComponent>(AbilitySystemComponent);
 	if (!HasAuthority()) return;
-	AuraASC->AddCharacterAbilities(StartupAbilities);
 	AuraASC->AddCharacterPassiveAbilities(StartupPassiveAbilities);
+	AuraASC->AddCharacterAbilities(StartupAbilities);
 }
 
 void AAuraCharacterBase::OnRep_BurnStateChanged()

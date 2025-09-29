@@ -81,8 +81,7 @@ void UAuraBeamSpell::StoreAdditionalTarget(TArray<AActor*>& OutAdditionalTargets
 	TArray<AActor*> ActorsToIgnore;
 	ActorsToIgnore.Add(OwnerCharacter);
 	ActorsToIgnore.Add(MouseHitActor);
-	// int32 SpreadNum = FMath::Min(GetAbilityLevel() - 1, MaxBeamSpreadNum);
-	int32 SpreadNum = 5;
+	int32 SpreadNum = FMath::Min(GetAbilityLevel() - 1, MaxBeamSpreadNum);
 	UAuraAbilitySystemLibrary::GetLivePlayersWithRadius(GetAvatarActorFromActorInfo(), OutOverlayActors, ActorsToIgnore, MouseHitActor->GetActorLocation(), BeamRadius);
 	OutOverlayActors.RemoveAll([](AActor* Actor) { return Actor == nullptr; });
 	if (OutOverlayActors.Num() < SpreadNum)

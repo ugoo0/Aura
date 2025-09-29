@@ -33,7 +33,7 @@ void UAuraSpellMenuController::BindCallbackToDependencies()
 				ShouldEnableSpellButton(SelectedSpellTags.AbilityStatusTag, bEnableSpendPoints,bEnableEquipped);
 				FString Description;
 				FString NextLevelDescription;
-				GetAuraASC()->GetDescriptionByAbilityTag(SelectedSpellTags.AbilityTag, Description, NextLevelDescription);
+				GetAuraASC()->GetDescriptionByAbilityTag(SelectedSpellTags.AbilityTag, Description, NextLevelDescription, AbilityInfos->FindAbilityInfoForAbilityTag(AbilityTag).LevelRequirement);
 				OnAbilitySpellGlobeSelected.Broadcast(bEnableSpendPoints, bEnableEquipped, Description, NextLevelDescription);
 			}
 		});
@@ -48,7 +48,7 @@ void UAuraSpellMenuController::BindCallbackToDependencies()
 			ShouldEnableSpellButton(SelectedSpellTags.AbilityStatusTag, bEnableSpendPoints,bEnableEquipped);
 			FString Description;
 			FString NextLevelDescription;
-			GetAuraASC()->GetDescriptionByAbilityTag(SelectedSpellTags.AbilityTag, Description, NextLevelDescription);
+			GetAuraASC()->GetDescriptionByAbilityTag(SelectedSpellTags.AbilityTag, Description, NextLevelDescription, AbilityInfos->FindAbilityInfoForAbilityTag(SelectedSpellTags.AbilityStatusTag).LevelRequirement);
 			OnAbilitySpellGlobeSelected.Broadcast(bEnableSpendPoints, bEnableEquipped, Description, NextLevelDescription);
 		});
 
@@ -63,8 +63,12 @@ void UAuraSpellMenuController::BindCallbackToDependencies()
 			Info.InputTag = PreSlotTag;
 			FAbilityInfoDelegate.Broadcast(Info);
 
+			//set SpellEquippedGlobe
+			FAuraAbilityInfo InfoNew = AbilityInfos->FindAbilityInfoForAbilityTag(AbilityTag);
+			InfoNew.InputTag = SlotTag;
+			FAbilityInfoDelegate.Broadcast(InfoNew);
 			
-			BroadcastAbilityInfo();
+			// BroadcastAbilityInfo();
 		});
 }
 
@@ -93,11 +97,11 @@ void UAuraSpellMenuController::SpellButtonSelectedForAbilityTag(const FGameplayT
 	bool bEnableEquipped;
 	SelectedSpellTags.AbilityTag = AbilityTag;
 	SelectedSpellTags.AbilityStatusTag = AbilityStatusTag;
-	SelectedSpellTags.AbilityTypeTag = UAuraAbilitySystemLibrary::GetAbilityInfo(GetAuraASC()->GetAvatarActor())->FindAbilityInfoForAbilityTag(AbilityTag).AbilityType;
+	SelectedSpellTags.AbilityTypeTag = AbilityInfos->FindAbilityInfoForAbilityTag(AbilityTag).AbilityType;
 	ShouldEnableSpellButton(AbilityStatusTag, bEnableSpendPoints,bEnableEquipped);
 	FString Description;
 	FString NextLevelDescription;
-	GetAuraASC()->GetDescriptionByAbilityTag(SelectedSpellTags.AbilityTag, Description, NextLevelDescription);
+	GetAuraASC()->GetDescriptionByAbilityTag(SelectedSpellTags.AbilityTag, Description, NextLevelDescription, AbilityInfos->FindAbilityInfoForAbilityTag(AbilityTag).LevelRequirement);
 	OnAbilitySpellGlobeSelected.Broadcast(bEnableSpendPoints, bEnableEquipped, Description, NextLevelDescription);
 }
 
@@ -129,7 +133,7 @@ void UAuraSpellMenuController::OnClickEquippedButton()
 	bWaitingEquipped = true;
 	FString Description;
 	FString NextLevelDescription;
-	GetAuraASC()->GetDescriptionByAbilityTag(SelectedSpellTags.AbilityTag, Description, NextLevelDescription);
+	GetAuraASC()->GetDescriptionByAbilityTag(SelectedSpellTags.AbilityTag, Description, NextLevelDescription,  AbilityInfos->FindAbilityInfoForAbilityTag(SelectedSpellTags.AbilityStatusTag).LevelRequirement);
 	OnAbilitySpellGlobeSelected.Broadcast(false, false, Description, NextLevelDescription);
 	CheckPlayWaitingEquippedAnim.Broadcast(SelectedSpellTags.AbilityTypeTag, bWaitingEquipped);
 

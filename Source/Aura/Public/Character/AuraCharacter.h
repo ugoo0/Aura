@@ -3,7 +3,6 @@
 #pragma once
 
 DECLARE_MULTICAST_DELEGATE(FOnControlledStateChanged);
-
 #include "CoreMinimal.h"
 #include "NiagaraComponent.h"
 #include "Character/AuraCharacterBase.h"

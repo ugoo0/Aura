@@ -10,6 +10,7 @@
 #include "AbilitySystem/Data/CharacterClassInfo.h"
 #include "AuraCharacterBase.generated.h"
 
+class UPassiveNiagaraComponent;
 class UDebuffNiagaraComponent;
 class UNiagaraSystem;
 class UAbilitySystemComponent;
@@ -69,11 +70,24 @@ public:
 	virtual USkeletalMeshComponent* GetWeapon_Implementation() const override;
 	/*end combat interface*/
 
+	/*NiagaraComponent*/
 	UPROPERTY(EditDefaultsOnly)
 	TObjectPtr<UDebuffNiagaraComponent>  DebuffBurnNiagaraComponent;
 
 	UPROPERTY(EditDefaultsOnly)
 	TObjectPtr<UDebuffNiagaraComponent>  DebuffStunNiagaraComponent;
+
+	UPROPERTY(EditDefaultsOnly)
+	TObjectPtr<USceneComponent>  PassiveAttachComponent;
+	
+	UPROPERTY(EditDefaultsOnly)
+	TObjectPtr<UPassiveNiagaraComponent>  HaloOfProtectionNiagaraComponent1;
+
+	UPROPERTY(EditDefaultsOnly)
+	TObjectPtr<UPassiveNiagaraComponent>  LifeSiphonNiagaraComponent1;
+
+	UPROPERTY(EditDefaultsOnly)
+	TObjectPtr<UPassiveNiagaraComponent>  ManaSiphonNiagaraComponent1;
 protected:
 	
 	virtual void BeginPlay() override;

@@ -11,6 +11,8 @@ DECLARE_MULTICAST_DELEGATE(FAbilitiesGiven);
 DECLARE_DELEGATE_OneParam(FForEachAbility,const FGameplayAbilitySpec&);
 DECLARE_MULTICAST_DELEGATE_ThreeParams(FAbilityStatusChanged,const FGameplayTag&/*Ability Tag*/, const FGameplayTag /*Ability StatusTag*/, int32 /*AbilityLevel*/);
 DECLARE_MULTICAST_DELEGATE_ThreeParams(FAbilitiesEquipped,const FGameplayTag&/*Ability Tag*/, const FGameplayTag /*PreSlotTag*/, FGameplayTag /*SlotTag*/);
+DECLARE_MULTICAST_DELEGATE_OneParam(FDeactivatePassiveAbility, const FGameplayTag& /*Tag End PassiveAbility*/);
+DECLARE_MULTICAST_DELEGATE_TwoParams(FOnPassiveStateChanged, const FGameplayTag& /*PassiveAbility*/, bool /*show Passive Niagara*/);
 
 /**
  * 
@@ -28,6 +30,11 @@ public:
 	FEFectAssetTags EffectAssetTags;
 	FAbilitiesGiven AbilitiesGivenDelegate;
 	FAbilitiesEquipped AbilitiesEquipped;
+	FOnPassiveStateChanged OnPassiveStateChanged;
+
+	UFUNCTION(NetMulticast,Unreliable)
+	void MulticastBroadcastPassiveState(const FGameplayTag& AbilityTag, bool IsActive);
+	
 	bool bStartupAbilitiesGiven = false;
 
 	void AddCharacterAbilities(TArray<TSubclassOf<UGameplayAbility>> StartupAbilities);
@@ -42,9 +49,10 @@ public:
 	FGameplayTag GetAbilityTagForAbilitySpec(const FGameplayAbilitySpec& AbilitySpec) const;
 	FGameplayTag GetInputTagForAbilitySpec(const FGameplayAbilitySpec& AbilitySpec) const;
 	FGameplayTag GetStatusTagForAbilitySpec(const FGameplayAbilitySpec& AbilitySpec) const;
-	FGameplayTag GetAbilityTagForInputTag(const FGameplayTag& InputTag) const;
-	FGameplayTag GetStatusTagForInputTag(const FGameplayTag& InputTag) const;
+	FGameplayTag GetAbilityTagForInputTag(const FGameplayTag& InputTag) ;
+	FGameplayTag GetStatusTagForInputTag(const FGameplayTag& InputTag) ;
 	
+	bool CheckIsPassiveAbility(const FGameplayAbilitySpec& AbilitySpec);
 	void UpgradeAttribute(const FGameplayTag& GameplayTag);
 
 	UFUNCTION(Server, Reliable)
@@ -66,9 +74,9 @@ public:
 	UFUNCTION(Client,Reliable)
 	void ClientEquippedAbility(const FGameplayTag& AbilityTag, const FGameplayTag& PreSlotTag, const FGameplayTag& SlotTag);
 	
-	bool GetDescriptionByAbilityTag(const FGameplayTag& GameplayTag, FString& OutDescription, FString& OutNextLevelDescription);
+	bool GetDescriptionByAbilityTag(const FGameplayTag& GameplayTag, FString& OutDescription, FString& OutNextLevelDescription, int32 LevelRequirement);
 
-	
+	FDeactivatePassiveAbility DeactivatePassiveAbility;
 protected:
 
     virtual void OnRep_ActivateAbilities() override;
@@ -78,6 +86,8 @@ protected:
 
 	UFUNCTION(Client,Reliable)
 	void ClientAbilityStatusChanged(const FGameplayTag& AbilityTag, const FGameplayTag& AbilityStatusTag, int32 AbilityLevel);
+
+
 private:
 	static FGameplayTag GetMatchTagForAbilitySpecAndFName(const FGameplayAbilitySpec& AbilitySpec, FName TagMatchName);
 };

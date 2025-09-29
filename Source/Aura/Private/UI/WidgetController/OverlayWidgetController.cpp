@@ -86,7 +86,11 @@ void UOverlayWidgetController::BindCallbackToDependencies()//绑定函数到属�
 		Info.AbilityTag = FAuraGameplayTags::Get().Abilities_None;
 		Info.InputTag = PreSlotTag;
 		FAbilityInfoDelegate.Broadcast(Info);
-		BroadcastAbilityInfo();
+
+		//set SpellEquippedGlobe
+		FAuraAbilityInfo InfoNew = AbilityInfos->FindAbilityInfoForAbilityTag(AbilityTag);
+		InfoNew.InputTag = SlotTag;
+		FAbilityInfoDelegate.Broadcast(InfoNew);
 	});
 
 }

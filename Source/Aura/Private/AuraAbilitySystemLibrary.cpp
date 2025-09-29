@@ -98,6 +98,7 @@ void UAuraAbilitySystemLibrary::GiveStartupAbilities(const UObject* WorldContext
 		if (ASC->GetAvatarActor()->Implements<UCombatInterface>())
 		{
 			Level = ICombatInterface::Execute_GetPlayerLevel(ASC->GetAvatarActor());
+			
 		}
 		for (auto Ability : DefaultInfo.StartupAbilities)
 		{

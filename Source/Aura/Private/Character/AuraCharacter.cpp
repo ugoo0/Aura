@@ -185,6 +185,22 @@ int32 AAuraCharacter::GetSpellPoints_Implementation() const
 	return AuraPlayerState->GetSpellPoints();
 }
 
+void AAuraCharacter::ShowMagicCircle_Implementation(UMaterialInterface* Material)
+{
+	if (AAuraPlayerController* PC = Cast<AAuraPlayerController>(GetController()))
+	{
+		PC->ShowMagicCircle(Material);
+	}
+}
+
+void AAuraCharacter::HideMagicCircle_Implementation()
+{
+	if (AAuraPlayerController* PC = Cast<AAuraPlayerController>(GetController()))
+	{
+		PC->HideMagicCircle();
+	}
+}
+
 void AAuraCharacter::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const
 {
 	Super::GetLifetimeReplicatedProps(OutLifetimeProps);

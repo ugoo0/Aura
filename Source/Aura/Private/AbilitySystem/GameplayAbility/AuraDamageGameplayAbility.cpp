@@ -7,7 +7,7 @@
 #include "AbilitySystemComponent.h"
 #include "AuraAbilityTypes.h"
 
-FDamageEffectParams UAuraDamageGameplayAbility::GetDamageEffectParamsForTarget(AActor* Target) const
+FDamageEffectParams UAuraDamageGameplayAbility::GetDamageEffectParamsForTarget(AActor* Target, FVector RadialOrigin) const
 {
 	FDamageEffectParams Params;
 	Params.WorldContext = GetAvatarActorFromActorInfo();
@@ -32,6 +32,20 @@ FDamageEffectParams UAuraDamageGameplayAbility::GetDamageEffectParamsForTarget(A
 		const FVector ToTarget = Rotation.Vector();
 		Params.KnockbackForce = ToTarget * KnockbackForceMagnitude;
 		Params.DeathImpulse = ToTarget * DeathImpulseMagnitude;
+	}
+
+	if (bIsRadialDamage)
+	{
+		Params.bIsRadialDamage = bIsRadialDamage;
+		Params.RadialDamageInnerRadius = RadialDamageInnerRadius;
+		Params.RadialDamageOuterRadius = RadialDamageOuterRadius;
+		Params.RadialDamageOrigin = RadialOrigin;
+
+		FRotator Rotation = (Target->GetActorLocation()-RadialOrigin).Rotation();
+		Rotation.Pitch = 45.f;
+		const FVector ToRadialOrigin = Rotation.Vector();
+		Params.KnockbackForce = ToRadialOrigin * KnockbackForceMagnitude;
+		Params.DeathImpulse = ToRadialOrigin * DeathImpulseMagnitude;
 	}
 	return  Params;
 }

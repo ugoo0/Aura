@@ -7,10 +7,12 @@
 #include "Interaction/EnemyInterface.h"
 #include "GameplayTagContainer.h"
 #include "AbilitySystem/AuraAbilitySystemComponent.h"
+#include "Actor/MagicCircle.h"
 #include "Components/SplineComponent.h"
 #include "AuraPlayerController.generated.h"
 
 
+class UNiagaraSystem;
 class UDamageWidgetComponent;
 struct FGameplayTag;
 class UInputMappingContext;
@@ -31,6 +33,12 @@ public:
 
 	UFUNCTION(Client, Reliable)
 	void ShowDamageNumber(float Damage, ACharacter* Target,const FDamageState& DamageState) const;
+
+	UFUNCTION(BlueprintCallable)
+	void ShowMagicCircle(UMaterialInterface* Material);
+
+	UFUNCTION(BlueprintCallable)
+	void HideMagicCircle();
 protected:
 	virtual void BeginPlay() override;
 	virtual void SetupInputComponent() override;
@@ -91,5 +99,15 @@ private:
 
 	UFUNCTION()
 	bool CharacterIsControlled() const;//玩家状态是否被控制 比如 眩晕
+
+	UPROPERTY(EditDefaultsOnly, Category="Combat")
+	TSubclassOf<AMagicCircle> MagicCircleClass;
+
+	UPROPERTY()
+	TObjectPtr<AMagicCircle> MagicCircle;
+
+	UFUNCTION()
+	void UpdateMagicCirclePosition();
 };
- 
+
+

@@ -82,7 +82,9 @@ void FAuraGameplayTags::InitializeNativeGameplayTags()
 	AuraGameplayTags.Abilities_Attack = UGameplayTagsManager::Get().AddNativeGameplayTag(FName("Abilities.Attack"), FString("普通攻击Tag"));
 	AuraGameplayTags.Abilities_Summon = UGameplayTagsManager::Get().AddNativeGameplayTag(FName("Abilities.Summon"), FString("召唤随处Tag"));
 	AuraGameplayTags.Abilities_Fire_FireBolt = UGameplayTagsManager::Get().AddNativeGameplayTag(FName("Abilities.Fire.FireBolt"), FString("火球术Tag"));
-	AuraGameplayTags.Cooldown_Lighting_Electrocute = UGameplayTagsManager::Get().AddNativeGameplayTag(FName("Abilities.Lighting.Electrocute"), FString("Electrocute Tag"));
+	AuraGameplayTags.Abilities_Lighting_Electrocute = UGameplayTagsManager::Get().AddNativeGameplayTag(FName("Abilities.Lighting.Electrocute"), FString("Electrocute Tag"));
+	AuraGameplayTags.Abilities_Arcane_Shards = UGameplayTagsManager::Get().AddNativeGameplayTag(FName("Abilities.Arcane.Shards"), FString("ShardsTag"));
+
 
 	
 	AuraGameplayTags.Abilities_HitReact = UGameplayTagsManager::Get().AddNativeGameplayTag(FName("Abilities.HitReact"), FString("受击反应Tag"));
@@ -103,6 +105,7 @@ void FAuraGameplayTags::InitializeNativeGameplayTags()
 	/*Abilities Cooldown Tags */
 	AuraGameplayTags.Cooldown_Fire_FireBolt = UGameplayTagsManager::Get().AddNativeGameplayTag(FName("Cooldown.Fire.FireBolt"), FString("火球术冷却Tag"));
 	AuraGameplayTags.Cooldown_Lighting_Electrocute = UGameplayTagsManager::Get().AddNativeGameplayTag(FName("Cooldown.Lighting.Electrocute"), FString("电击冷却Tag"));
+	AuraGameplayTags.Cooldown_Arcane_Shards = UGameplayTagsManager::Get().AddNativeGameplayTag(FName("Cooldown.Arcane.Shards"), FString("Shards Tag"));
 
 	/*Montage Tag*/
 	AuraGameplayTags.CombatSocket_Weapon = UGameplayTagsManager::Get().AddNativeGameplayTag(FName("CombatSocket.Weapon"), FString("使用武器攻击"));

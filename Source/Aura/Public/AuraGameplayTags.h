@@ -98,10 +98,12 @@ public:
 	
 	FGameplayTag Abilities_Fire_FireBolt;
 	FGameplayTag Abilities_Lighting_Electrocute;
+	FGameplayTag Abilities_Arcane_Shards;
 	
 	/* Ability Cooldown Tag */
 	FGameplayTag Cooldown_Fire_FireBolt;
 	FGameplayTag Cooldown_Lighting_Electrocute;
+	FGameplayTag Cooldown_Arcane_Shards;
 	
 	
 	/*Effect*/

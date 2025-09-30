@@ -13,6 +13,14 @@
 #include "Net/UnrealNetwork.h"
 
 
+float AAuraCharacterBase::TakeDamage(float DamageAmount, struct FDamageEvent const& DamageEvent,
+	class AController* EventInstigator, AActor* DamageCauser)
+{
+	const float Damage =  Super::TakeDamage(DamageAmount, DamageEvent, EventInstigator, DamageCauser);
+	OnDamageTakeSignature.Broadcast(Damage);
+	return Damage;
+}
+
 // Sets default values
 AAuraCharacterBase::AAuraCharacterBase()
 {
@@ -162,6 +170,11 @@ FOnASCRegistered& AAuraCharacterBase::GetASCRegisteredDelegate()
 USkeletalMeshComponent* AAuraCharacterBase::GetWeapon_Implementation() const
 {
 	return  Weapon;
+}
+
+FOnDamageTakeSignature& AAuraCharacterBase::GetOnDamageTakeDelegate()
+{
+	return OnDamageTakeSignature;
 }
 
 // Called when the game starts or when spawned

@@ -59,6 +59,18 @@ public:
 
 	UPROPERTY()
 	float KnockbackChance = 0.f;
+
+	UPROPERTY()
+	bool bIsRadialDamage = false;
+	
+	UPROPERTY()
+	float RadialDamageInnerRadius = 0.f;
+	
+	UPROPERTY()
+	float RadialDamageOuterRadius = 0.f;
+	
+	UPROPERTY()
+	FVector RadialDamageOrigin = FVector::ZeroVector;
 };
 
 
@@ -67,12 +79,14 @@ struct FAuraGameplayEffectContext :  public FGameplayEffectContext
 {
 	GENERATED_BODY()
 public:
+	/*Damage Show States*/
 	bool GetIsCriticalHit() const { return bIsCriticalHit;}
 	void SetIsCriticalHit(bool bInIsCriticalHit) { bIsCriticalHit = bInIsCriticalHit;}
 	
 	bool GetIsBlockHit() const { return bIsBlockHit;}
 	void SetIsBlockHit(bool bInIsBlockHit) { bIsBlockHit = bInIsBlockHit;}
 
+	/*Debuff*/
 	bool GetIsSuccessfulDebuff() const { return bIsSuccessfulDebuff;}
 	void SetIsSuccessfulDebuff(bool bInIsSuccessfulDebuff) { bIsSuccessfulDebuff = bInIsSuccessfulDebuff;}
 	
@@ -85,14 +99,30 @@ public:
 	float GetDebuffFrequency() const { return DebuffFrequency;}
 	void SetDebuffFrequency(float bInDebuffFrequency) { DebuffFrequency = bInDebuffFrequency;}
 
+	TSharedPtr<FGameplayTag> GetDamageType() const { return DamageType;}
+	void SetDamageType(const TSharedPtr<FGameplayTag>& bInDamageType) { DamageType =  bInDamageType;}
+
+	/*Add Impulse and Force*/
 	FVector GetDeathImpulse() const { return DeathImpulse;}
 	void SetDeathImpulse(const FVector& InDeathImpulse) { DeathImpulse = InDeathImpulse;}
 
 	FVector GetKnockbackForce() const { return KnockbackForce;}
 	void SetKnockbackForce(const FVector& InKnockbackForce) { KnockbackForce = InKnockbackForce;}
 	
-	TSharedPtr<FGameplayTag> GetDamageType() const { return DamageType;}
-	void SetDamageType(const TSharedPtr<FGameplayTag>& bInDamageType) { DamageType =  bInDamageType;}
+
+
+	/*Radial Damage*/
+	bool GetIsRadialDamage() const { return bIsRadialDamage;}
+	void SetIsRadialDamage(bool InbIsRadialDamage) { bIsRadialDamage = InbIsRadialDamage;}
+	
+	float GeRadialDamageInnerRadius() const { return RadialDamageInnerRadius;}
+	void SetRadialDamageInnerRadius(float InRadialDamageInnerRadius) { RadialDamageInnerRadius = InRadialDamageInnerRadius;}
+
+	float GetRadialDamageOuterRadius() const { return RadialDamageOuterRadius;}
+	void SetRadialDamageOuterRadius(float InRadialDamageOuterRadius) { RadialDamageOuterRadius = InRadialDamageOuterRadius;}
+
+	FVector GetRadialDamageOrigin() const { return RadialDamageOrigin;}
+	void SetRadialDamageOrigin(const FVector& InRadialDamageOrigin) { RadialDamageOrigin = InRadialDamageOrigin;}
 	
 	virtual FAuraGameplayEffectContext* Duplicate() const override;
 	virtual UScriptStruct* GetScriptStruct() const override;
@@ -125,6 +155,18 @@ private:
 
 	UPROPERTY()
 	FVector KnockbackForce = FVector::ZeroVector;
+
+	UPROPERTY()
+	bool bIsRadialDamage = false;
+	
+	UPROPERTY()
+	float RadialDamageInnerRadius = 0.f;
+	
+	UPROPERTY()
+	float RadialDamageOuterRadius = 0.f;
+	
+	UPROPERTY()
+	FVector RadialDamageOrigin = FVector::ZeroVector;
 };
 
 template<>

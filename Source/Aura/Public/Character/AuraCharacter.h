@@ -42,6 +42,8 @@ public:
 	virtual int32 GetXP_Implementation() const override;
 	virtual int32 GetAttributePoints_Implementation() const override;
 	virtual int32 GetSpellPoints_Implementation() const override;
+	virtual void ShowMagicCircle_Implementation(UMaterialInterface* Material) override;
+	virtual void HideMagicCircle_Implementation() override;
 	/**Aura Interface**/
 
 	virtual void GetLifetimeReplicatedProps(TArray< FLifetimeProperty > & OutLifetimeProps) const override;

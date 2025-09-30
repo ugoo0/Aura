@@ -14,8 +14,6 @@
 
 FString UAuraFireBolt::GetDescription(int32 Level)
 {
-	
-	
 	const int32 Damage = GetDamageByLevel(Level);
 	const int32 ManaCost = FMath::Abs(GetManaCost(Level));
 	const float Cooldown = GetCoolDown(Level);
@@ -31,11 +29,11 @@ FString UAuraFireBolt::GetDescription(int32 Level)
 			//ManaCost
 			"<Small>ManaCost : </><ManaCost>%d</>\n"
 			//Cooldown
-			"<Small>Cooldown : </><ManaCost>%.1f</>\n\n"
+			"<Small>Cooldown : </><Cooldown>%.1f</>\n\n"
 			//Desc
-			"<Default>Launches a fire bolt, exploding on impact and dealing :</>"
+			"<Default>Launches a fire bolt, exploding on impact and dealing </>"
 			"<Damage>%d</>" //Damage
-			"<Default>fire Damage with a chance to burn</>\n"
+			"<Default> fire Damage with a chance to burn.</>\n"
 			
 			),
 			Level,
@@ -54,11 +52,11 @@ FString UAuraFireBolt::GetDescription(int32 Level)
 			//ManaCost
 			"<Small>ManaCost : </><ManaCost>%d</>\n"
 			//Cooldown
-			"<Small>Cooldown : </><ManaCost>%.1f</>\n\n"
+			"<Small>Cooldown : </><Cooldown>%.1f</>\n\n"
 			//Desc
-			"<Default>Launches %d fire bolts, exploding on impact and dealing :</>"
+			"<Default>Launches %d fire bolts, exploding on impact and dealing </>"
 			"<Damage>%d</>" //Damage
-			"<Default>fire Damage with a chance to burn</>\n"
+			"<Default> fire Damage with a chance to burn.</>\n"
 			),
 			Level,
 			ManaCost,
@@ -76,17 +74,17 @@ FString UAuraFireBolt::GetNextLevelDescription(int32 Level)
 	const float Cooldown = GetCoolDown(Level);
 	FString Desc = FString::Printf(TEXT(
 		//Title
-		"<Title>FireBolt</>\n\n "
+		"<Title>FireBolt</>\n\n"
 		//Level
 		"<Small>Level : </><Level>%d</>\n"
 		//ManaCost
 		"<Small>ManaCost : </><ManaCost>%d</>\n"
 		//Cooldown
-		"<Small>Cooldown : </><ManaCost>%.1f</>\n\n"
+		"<Small>Cooldown : </><Cooldown>%.1f</>\n\n"
 		//Desc
-		"<Default>Launches %d fire bolts, exploding on impact and dealing :</>"
+		"<Default>Launches %d fire bolts, exploding on impact and dealing </>"
 		"<Damage>%d</>" //Damage
-		"<Default>fire Damage with a chance to burn</>\n"
+		"<Default> fire Damage with a chance to burn.</>\n"
 		),
 		Level,
 		ManaCost,

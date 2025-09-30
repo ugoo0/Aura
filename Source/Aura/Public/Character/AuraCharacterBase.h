@@ -1,5 +1,3 @@
-// Fill out your copyright notice in the Description page of Project Settings.
-
 #pragma once
 
 #include "CoreMinimal.h"
@@ -18,12 +16,17 @@ class UAttributeSet;
 class UGameplayEffect;
 class UGameplayAbility;
 
+
 UCLASS(Abstract)
 class AURA_API AAuraCharacterBase : public ACharacter, public IAbilitySystemInterface, public ICombatInterface
 {
 	GENERATED_BODY()
 
 public:
+	virtual float TakeDamage(float DamageAmount, struct FDamageEvent const& DamageEvent, class AController* EventInstigator, AActor* DamageCauser) override;
+	
+	FOnDamageTakeSignature OnDamageTakeSignature;
+	
 	AAuraCharacterBase();
 	virtual UAbilitySystemComponent* GetAbilitySystemComponent() const override;
 	UAttributeSet* GetAttributeSet()  const {return AttributeSet;};
@@ -68,6 +71,7 @@ public:
 	virtual FOnActorDead& GetActorDeadDelegate() override;
 	virtual FOnASCRegistered& GetASCRegisteredDelegate() override;
 	virtual USkeletalMeshComponent* GetWeapon_Implementation() const override;
+	virtual FOnDamageTakeSignature& GetOnDamageTakeDelegate() override;	
 	/*end combat interface*/
 
 	/*NiagaraComponent*/

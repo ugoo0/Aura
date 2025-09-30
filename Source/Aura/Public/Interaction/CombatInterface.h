@@ -1,5 +1,3 @@
-// Fill out your copyright notice in the Description page of Project Settings.
-
 #pragma once
 
 
@@ -12,6 +10,7 @@ class UAbilitySystemComponent;
 
 DECLARE_MULTICAST_DELEGATE_OneParam(FOnASCRegistered, UAbilitySystemComponent*)
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnActorDead, AActor*, Actor);
+DECLARE_MULTICAST_DELEGATE_OneParam(FOnDamageTakeSignature, float/*Damage*/)
 
 enum class ECharacterClassType : uint8;
 class UNiagaraSystem;
@@ -104,6 +103,9 @@ public:
 
 	virtual FOnActorDead& GetActorDeadDelegate() = 0;
 
+	virtual FOnDamageTakeSignature& GetOnDamageTakeDelegate() = 0;
+	
+	
 	UFUNCTION(BlueprintImplementableEvent, BlueprintCallable)
 	void SetInShockLoop(bool InShockLoop);
 

@@ -10,7 +10,9 @@
 #include "NavigationSystem.h"
 #include "NiagaraFunctionLibrary.h"
 #include "NiagaraSystem.h"
+#include "Aura/Aura.h"
 #include "Character/AuraCharacter.h"
+#include "Components/DecalComponent.h"
 #include "Interaction/EnemyInterface.h"
 #include "Input/AuraInputComponent.h"
 #include "GameFramework/Character.h"
@@ -77,8 +79,38 @@ void AAuraPlayerController::PlayerTick(float DeltaTime)
 {
 	Super::PlayerTick(DeltaTime);
 	CursorTrace();
+	UpdateMagicCirclePosition();
 	AutoRun();
 }
+
+void AAuraPlayerController::UpdateMagicCirclePosition()
+{
+	if (IsValid(MagicCircle))
+	{
+		MagicCircle->SetActorLocation(CursorHit.ImpactPoint);
+	}
+}
+
+void AAuraPlayerController::ShowMagicCircle(UMaterialInterface* Material)
+{
+	if (!IsValid(MagicCircle))
+	{
+		MagicCircle = GetWorld()->SpawnActor<AMagicCircle>(MagicCircleClass);
+		if (Material)
+		{
+			MagicCircle->DecalComponent->SetMaterial(0, Material);
+		}
+	}
+}
+
+void AAuraPlayerController::HideMagicCircle()
+{
+	if (IsValid(MagicCircle))
+	{
+		MagicCircle->Destroy();
+	}
+}
+
 void AAuraPlayerController::ShowDamageNumber_Implementation(float Damage, ACharacter* Target,const FDamageState& DamageState) const
 {
 	if (IsValid(Target) && DamageTextComponentClass)
@@ -101,7 +133,8 @@ void AAuraPlayerController::CursorTrace()
 		CurActor = nullptr;
 		return;
 	}
-	GetHitResultUnderCursor(ECollisionChannel::ECC_Visibility, false, CursorHit);
+	const ECollisionChannel Channel = IsValid(MagicCircle) ? ECC_EXCLUDEPLAYERS : ECC_Visibility;
+	GetHitResultUnderCursor(Channel, false, CursorHit);
 	if (!CursorHit.bBlockingHit) return;
 	LastActor = CurActor;
 	CurActor = Cast<IEnemyInterface>(CursorHit.GetActor());

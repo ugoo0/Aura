@@ -17,7 +17,7 @@ class AURA_API UAuraDamageGameplayAbility : public UAuraGameplayAbility
 
 public:
 	UFUNCTION(BlueprintPure)
-	FDamageEffectParams GetDamageEffectParamsForTarget(AActor* Target = nullptr) const;
+	FDamageEffectParams GetDamageEffectParamsForTarget(AActor* Target = nullptr, FVector RadialOrigin = FVector::ZeroVector) const;
 	
 	UPROPERTY(EditDefaultsOnly,BlueprintReadOnly, Category = "Combat")
 	TSubclassOf<UGameplayEffect> DamageEffectClass;
@@ -54,5 +54,16 @@ public:
 
 	UFUNCTION(BlueprintCallable, Category="Combat")
 	float GetDamageByLevel(int32 Level) const;
+
+	/*ridial damage*/
+	UPROPERTY(EditDefaultsOnly, Category="Combat")
+	bool bIsRadialDamage = false;
+	
+	UPROPERTY(EditDefaultsOnly,BlueprintReadOnly, Category="Combat")
+	float RadialDamageInnerRadius = 0.f;
+	
+	UPROPERTY(EditDefaultsOnly,BlueprintReadOnly, Category="Combat")
+	float RadialDamageOuterRadius = 0.f;
+	
 	
 };

@@ -18,9 +18,10 @@ class AURA_API AAuraProjectile : public AActor
 	
 public:	
 	AAuraProjectile();
+	bool CheckIsValidOverlay(const AActor* OtherActor);
 
 	UFUNCTION()
-	void OnSphereOverlay(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult);
+	virtual void OnSphereOverlay(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult);
 
 	UPROPERTY(VisibleAnywhere)
 	TObjectPtr<UProjectileMovementComponent> ProjectileMovement;
@@ -32,15 +33,26 @@ public:
 
 	UFUNCTION()
 	void HomingTargetDead(AActor* Actor);
+
+	UPROPERTY(BlueprintReadWrite)
+	bool bOverlay = false;
 protected:
 	virtual void BeginPlay() override;
 	virtual void Destroyed() override;
 
+	UFUNCTION(BlueprintCallable)
+	virtual void OnHit();
+	
 	UPROPERTY(VisibleAnywhere,BlueprintReadOnly)
 	TObjectPtr<USphereComponent> Sphere;
-private:
 
 
+	
+	UPROPERTY(EditAnywhere)
+	float LifeSpan = 6.0f;
+
+	UPROPERTY(EditAnywhere)
+	TArray<FName> OverlayTags;
 
 	UPROPERTY(EditAnywhere)
 	TObjectPtr<UNiagaraSystem> ImpactNiagara;
@@ -53,13 +65,9 @@ private:
 
 	UPROPERTY()
 	TObjectPtr<UAudioComponent> LoopingSoundComp;
+private:
+
 	
-	bool bOverlay = false;
 
-	UPROPERTY(EditAnywhere)
-	float LifeSpan = 6.0f;
-
-	UPROPERTY(EditAnywhere)
-	TArray<FName> OverlayTags;
 	
 };

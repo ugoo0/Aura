@@ -27,9 +27,9 @@ AAuraCharacterBase::AAuraCharacterBase()
  	// Set this character to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = false;
 
-	DebuffBurnNiagaraComponent = CreateDefaultSubobject<UDebuffNiagaraComponent>("DebuffBurnNiagaraComponent");
-	DebuffBurnNiagaraComponent->DebuffType = FAuraGameplayTags::Get().Debuff_Burn;
-	DebuffBurnNiagaraComponent->SetupAttachment(GetRootComponent());
+	DebuffBurnNiagaraComponent1 = CreateDefaultSubobject<UDebuffNiagaraComponent>("DebuffBurnNiagaraComponent1");
+	DebuffBurnNiagaraComponent1->DebuffType = FAuraGameplayTags::Get().Debuff_Burn;
+	DebuffBurnNiagaraComponent1->SetupAttachment(GetRootComponent());
 
 	DebuffStunNiagaraComponent = CreateDefaultSubobject<UDebuffNiagaraComponent>("DebuffStunNiagaraComponent");
 	DebuffStunNiagaraComponent->DebuffType = FAuraGameplayTags::Get().Debuff_Stun;
@@ -275,11 +275,11 @@ void AAuraCharacterBase::OnRep_BurnStateChanged()
 {
 	if (bIsBurn)
 	{
-		DebuffBurnNiagaraComponent->Activate();
+		DebuffBurnNiagaraComponent1->Activate();
 	}
 	else
 	{
-		DebuffBurnNiagaraComponent->Deactivate();
+		DebuffBurnNiagaraComponent1->Deactivate();
 	}
 }
 

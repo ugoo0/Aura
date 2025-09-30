@@ -13,7 +13,6 @@ FDamageEffectParams UAuraDamageGameplayAbility::GetDamageEffectParamsForTarget(A
 	Params.WorldContext = GetAvatarActorFromActorInfo();
 	Params.DamageEffectClass = DamageEffectClass;
 	Params.SourceASC = GetAbilitySystemComponentFromActorInfo();
-	Params.TargetASC = UAbilitySystemBlueprintLibrary::GetAbilitySystemComponent(Target);
 	Params.BaseDamage = DamageScalableFloat.GetValueAtLevel(GetAbilityLevel());
 	Params.DamageType = DamageType;
 	Params.AbilityLevel = GetAbilityLevel();
@@ -27,11 +26,12 @@ FDamageEffectParams UAuraDamageGameplayAbility::GetDamageEffectParamsForTarget(A
 	Params.KnockbackChance = KnockbackChance;
 	if (IsValid(Target))
 	{
+		Params.TargetASC = UAbilitySystemBlueprintLibrary::GetAbilitySystemComponent(Target);//一开始没有目标的情况 在造成伤害的时候需要手动设置
 		FRotator Rotation = (Target->GetActorLocation()-GetAvatarActorFromActorInfo()->GetActorLocation()).Rotation();
 		Rotation.Pitch = 45.f;
 		const FVector ToTarget = Rotation.Vector();
-		Params.KnockbackForce = ToTarget * KnockbackForceMagnitude;
-		Params.DeathImpulse = ToTarget * DeathImpulseMagnitude;
+		Params.KnockbackForce = ToTarget * KnockbackForceMagnitude;//造成伤害的时候设置
+		Params.DeathImpulse = ToTarget * DeathImpulseMagnitude;//造成伤害的时候设置
 	}
 
 	if (bIsRadialDamage)
@@ -47,6 +47,83 @@ FDamageEffectParams UAuraDamageGameplayAbility::GetDamageEffectParamsForTarget(A
 		Params.KnockbackForce = ToRadialOrigin * KnockbackForceMagnitude;
 		Params.DeathImpulse = ToRadialOrigin * DeathImpulseMagnitude;
 	}
+	return  Params;
+}
+
+FDamageEffectParams UAuraDamageGameplayAbility::GetDamageEffectParamsForTargetOverride(AActor* Target,
+	bool InIsRadialDamage, FVector InRadialOrigin,float InRadialDamageOuterRadius, float InRadialDamageInnerRadius, FVector InDeathImpulse, FVector InKnockbackForce) const
+{
+	FDamageEffectParams Params;
+	Params.WorldContext = GetAvatarActorFromActorInfo();
+	Params.DamageEffectClass = DamageEffectClass;
+	Params.SourceASC = GetAbilitySystemComponentFromActorInfo();
+	Params.TargetASC = UAbilitySystemBlueprintLibrary::GetAbilitySystemComponent(Target);//一开始没有目标的情况 在造成伤害的时候需要手动设置
+	Params.BaseDamage = DamageScalableFloat.GetValueAtLevel(GetAbilityLevel());
+	Params.DamageType = DamageType;
+	Params.AbilityLevel = GetAbilityLevel();
+
+	Params.DebuffChance = DebuffChance;
+	Params.DebuffDuration = DebuffDuration;
+	Params.DebuffDamage = DebuffDamage;
+	Params.DebuffFrequency = DebuffFrequency;
+	Params.DeathImpulseMagnitude = DeathImpulseMagnitude;
+	Params.KnockbackForceMagnitude = KnockbackForceMagnitude;
+	Params.KnockbackChance = KnockbackChance;
+	Params.bIsRadialDamage = bIsRadialDamage;
+	Params.RadialDamageInnerRadius = RadialDamageInnerRadius;
+	Params.RadialDamageOuterRadius = RadialDamageOuterRadius;
+	
+	if (IsValid(Target))
+	{
+		FRotator Rotation = (Target->GetActorLocation()-GetAvatarActorFromActorInfo()->GetActorLocation()).Rotation();
+		Rotation.Pitch = 45.f;
+		const FVector ToTarget = Rotation.Vector();
+		Params.KnockbackForce = ToTarget * KnockbackForceMagnitude;//造成伤害的时候设置
+		Params.DeathImpulse = ToTarget * DeathImpulseMagnitude;//造成伤害的时候设置
+	}
+
+	if (InIsRadialDamage)
+	{
+		Params.bIsRadialDamage = InIsRadialDamage;
+		Params.RadialDamageOrigin = InRadialOrigin;
+		if (InRadialDamageOuterRadius)
+		{
+			Params.RadialDamageOuterRadius = InRadialDamageOuterRadius;
+		}
+		else
+		{
+			Params.RadialDamageOuterRadius = RadialDamageOuterRadius;
+		}
+		if (InRadialDamageInnerRadius)
+		{
+			Params.RadialDamageInnerRadius = InRadialDamageInnerRadius;
+			
+		}
+		else
+		{
+			Params.RadialDamageInnerRadius = RadialDamageInnerRadius;
+		}
+		
+		
+		
+		FRotator Rotation = (Target->GetActorLocation()-InRadialOrigin).Rotation();
+		Rotation.Pitch = 45.f;
+		const FVector ToRadialOrigin = Rotation.Vector();
+		Params.KnockbackForce = ToRadialOrigin * KnockbackForceMagnitude;
+		Params.DeathImpulse = ToRadialOrigin * DeathImpulseMagnitude;
+	}
+
+	if (!InDeathImpulse.IsZero())
+	{
+		Params.DeathImpulse = InDeathImpulse * DeathImpulseMagnitude;
+	}
+
+	if (!InKnockbackForce.IsZero())
+	{
+		Params.KnockbackForce = InKnockbackForce * KnockbackForceMagnitude;
+	}
+
+	
 	return  Params;
 }
 

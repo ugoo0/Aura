@@ -81,7 +81,9 @@ void FAuraGameplayTags::InitializeNativeGameplayTags()
 	
 	AuraGameplayTags.Abilities_Attack = UGameplayTagsManager::Get().AddNativeGameplayTag(FName("Abilities.Attack"), FString("普通攻击Tag"));
 	AuraGameplayTags.Abilities_Summon = UGameplayTagsManager::Get().AddNativeGameplayTag(FName("Abilities.Summon"), FString("召唤随处Tag"));
+
 	AuraGameplayTags.Abilities_Fire_FireBolt = UGameplayTagsManager::Get().AddNativeGameplayTag(FName("Abilities.Fire.FireBolt"), FString("火球术Tag"));
+	AuraGameplayTags.Abilities_Fire_FireBlast = UGameplayTagsManager::Get().AddNativeGameplayTag(FName("Abilities.Fire.FireBlast"), FString("FireBlast Tag"));
 	AuraGameplayTags.Abilities_Lighting_Electrocute = UGameplayTagsManager::Get().AddNativeGameplayTag(FName("Abilities.Lighting.Electrocute"), FString("Electrocute Tag"));
 	AuraGameplayTags.Abilities_Arcane_Shards = UGameplayTagsManager::Get().AddNativeGameplayTag(FName("Abilities.Arcane.Shards"), FString("ShardsTag"));
 
@@ -103,6 +105,7 @@ void FAuraGameplayTags::InitializeNativeGameplayTags()
 	AuraGameplayTags.Abilities_Passive_LifeSiphon = UGameplayTagsManager::Get().AddNativeGameplayTag(FName("Abilities.Passive.LifeSiphon"), FString("生命吸取"));
 	AuraGameplayTags.Abilities_Passive_ManaSiphon = UGameplayTagsManager::Get().AddNativeGameplayTag(FName("Abilities.Passive.ManaSiphon"), FString("蓝吸取"));
 	/*Abilities Cooldown Tags */
+	AuraGameplayTags.Cooldown_Fire_FireBlast = UGameplayTagsManager::Get().AddNativeGameplayTag(FName("Cooldown.Fire.FireBlast"), FString("FireBlast冷却Tag"));
 	AuraGameplayTags.Cooldown_Fire_FireBolt = UGameplayTagsManager::Get().AddNativeGameplayTag(FName("Cooldown.Fire.FireBolt"), FString("火球术冷却Tag"));
 	AuraGameplayTags.Cooldown_Lighting_Electrocute = UGameplayTagsManager::Get().AddNativeGameplayTag(FName("Cooldown.Lighting.Electrocute"), FString("电击冷却Tag"));
 	AuraGameplayTags.Cooldown_Arcane_Shards = UGameplayTagsManager::Get().AddNativeGameplayTag(FName("Cooldown.Arcane.Shards"), FString("Shards Tag"));
@@ -126,6 +129,9 @@ void FAuraGameplayTags::InitializeNativeGameplayTags()
 	AuraGameplayTags.Player_Block_InputReleased = UGameplayTagsManager::Get().AddNativeGameplayTag(FName("Player.Block.InputReleased"), FString("阻塞放开Tag"));
 	AuraGameplayTags.Player_Block_Move = UGameplayTagsManager::Get().AddNativeGameplayTag(FName("Player.Block.Move"), FString("阻塞玩家移动Tag"));
 
+	/*Gameplay Cue*/
+	AuraGameplayTags.GameplayCue_FireBlast = UGameplayTagsManager::Get().AddNativeGameplayTag(FName("GameplayCue.FireBlast"), FString("GameplayCue FireBlast Tag"));
+	
 	
 	AuraGameplayTags.AttributesTag.Reset();
 	AuraGameplayTags.AttributesTag.Add(AuraGameplayTags.Attributes_Primary_Intelligence);

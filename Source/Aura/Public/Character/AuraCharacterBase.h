@@ -75,8 +75,8 @@ public:
 	/*end combat interface*/
 
 	/*NiagaraComponent*/
-	UPROPERTY(EditDefaultsOnly)
-	TObjectPtr<UDebuffNiagaraComponent>  DebuffBurnNiagaraComponent;
+	UPROPERTY(VisibleAnywhere)
+	TObjectPtr<UDebuffNiagaraComponent>  DebuffBurnNiagaraComponent1;
 
 	UPROPERTY(EditDefaultsOnly)
 	TObjectPtr<UDebuffNiagaraComponent>  DebuffStunNiagaraComponent;

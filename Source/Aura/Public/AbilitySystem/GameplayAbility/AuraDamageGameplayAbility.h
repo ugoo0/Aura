@@ -17,7 +17,10 @@ class AURA_API UAuraDamageGameplayAbility : public UAuraGameplayAbility
 
 public:
 	UFUNCTION(BlueprintPure)
-	FDamageEffectParams GetDamageEffectParamsForTarget(AActor* Target = nullptr, FVector RadialOrigin = FVector::ZeroVector) const;
+	FDamageEffectParams GetDamageEffectParamsForTarget(AActor* Target = nullptr, FVector RadialOrigin = FVector::ZeroVector) const;//初始化的时候可以调用
+
+	UFUNCTION(BlueprintPure)//造成伤害的时候调用
+	FDamageEffectParams GetDamageEffectParamsForTargetOverride(AActor* Target = nullptr, bool InIsRadialDamage = false,FVector InRadialOrigin = FVector::ZeroVector, float InRadialDamageOuterRadius = 0.f, float InRadialDamageInnerRadius = 0.f,FVector InDeathImpulse = FVector::ZeroVector, FVector InKnockbackForce = FVector::ZeroVector) const;
 	
 	UPROPERTY(EditDefaultsOnly,BlueprintReadOnly, Category = "Combat")
 	TSubclassOf<UGameplayEffect> DamageEffectClass;

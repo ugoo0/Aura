@@ -97,11 +97,14 @@ public:
 	FGameplayTag Abilities_Passive_ManaSiphon;
 	
 	FGameplayTag Abilities_Fire_FireBolt;
+	FGameplayTag Abilities_Fire_FireBlast;
+	
 	FGameplayTag Abilities_Lighting_Electrocute;
 	FGameplayTag Abilities_Arcane_Shards;
 	
 	/* Ability Cooldown Tag */
 	FGameplayTag Cooldown_Fire_FireBolt;
+	FGameplayTag Cooldown_Fire_FireBlast;
 	FGameplayTag Cooldown_Lighting_Electrocute;
 	FGameplayTag Cooldown_Arcane_Shards;
 	
@@ -126,6 +129,10 @@ public:
 	FGameplayTag Player_Block_InputReleased;
 	FGameplayTag Player_Block_InputHeld;
 	FGameplayTag Player_Block_Move;
+
+	/*Gameplay cue*/
+	FGameplayTag GameplayCue_FireBlast;
+
 	
 	TMap<FGameplayTag, FGameplayTag> DamageTypeToResistance; // 用于计算伤害的时候找对应抗性
 	TMap<FGameplayTag, FGameplayTag> DamageTypeToDebuffType; // 用于计算伤害的时候找对应抗性

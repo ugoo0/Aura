@@ -4,8 +4,10 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/GameModeBase.h"
+#include "UI/ViewModel/MVVM_Slot.h"
 #include "AuraGameModeBase.generated.h"
 
+class USaveGame;
 class UAbilityInfo;
 class UCharacterClassInfo;
 /**
@@ -22,4 +24,27 @@ public:
 
 	UPROPERTY(EditDefaultsOnly, Category="Character Class Default")
 	TObjectPtr<UAbilityInfo> AbilityInfo;
+
+	void SaveSlotData(UMVVM_Slot* LoadSlot, int32 SlotIndex);
+	ULoadScreenSaveGame* GetSaveSlotData(const FString& SlotName, int32 SlotIndex) const;
+ 	
+	UPROPERTY(EditDefaultsOnly)
+	TSubclassOf<USaveGame> LoadScreenSaveGameClass;
+
+	UFUNCTION()
+	static  void DeleteSlot(const FString& SlotName, int32 SlotIndex);
+
+	UPROPERTY(EditDefaultsOnly)
+	FString DefaultMapName;
+
+	UFUNCTION()
+	void TravelToMapBySlot(UMVVM_Slot* Slot) const;
+	
+	UPROPERTY(EditDefaultsOnly)
+	TSoftObjectPtr<UWorld> DefaultMap;
+
+	UPROPERTY(EditDefaultsOnly)
+	TMap<FString, TSoftObjectPtr<UWorld>> Maps;
+protected:
+	virtual void BeginPlay() override;
 };

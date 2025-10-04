@@ -34,7 +34,8 @@ struct FUIWidgetRow :public FTableRowBase
 };
 
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnAttributeChangedSignature, float, NewValue);//创建委托，事件， 类型为FOnAttributeChangedSignature
-DECLARE_DYNAMIC_MULTICAST_DELEGATE_TwoParams(FOnPlayerLevelChangedSignature, int32, CurLevel, int32, NewLevel);
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_ThreeParams(FOnPlayerLevelChangedSignature, int32, CurLevel, int32, NewLevel, bool, UpLevel);
+
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FMessageWidgetRowSignature, FUIWidgetRow, Row);
 
 

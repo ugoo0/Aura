@@ -3,6 +3,7 @@
 
 #include "UI/ViewModel/MVVM_LoadScreen.h"
 
+#include "Game/AuraGameInstance.h"
 #include "Game/AuraGameModeBase.h"
 #include "Kismet/GameplayStatics.h"
 #include "UI/ViewModel/MVVM_Slot.h"
@@ -30,11 +31,17 @@ void UMVVM_LoadScreen::NewSlotButtonClicked(int32 Slot, const FString& EnterName
 	AAuraGameModeBase* AuraGameModeBase = Cast<AAuraGameModeBase>(UGameplayStatics::GetGameMode(this));
 	LoadSlots[Slot]->SetPlayerName(EnterName);
 	LoadSlots[Slot]->SetMapName(AuraGameModeBase->DefaultMapName);
-	
-	AuraGameModeBase->SaveSlotData(LoadSlots[Slot], Slot);
-
 	LoadSlots[Slot]->LoadSlotStatus = ESaveSlotStatus::Taken;
+	LoadSlots[Slot]->PlayerStartTag = AuraGameModeBase->DefaultPlayerStartTag;
+	LoadSlots[Slot]->SetPlayerLevel(1);
+	AuraGameModeBase->SaveSlotData(LoadSlots[Slot], Slot);
 	LoadSlots[Slot]->InitializeSlot();
+	
+
+	UAuraGameInstance* AuraGameInstance = Cast<UAuraGameInstance>(UGameplayStatics::GetGameInstance(this));
+	AuraGameInstance->LoadSlotIndex = LoadSlots[Slot]->SlotIndex;
+	AuraGameInstance->LoadSlotName = LoadSlots[Slot]->GetLoadSlotName();
+	AuraGameInstance->PlayerStartTag = AuraGameModeBase->DefaultPlayerStartTag;
 }
 
 void UMVVM_LoadScreen::NewGameButtonClicked(int32 Slot)
@@ -74,6 +81,10 @@ void UMVVM_LoadScreen::DeleteSlot()
 
 void UMVVM_LoadScreen::PlayButtonClick()
 {
+	UAuraGameInstance* AuraGameInstance = Cast<UAuraGameInstance>(UGameplayStatics::GetGameInstance(this));
+	AuraGameInstance->PlayerStartTag = SelectedSlot->PlayerStartTag;
+	AuraGameInstance->LoadSlotIndex = SelectedSlot->SlotIndex;
+	AuraGameInstance->LoadSlotName = SelectedSlot->GetLoadSlotName();
 	if (IsValid(SelectedSlot))
 	{
 		AAuraGameModeBase* AuraGameModeBase = Cast<AAuraGameModeBase>(UGameplayStatics::GetGameMode(this));
@@ -95,6 +106,8 @@ void UMVVM_LoadScreen::LoadData()
 		LoadSlot.Value->LoadSlotStatus = LoadScreenSaveGame->LoadSlotStatus;
 		LoadSlot.Value->SetPlayerName(LoadScreenSaveGame->PlayerName);
 		LoadSlot.Value->SetMapName(LoadScreenSaveGame->CurMapName);
+		LoadSlot.Value->PlayerStartTag = LoadScreenSaveGame->PlayerStartTag;
+		LoadSlot.Value->SetPlayerLevel(LoadScreenSaveGame->Level);
 		LoadSlot.Value->InitializeSlot();
 	}
 }

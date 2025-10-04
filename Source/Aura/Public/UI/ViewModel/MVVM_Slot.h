@@ -34,12 +34,18 @@ public:
 
 	void SetMapName(FString InMapName);
 	FString GetMapName() const {return MapName;}
+
+	void SetPlayerLevel(int32 InPlayerLevel);
+	int32 GetPlayerLevel() const {return PlayerLevel;}
 	
 	UPROPERTY()
 	int32 SlotIndex;
 
 	UPROPERTY()
 	TEnumAsByte<ESaveSlotStatus> LoadSlotStatus;
+
+	UPROPERTY()
+	FName PlayerStartTag;
 	
 private:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, FieldNotify, Setter, Getter, meta = (AllowPrivateAccess="true"))
@@ -51,4 +57,7 @@ private:
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, FieldNotify, Setter, Getter, meta = (AllowPrivateAccess="true"))
 	FString MapName;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, FieldNotify, Setter, Getter, meta = (AllowPrivateAccess="true"))
+	int32 PlayerLevel;
 };

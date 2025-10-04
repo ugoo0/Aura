@@ -43,6 +43,12 @@ class AURA_API UCharacterClassInfo : public UDataAsset
 	GENERATED_BODY()
 
 public:
+	UPROPERTY(EditDefaultsOnly,Category="Class Default")
+	TSubclassOf<UGameplayEffect> PrimaryAttributes_SetByCaller;
+
+	UPROPERTY(EditDefaultsOnly,Category="Class Default")
+	TSubclassOf<UGameplayEffect> SecondaryAttributes_Infinite;
+	
 	UPROPERTY(EditDefaultsOnly,Category="Common Class Default")
 	TSubclassOf<UGameplayEffect> SecondaryAttributes;
 

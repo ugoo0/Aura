@@ -3,12 +3,14 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "GameplayEffect.h"
 #include "GameplayTagContainer.h"
 #include "Kismet/BlueprintAsyncActionBase.h"
 #include "WaitCooldownChange.generated.h"
 
 struct FGameplayTag;
 class UAbilitySystemComponent;
+
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FCooldonwChangeSignatrue, float, TimeRemain);
 
 /**
@@ -38,5 +40,15 @@ protected:
 
 	void CoolDownTagChange(const FGameplayTag Tag, int32 NewCount);
 
+
+
+
+
+
+	
 	void OnActiveEffectAdded(UAbilitySystemComponent* ASC, const FGameplayEffectSpec& EffectSpec, FActiveGameplayEffectHandle ActiveGameplayEffectHandle);
+
+
+
+	
 };

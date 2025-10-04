@@ -22,9 +22,9 @@ void UOverlayWidgetController::BindCallbackToDependencies()//绑定函数到属�
 {
 	GetAuraPS()->OnPlayerXPChangedDelegate.AddUObject(this, &UOverlayWidgetController::OnPlayerXPChanged);
 	GetAuraPS()->OnPlayerLevelChangedDelegate.AddLambda(
-		[this](int32 CurLevel, int32 NewLevel)
+		[this](int32 CurLevel, int32 NewLevel, bool UpLevel)
 		{
-			OnPlayerLevelChanged.Broadcast(CurLevel, NewLevel);
+			OnPlayerLevelChanged.Broadcast(CurLevel, NewLevel, UpLevel);
 		});
 	
 	AbilitySystemComponent->GetGameplayAttributeValueChangeDelegate(GetAuraAS()->GetHealthAttribute()).AddLambda(

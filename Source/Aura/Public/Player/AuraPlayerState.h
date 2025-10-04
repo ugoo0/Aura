@@ -10,7 +10,7 @@
 
 class ULevelInfo;
 DECLARE_MULTICAST_DELEGATE_OneParam(FOnPlayerStateChanged, int32/*Level or XP*/)
-DECLARE_MULTICAST_DELEGATE_TwoParams(FOnPlayerLevelChanged, int32/*CurLevel*/, int32/*NewLevel*/)
+DECLARE_MULTICAST_DELEGATE_ThreeParams(FOnPlayerLevelChanged, int32/*CurLevel*/, int32/*NewLevel*/, bool/*upLevel*/)
 
 
 class UAbilitySystemComponent;
@@ -29,6 +29,7 @@ public:
 	UAttributeSet* GetAttributeSet() const { return AttributeSet; };
 
 	int32 GetPlayerLevel() const {return Level;}
+	void SetPlayerLevel(int32 InLevel);
 	void AddToLevel(int32 InLevel);
 	void SetLevel(int32 InLevel);
 	void AddToXP(int32 InXP);
@@ -39,7 +40,9 @@ public:
 	FORCEINLINE int32 GetXP() const;
 	FORCEINLINE int32 GetAttributePoints() const {return  AttributePoints;}
 	FORCEINLINE int32 GetSpellPoints() const {return SpellPoints;}
-
+	void SetAttributePoints(int32 InAttributePoints);
+	void SetSpellPoints(int32 InSpellPoints);
+	
 	FOnPlayerStateChanged OnPlayerXPChangedDelegate;
 	FOnPlayerLevelChanged OnPlayerLevelChangedDelegate;
 	FOnPlayerStateChanged OnAttributePointsChangedDelegate;

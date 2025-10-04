@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "AbilitySystemComponent.h"
+#include "Game/LoadScreenSaveGame.h"
 #include "AuraAbilitySystemComponent.generated.h"
 
 DECLARE_MULTICAST_DELEGATE_OneParam(FEFectAssetTags,const FGameplayTagContainer&);
@@ -37,9 +38,11 @@ public:
 	
 	bool bStartupAbilitiesGiven = false;
 
+	
 	void AddCharacterAbilities(TArray<TSubclassOf<UGameplayAbility>> StartupAbilities);
 	void AddCharacterPassiveAbilities(TArray<TSubclassOf<UGameplayAbility>> StartupPassiveAbilities);
 
+	void LoadCharacterAbilities(ULoadScreenSaveGame* LoadData);
 	
 	void AbilityInputPressed(FGameplayTag InputTag);
 	void AbilityInputHeld(FGameplayTag InputTag);

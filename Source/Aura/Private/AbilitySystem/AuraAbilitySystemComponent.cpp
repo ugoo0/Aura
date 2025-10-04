@@ -52,6 +52,29 @@ void UAuraAbilitySystemComponent::AddCharacterPassiveAbilities(TArray<TSubclassO
 	}
 }
 
+void UAuraAbilitySystemComponent::LoadCharacterAbilities(ULoadScreenSaveGame* LoadData)
+{
+	for (const FSaveAbilityInfo&  AbilityInfo: LoadData->SaveAbilities)
+	{
+		FGameplayAbilitySpec AbilitySpec = FGameplayAbilitySpec(AbilityInfo.Ability,AbilityInfo.AbilityLevel);
+		
+		AbilitySpec.DynamicAbilityTags.AddTag(AbilityInfo.AbilitySlot);
+		AbilitySpec.DynamicAbilityTags.AddTag(AbilityInfo.AbilityStatus);
+		GiveAbility(AbilitySpec);
+
+		if (AbilityInfo.AbilityType == FAuraGameplayTags::Get().Abilities_Type_Passive)
+		{
+			if (AbilityInfo.AbilityStatus == FAuraGameplayTags::Get().Abilities_Status_Equipped)
+			{
+				TryActivateAbility(AbilitySpec.Handle);
+			}
+		}
+
+	}
+	bStartupAbilitiesGiven = true;
+	AbilitiesGivenDelegate.Broadcast();
+}
+
 
 void UAuraAbilitySystemComponent::ServerSpendSpellPoints_Implementation(const FGameplayTag& AbilityTag)
 {

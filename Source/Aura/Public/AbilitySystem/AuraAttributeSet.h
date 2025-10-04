@@ -82,7 +82,7 @@ public:
 
 	TMap<FGameplayTag, TStaticFuncPtr<FGameplayAttribute()>> TagToAttribute; // 用于给AttributeMenuController获取对应Attribute的数值
 	/*
-		Vatail Attributes
+		Vital Attributes
 	*/
 
 	UPROPERTY(BlueprintReadOnly, ReplicatedUsing = OnRep_Health, Category = "Vital Attributes")

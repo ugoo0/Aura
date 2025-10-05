@@ -44,6 +44,9 @@ public:
 	FString DefaultMapName;
 
 	UPROPERTY(EditDefaultsOnly)
+	FString MapAssetName;
+	
+	UPROPERTY(EditDefaultsOnly)
 	FName DefaultPlayerStartTag;
 	
 	UFUNCTION()
@@ -57,8 +60,10 @@ public:
 
 	virtual AActor* ChoosePlayerStart_Implementation(AController* Player) override;
 
-	void SaveWorldState(UWorld* World);
+	void SaveWorldState(UWorld* World,const FString& DestinationMapAssetName = FString(""));
 	void LoadWorldState(UWorld* World);
+	
+	FString GetMapNameFromMapAssetName(const FString& InMapAssetName) const;
 	
 protected:
 	virtual void BeginPlay() override;

@@ -101,6 +101,9 @@ public:
 	FString CurMapName;
 
 	UPROPERTY()
+	FString CurMapAssetName;
+	
+	UPROPERTY()
 	FName PlayerStartTag;
 
 
@@ -137,6 +140,8 @@ public:
 
 	UPROPERTY()
 	TArray<FSavedMap> SavedMaps;
+
+	
 
 	bool HasMap(const FString& InMapName);
 	FSavedMap GetSavedMap(const FString& InMapName);

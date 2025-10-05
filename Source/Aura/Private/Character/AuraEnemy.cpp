@@ -36,7 +36,7 @@ AAuraEnemy::AAuraEnemy()
 	GetCharacterMovement()->MaxWalkSpeed = BaseWalkSpeed;
 }
 
-void AAuraEnemy::HighlightActor()
+void AAuraEnemy::HighlightActor_Implementation()
 {
 	//bHighlighted = true; //测试数据
 	GetMesh()->SetRenderCustomDepth(true);
@@ -45,12 +45,17 @@ void AAuraEnemy::HighlightActor()
 	Weapon->SetCustomDepthStencilValue(CUSTOM_DEPTH_RED);
 }
 
-void AAuraEnemy::UnHighlightActor()
+void AAuraEnemy::UnHighlightActor_Implementation()
 {
 	//bHighlighted = false;
 	GetMesh()->SetRenderCustomDepth(false);
 	Weapon->SetRenderCustomDepth(false);
 
+}
+
+void AAuraEnemy::SetMoveToLocation_Implementation(FVector& Destination)
+{
+	
 }
 
 void AAuraEnemy::PossessedBy(AController* NewController)

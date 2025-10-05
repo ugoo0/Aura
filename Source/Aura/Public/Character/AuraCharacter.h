@@ -63,6 +63,8 @@ public:
 protected:
 	virtual void InitializaDefaultAttriutes() const override;
 
+	virtual void BeginPlay() override;
+	
 	UPROPERTY(EditDefaultsOnly)
 	UCameraComponent *TopDownCameraComponent;
 
@@ -77,4 +79,6 @@ protected:
 
 	UFUNCTION()
 	void LoadProgress();
+
+	void OnLevelChanged();
 };

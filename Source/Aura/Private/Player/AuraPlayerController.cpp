@@ -22,7 +22,8 @@
 AAuraPlayerController::AAuraPlayerController()
 {
 	bReplicates = true;
-
+	
+	
 	Spline = CreateDefaultSubobject<USplineComponent>(TEXT("Spline"));
 }
 void AAuraPlayerController::BeginPlay()
@@ -45,6 +46,9 @@ void AAuraPlayerController::BeginPlay()
 	InputModeData.SetHideCursorDuringCapture(false);
 	SetInputMode(InputModeData);
 }
+
+
+
 void AAuraPlayerController::SetupInputComponent()
 {
 	Super::SetupInputComponent();
@@ -127,8 +131,8 @@ void AAuraPlayerController::CursorTrace()
 {
 	if (GetASC() && GetASC()->HasMatchingGameplayTag(FAuraGameplayTags::Get().Player_Block_CursorTrace))
 	{
-		if (LastActor)	LastActor->UnHighlightActor();
-		if (CurActor)	CurActor->UnHighlightActor();
+		UnHighLight(LastActor);
+		UnHighLight(CurActor);
 		LastActor = nullptr;
 		CurActor = nullptr;
 		return;
@@ -137,11 +141,34 @@ void AAuraPlayerController::CursorTrace()
 	GetHitResultUnderCursor(Channel, false, CursorHit);
 	if (!CursorHit.bBlockingHit) return;
 	LastActor = CurActor;
-	CurActor = Cast<IEnemyInterface>(CursorHit.GetActor());
+	if (IsValid(CursorHit.GetActor()) && CursorHit.GetActor()->Implements<UHighLightInterface>())
+	{
+		CurActor = CursorHit.GetActor();
+	}
+	else
+	{
+		CurActor = nullptr;
+	}
 	if (CurActor != LastActor)
 	{
-		if (LastActor)	LastActor->UnHighlightActor();
-		if (CurActor)	CurActor->HighlightActor();
+		UnHighLight(LastActor);
+		HighLight(CurActor);
+	}
+}
+
+void AAuraPlayerController::HighLight(AActor* Actor)
+{
+	if (IsValid(Actor) && Actor->Implements<UHighLightInterface>())
+	{
+		IHighLightInterface::Execute_HighlightActor(Actor);
+	}
+}
+
+void AAuraPlayerController::UnHighLight(AActor* Actor)
+{
+	if (IsValid(Actor) && Actor->Implements<UHighLightInterface>())
+	{
+		IHighLightInterface::Execute_UnHighlightActor(Actor);
 	}
 }
 
@@ -154,7 +181,7 @@ void AAuraPlayerController::AbilityInputPressed(FGameplayTag InputTag)
 	
 	if (InputTag.MatchesTagExact(FAuraGameplayTags::Get().InputTag_LMB))
 	{
-		bTargeting = CurActor?true:false;
+		TargetingStatus = (IsValid(CurActor) && CurActor->Implements<UEnemyInterface>()) ? ETargetingStatus::TargetingEnemy : ETargetingStatus::TargetingNonEnemy;
 		bAutoRunning = false;
 	}
 	GetASC()->AbilityInputPressed(InputTag);
@@ -173,7 +200,7 @@ void AAuraPlayerController::AbilityInputHeld(FGameplayTag InputTag)
 		return;
 	}
 
-	if (bTargeting || bShiftPressed)//释放技能
+	if (TargetingStatus == ETargetingStatus::TargetingEnemy || bShiftPressed)//释放技能
 	{
 		if (!GetASC()) return;
 		GetASC()->AbilityInputHeld(InputTag);
@@ -207,7 +234,7 @@ void AAuraPlayerController::AbilityInputReleased(FGameplayTag InputTag)
 		return;
 	}
 	
-	if (bTargeting || bShiftPressed)//释放技能
+	if (TargetingStatus == ETargetingStatus::TargetingEnemy || bShiftPressed)//释放技能
 	{
 		if (!GetASC()) return;
 		GetASC()->AbilityInputReleased(InputTag);
@@ -218,6 +245,18 @@ void AAuraPlayerController::AbilityInputReleased(FGameplayTag InputTag)
 		APawn* ControllerPawn = GetPawn();
 		if (FollowTime <= ShortPressThreshold && ControllerPawn)
 		{
+			if (IsValid(CurActor) && CurActor->Implements<UHighLightInterface>())//点击checkpoint或者地图入口等 寻路位置强行设置为自定义的位置
+			{
+				IHighLightInterface::Execute_SetMoveToLocation(CurActor,CashedDestination);
+			}
+			else
+			{
+				if (GetASC() && !GetASC()->HasMatchingGameplayTag(FAuraGameplayTags::Get().Player_Block_CursorTrace))
+				{
+					UNiagaraFunctionLibrary::SpawnSystemAtLocation(this, ClickNiagaraSystem, CashedDestination);
+				}
+			}
+			
 			if (UNavigationPath* NaviPath =  UNavigationSystemV1::FindPathToLocationSynchronously(this,ControllerPawn->GetActorLocation(),CashedDestination))
 			{
 				Spline->ClearSplinePoints();
@@ -231,14 +270,11 @@ void AAuraPlayerController::AbilityInputReleased(FGameplayTag InputTag)
 					bAutoRunning = true;
 				}
 			}
-			if (GetASC() && !GetASC()->HasMatchingGameplayTag(FAuraGameplayTags::Get().Player_Block_CursorTrace))
-			{
-				UNiagaraFunctionLibrary::SpawnSystemAtLocation(this, ClickNiagaraSystem, CashedDestination);
-			}
+
 			
 		}
 		FollowTime = 0.f;
-		bTargeting = false;
+		TargetingStatus = ETargetingStatus::NotTargeting;
 	}
 }
 

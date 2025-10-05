@@ -4,11 +4,11 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/PlayerController.h"
-#include "Interaction/EnemyInterface.h"
 #include "GameplayTagContainer.h"
 #include "AbilitySystem/AuraAbilitySystemComponent.h"
 #include "Actor/MagicCircle.h"
 #include "Components/SplineComponent.h"
+#include "Interaction/HighLightInterface.h"
 #include "AuraPlayerController.generated.h"
 
 
@@ -18,8 +18,18 @@ struct FGameplayTag;
 class UInputMappingContext;
 class UInputAction;
 struct FInputActionValue;
-class IEnemyInterface;
 class UAuraInputConfig;
+
+
+
+
+enum class ETargetingStatus
+{
+	TargetingEnemy,
+	TargetingNonEnemy,
+	NotTargeting
+};
+
 /**
  * 
  */
@@ -59,8 +69,14 @@ private:
 	void Move(const FInputActionValue& InputActionValue);
 	void CursorTrace();
 
-	IEnemyInterface* LastActor;
-	IEnemyInterface* CurActor;
+	UPROPERTY()
+	TObjectPtr<AActor> LastActor;
+
+	UPROPERTY()
+	TObjectPtr<AActor> CurActor;
+
+	static void HighLight(AActor* Actor);
+	static void UnHighLight(AActor* Actor);
 private:
 
 	void AbilityInputPressed(FGameplayTag InputTag);
@@ -81,7 +97,7 @@ private:
 	float FollowTime = 0.f;
 	float ShortPressThreshold = 0.5f;
 	bool bAutoRunning = false;
-	bool bTargeting = false;
+	ETargetingStatus TargetingStatus = ETargetingStatus::NotTargeting;
 
 	UPROPERTY(EditDefaultsOnly)
 	float AutoRunAcceptanceRadius = 50.f;
@@ -108,6 +124,7 @@ private:
 
 	UFUNCTION()
 	void UpdateMagicCirclePosition();
+	
 };
 
 

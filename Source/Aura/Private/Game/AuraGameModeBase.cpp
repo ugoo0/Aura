@@ -51,7 +51,7 @@ ULoadScreenSaveGame* AAuraGameModeBase::GetCurGameInstanceSaveData() const
 void AAuraGameModeBase::SavingCurGameInstanceProgress(ULoadScreenSaveGame* SaveObject)
 {
 	UAuraGameInstance* AuraGameInstance = Cast<UAuraGameInstance>(GetGameInstance());
-	AuraGameInstance->PlayerStartTag = AuraGameInstance->PlayerStartTag;
+	AuraGameInstance->PlayerStartTag = SaveObject->PlayerStartTag;
 	UGameplayStatics::SaveGameToSlot(SaveObject, AuraGameInstance->LoadSlotName, AuraGameInstance->LoadSlotIndex);
 }
 
@@ -93,7 +93,7 @@ AActor* AAuraGameModeBase::ChoosePlayerStart_Implementation(AController* Player)
 	return nullptr;
 }
 
-void AAuraGameModeBase::SaveWorldState(UWorld* World)
+void AAuraGameModeBase::SaveWorldState(UWorld* World, const FString& DestinationMapAssetName)
 {
 	FString MapName = UGameplayStatics::GetCurrentLevelName(World);
 	UAuraGameInstance* AuraGameInstance = Cast<UAuraGameInstance>(GetGameInstance());
@@ -101,6 +101,11 @@ void AAuraGameModeBase::SaveWorldState(UWorld* World)
 
 	if (ULoadScreenSaveGame* LoadScreenSaveGame = GetSaveSlotData(AuraGameInstance->LoadSlotName, AuraGameInstance->LoadSlotIndex))
 	{
+		if (DestinationMapAssetName != FString(""))
+		{
+			LoadScreenSaveGame->CurMapAssetName = DestinationMapAssetName;
+			LoadScreenSaveGame->CurMapName = GetMapNameFromMapAssetName(DestinationMapAssetName);
+		}
 		if (!LoadScreenSaveGame->HasMap(MapName))
 		{
 			FSavedMap NewSavedMap;
@@ -181,6 +186,18 @@ void AAuraGameModeBase::LoadWorldState(UWorld* World)
 		
 	}
 
+}
+
+FString AAuraGameModeBase::GetMapNameFromMapAssetName(const FString& InMapAssetName) const
+{
+	for (auto& Map : Maps)
+	{
+		if (Map.Value.ToSoftObjectPath().GetAssetName() == InMapAssetName)
+		{
+			return Map.Key;
+		}
+	}
+	return FString();
 }
 
 void AAuraGameModeBase::BeginPlay()

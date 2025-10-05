@@ -46,10 +46,43 @@ AAuraCharacter::AAuraCharacter()
 	bUseControllerRotationPitch = false;
 	bUseControllerRotationRoll = false;
 	bUseControllerRotationYaw = false;
+	
 
 	CharacterClassType = ECharacterClassType::Elementalist;
 }
 
+void AAuraCharacter::OnLevelChanged()
+{
+	// 重置控制器旋转
+	if (APlayerController* PC = Cast<APlayerController>(GetController()))
+	{
+		PC->SetControlRotation(FRotator(0.0f, 0.0f, 0.0f));
+        
+		// 对于俯视角游戏，可能需要禁用鼠标看向
+		PC->bShowMouseCursor = true;
+		PC->SetIgnoreLookInput(true);
+	}
+    
+	// 重置角色旋转
+	SetActorRotation(FRotator(0.0f, 0.0f, 0.0f));
+    
+	// 确保移动组件也重置方向
+	if (UCharacterMovementComponent* MovementComp = GetCharacterMovement())
+	{
+		MovementComp->StopMovementImmediately();
+		MovementComp->RotationRate = FRotator(0.0f, 360.0f, 0.0f); // 适合俯视角的旋转速率
+	}
+    
+	UE_LOG(LogTemp, Log, TEXT("Character orientation reset after level change"));
+}
+
+void AAuraCharacter::BeginPlay()
+{
+	Super::BeginPlay();
+
+	FTimerHandle TimerHandle;
+	GetWorldTimerManager().SetTimer(TimerHandle, this, &AAuraCharacter::OnLevelChanged, 0.1f, false);
+}
 
 void AAuraCharacter::PossessedBy(AController* NewController)
 {
@@ -347,6 +380,8 @@ void AAuraCharacter::InitializaDefaultAttriutes() const
 {
 	Super::InitializaDefaultAttriutes();
 }
+
+
 
 
 

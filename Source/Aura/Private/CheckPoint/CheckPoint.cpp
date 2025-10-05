@@ -2,6 +2,8 @@
 
 
 #include "CheckPoint/CheckPoint.h"
+
+#include "Aura/Aura.h"
 #include "Components/SphereComponent.h"
 #include "Components/StaticMeshComponent.h"
 #include "Game/AuraGameModeBase.h"
@@ -24,6 +26,9 @@ ACheckPoint::ACheckPoint(const FObjectInitializer& ObjectInitializer)
 	Sphere->SetCollisionResponseToAllChannels(ECR_Ignore);
 	Sphere->SetCollisionResponseToChannel(ECC_Pawn, ECR_Overlap);
 	Sphere->SetupAttachment(CheckPointMesh);
+
+	MoveToComponent = CreateDefaultSubobject<USceneComponent>("MoveToComponent");
+	MoveToComponent->SetupAttachment(GetRootComponent());
 }
 
 void ACheckPoint::HandleGlowEffect()
@@ -47,6 +52,22 @@ void ACheckPoint::LoadData_Implementation()
 	}
 }
 
+void ACheckPoint::HighlightActor_Implementation()
+{
+	CheckPointMesh->SetRenderCustomDepth(true);
+	CheckPointMesh->SetCustomDepthStencilValue(CUSTOM_DEPTH_TAN);
+}
+
+void ACheckPoint::UnHighlightActor_Implementation()
+{
+	CheckPointMesh->SetRenderCustomDepth(false);
+}
+
+void ACheckPoint::SetMoveToLocation_Implementation(FVector& Destination)
+{
+	Destination = MoveToComponent->GetComponentLocation();
+}
+
 void ACheckPoint::OnSphereOverlay(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor,
                                   UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
 {
@@ -65,5 +86,8 @@ void ACheckPoint::OnSphereOverlay(UPrimitiveComponent* OverlappedComponent, AAct
 void ACheckPoint::BeginPlay()
 {
 	Super::BeginPlay();
-	Sphere->OnComponentBeginOverlap.AddDynamic(this, &ACheckPoint::OnSphereOverlay);
+	if (bOverrideBindSphereOverlay)
+	{
+		Sphere->OnComponentBeginOverlap.AddDynamic(this, &ACheckPoint::OnSphereOverlay);
+	}
 }

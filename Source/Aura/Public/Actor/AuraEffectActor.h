@@ -33,6 +33,7 @@ public:
 	// Sets default values for this actor's properties
 	AAuraEffectActor();
 
+	void SetLevel(int32 InLevel) {ActorLevel = InLevel;}
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
@@ -79,6 +80,40 @@ protected:
 	TArray<FName> TagsCanEffect;
 
 	bool TargetCanBeEffected(AActor* Target);
+
+
+	/* Pickup Movement */
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category="Pickup Movement")
+	bool bRotates = false;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category="Pickup Movement")
+	float RotationRate = 45.f;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category="Pickup Movement")
+	bool bSinusoidalMovement = false;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category="Pickup Movement")
+	float SineAmplitude = 8.f;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category="Pickup Movement")
+	float SinePeriodConstant = 4.f;
+
+	UFUNCTION(BlueprintCallable)
+	void StartSinusoidalMovement();
+
+	UFUNCTION(BlueprintCallable)
+	void StartSinusoidalRotates();
+
+	UPROPERTY(BlueprintReadOnly)
+	FVector InitialLocation;
+	
+	FVector CalculatedLocation;
+
+	FRotator CalculatedRotation;
+	
+	float RunningTime = 0.f;
+
+	void ActorMovement(float DeltaTime);
 public:	
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;

@@ -28,6 +28,7 @@ public:
 	virtual void InitAbilityActorInfo() override;
 	/**Combat Interface**/
 	virtual int32 GetPlayerLevel_Implementation() override;
+	virtual void Die(const FVector& DeathImpulse) override;
 	/**Combat Interface**/
 
 	/**Aura Interface**/
@@ -61,6 +62,13 @@ public:
 	
 	void UpdateIsControlled();
 protected:
+	
+	UPROPERTY()
+	FTimerHandle DeathTimerHandle;
+
+	UPROPERTY(EditDefaultsOnly)
+	float DeathTime = 5.0f;
+	
 	virtual void InitializaDefaultAttriutes() const override;
 
 	virtual void BeginPlay() override;

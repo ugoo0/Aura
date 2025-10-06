@@ -6,11 +6,13 @@
 #include <AbilitySystem/AuraAttributeSet.h>
 #include <AbilitySystemBlueprintLibrary.h>
 
+#include "Kismet/KismetMathLibrary.h"
+
 // Sets default values
 AAuraEffectActor::AAuraEffectActor()
 {
  	// Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
-	PrimaryActorTick.bCanEverTick = false;
+	PrimaryActorTick.bCanEverTick = true;
 	SetRootComponent(CreateDefaultSubobject<USceneComponent>("SceneRoot"));
 }
 
@@ -19,6 +21,7 @@ AAuraEffectActor::AAuraEffectActor()
 void AAuraEffectActor::BeginPlay()
 {
 	Super::BeginPlay();
+	InitialLocation = GetActorLocation();
 }
 
 bool AAuraEffectActor::TargetCanBeEffected(AActor* Target)
@@ -107,11 +110,50 @@ void AAuraEffectActor::OnEndOverlay(AActor* Target)
 }
 
 
+void AAuraEffectActor::StartSinusoidalMovement()
+{
+	bSinusoidalMovement = true;
+	InitialLocation = GetActorLocation();
+	CalculatedLocation = GetActorLocation();
+}
+
+void AAuraEffectActor::StartSinusoidalRotates()
+{
+	bRotates = true;
+	CalculatedRotation = GetActorRotation();
+}
+
+void AAuraEffectActor::ActorMovement(float DeltaTime)
+{
+	if (bRotates)
+	{
+		const FRotator DeltaRotation(0.f, DeltaTime*RotationRate, 0.f);
+		CalculatedRotation = UKismetMathLibrary::ComposeRotators(CalculatedRotation, DeltaRotation);
+	}
+	if (bSinusoidalMovement)
+	{
+		const float Sine = SineAmplitude * FMath::Sin(RunningTime * SinePeriodConstant);
+		CalculatedLocation = InitialLocation + FVector(0.f, 0.f, Sine);
+	}
+}
 
 // Called every frame
 void AAuraEffectActor::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
-
+	RunningTime += DeltaTime;
+	if (RunningTime > 2 * PI / SinePeriodConstant)
+	{
+		RunningTime = 0.f;
+	}
+	ActorMovement(DeltaTime);
+	if (bSinusoidalMovement)
+	{
+		SetActorLocation(CalculatedLocation);
+	}
+	if (bRotates)
+	{
+		SetActorRotation(CalculatedRotation);
+	}
 }
 

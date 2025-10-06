@@ -9,6 +9,7 @@
 #include "AbilitySystem/AuraAbilitySystemComponent.h"
 #include "Components/WidgetComponent.h"
 #include "AbilitySystem/AuraAttributeSet.h"
+#include "Actor/AuraEffectActor.h"
 #include "AI/AuraAIController.h"
 #include "BehaviorTree/BehaviorTree.h"
 #include "BehaviorTree/BlackboardComponent.h"
@@ -122,6 +123,7 @@ void AAuraEnemy::Die(const FVector& DeathImpulse)
 	{
 		AuraAIController->GetBlackboardComponent()->SetValueAsBool(FName("Dead"), true);
 	}
+	SpawnLoot();
 	Super::Die(DeathImpulse);
 }
 
@@ -163,6 +165,47 @@ void AAuraEnemy::HitReactTagChanged(const FGameplayTag Tag, int32 NewTagCount)
 void AAuraEnemy::Destroyed()
 {
 	Super::Destroyed();
+}
+
+void AAuraEnemy::SpawnLoot()
+{
+	ULootTiers* LootTiers = UAuraAbilitySystemLibrary::GetLootTiers(this);
+	if (!LootTiers) return;
+	TArray<FLootItem> LootItems = LootTiers->GetLootItems();
+	if (LootItems.Num() < 1) return;
+	const FVector Forward = GetActorForwardVector();
+	const FVector Location = GetActorLocation();
+	TArray<FRotator> Rotators = UAuraAbilitySystemLibrary::EvenlyRotatedRotators(Forward, FVector::UpVector, 360.f-360.f/LootItems.Num(), LootItems.Num());
+	int32 Index = 0;
+
+	FTimerDelegate SpawnLootDelegate;
+	//Lambda值引用，使用mutable这样可以修改Index
+	SpawnLootDelegate.BindLambda([this,Index, LootItems,Rotators,Location]() mutable 
+	{
+		if (Index > LootItems.Num() - 1)
+		{
+			if (SpawnLootTimer.IsValid())
+			{
+				GetWorldTimerManager().ClearTimer(SpawnLootTimer);
+			}
+			return;
+		}
+		FRotator Rotator = Rotators[Index];
+		FActorSpawnParameters SpawnParameters;
+		FTransform Transform;
+		FVector SpawnLocation = Location + Rotator.Vector()*FMath::FRandRange(MinDistanceToSpawn, MaxDistanceToSpawn);
+		Transform.SetRotation(Rotator.Quaternion());
+		Transform.SetLocation(SpawnLocation);
+		FLootItem SpawnItem = LootItems[Index];
+		Index = Index + 1;
+		AAuraEffectActor* AuraEffectActor = GetWorld()->SpawnActorDeferred<AAuraEffectActor>(SpawnItem.ItemClass, Transform);
+		if (SpawnItem.bLootLevelOverride)
+		{
+			AuraEffectActor->SetLevel(Level);
+		}
+		AuraEffectActor->FinishSpawning(Transform);
+	});
+	GetWorldTimerManager().SetTimer(SpawnLootTimer, SpawnLootDelegate, 0.1f, true);
 }
 
 int32 AAuraEnemy::GetPlayerLevel_Implementation()

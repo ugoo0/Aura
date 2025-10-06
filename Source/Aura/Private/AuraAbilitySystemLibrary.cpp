@@ -243,6 +243,16 @@ FGameplayEffectContextHandle UAuraAbilitySystemLibrary::ApplyDamageEffectForDama
 	return EffectContextHandle;
 }
 
+ULootTiers* UAuraAbilitySystemLibrary::GetLootTiers(const UObject* WorldContextObject)
+{
+	if (AAuraGameModeBase* GameMode =  Cast<AAuraGameModeBase>(UGameplayStatics::GetGameMode(WorldContextObject)))
+	{
+		ULootTiers* LootTiers = GameMode->LootTiers;
+		return LootTiers;
+	}
+	return nullptr;
+}
+
 bool UAuraAbilitySystemLibrary::IsBlockHit(const FGameplayEffectContextHandle& ContextHandle)
 {
 	if (const FAuraGameplayEffectContext* AuraGameplayEffectContext = static_cast<const FAuraGameplayEffectContext*>(ContextHandle.Get()))

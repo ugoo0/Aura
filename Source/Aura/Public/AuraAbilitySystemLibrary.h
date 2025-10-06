@@ -3,6 +3,7 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "AbilitySystem/Data/LootTiers.h"
 #include "Game/LoadScreenSaveGame.h"
 #include "Kismet/BlueprintFunctionLibrary.h"
 #include "UI/WidgetController/AuraAttributeMenuController.h"
@@ -151,6 +152,10 @@ public:
 	
 	UFUNCTION(BlueprintCallable, Category="AuraAbilitySystemLibrary|GameplayEffects")
 	static FGameplayEffectContextHandle ApplyDamageEffectForDamageEffectParms(const UObject* WorldContextObject, const FDamageEffectParams& Params);
+
+	/* LootTiers */
+	UFUNCTION(BlueprintCallable, Category="AuraAbilitySystemLibrary|LootTiers")
+	static ULootTiers* GetLootTiers(const UObject* WorldContextObject);
 };
 
 

@@ -73,6 +73,14 @@ public:
 	virtual AActor* GetCombatTarget_Implementation() override;
 
 	virtual  void OnStunTagCountChanged(const FGameplayTag GameplayTag, int32 Count) override;
+
+	void SetLevel(int32 InLevel) {Level = InLevel;};
+
+	UPROPERTY(EditDefaultsOnly, Category="LootTiers")
+	float MinDistanceToSpawn = 50.f;
+
+	UPROPERTY(EditDefaultsOnly, Category="LootTiers")
+	float MaxDistanceToSpawn = 100.f;
 protected:
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Charcter Class Default")
@@ -92,4 +100,10 @@ protected:
 	void HitReactTagChanged(const FGameplayTag Tag, int32 NewTagCount);
 
 	virtual void Destroyed() override;
+
+	UFUNCTION()
+	void SpawnLoot();
+
+	UPROPERTY()
+	FTimerHandle SpawnLootTimer;
 };

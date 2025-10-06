@@ -7,6 +7,7 @@
 #include "UI/ViewModel/MVVM_Slot.h"
 #include "AuraGameModeBase.generated.h"
 
+class ULootTiers;
 class USaveGame;
 class UAbilityInfo;
 class UCharacterClassInfo;
@@ -19,12 +20,17 @@ class AURA_API AAuraGameModeBase : public AGameModeBase
 	GENERATED_BODY()
 
 public:
+	/* Data Asset */
 	UPROPERTY(EditDefaultsOnly, Category="Character Class Default")
 	TObjectPtr<UCharacterClassInfo> CharacterClassInfo;
 
 	UPROPERTY(EditDefaultsOnly, Category="Character Class Default")
 	TObjectPtr<UAbilityInfo> AbilityInfo;
 
+	UPROPERTY(EditDefaultsOnly, Category="LootTiers")
+	TObjectPtr<ULootTiers> LootTiers;
+	/* end Data Asset */
+	
 	void SaveSlotData(UMVVM_Slot* LoadSlot, int32 SlotIndex);
 	ULoadScreenSaveGame* GetSaveSlotData(const FString& SlotName, int32 SlotIndex) const;
 
@@ -64,7 +70,9 @@ public:
 	void LoadWorldState(UWorld* World);
 	
 	FString GetMapNameFromMapAssetName(const FString& InMapAssetName) const;
-	
+
+	UFUNCTION()
+	void PlayerDie(ACharacter* Player);
 protected:
 	virtual void BeginPlay() override;
 };

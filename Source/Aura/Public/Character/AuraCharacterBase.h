@@ -92,6 +92,8 @@ public:
 
 	UPROPERTY(EditDefaultsOnly)
 	TObjectPtr<UPassiveNiagaraComponent>  ManaSiphonNiagaraComponent1;
+
+	void SetCharacterClass(ECharacterClassType InCharacterClassType) {CharacterClassType = InCharacterClassType;};
 protected:
 	
 	virtual void BeginPlay() override;
@@ -129,6 +131,8 @@ protected:
 	UPROPERTY(EditDefaultsOnly, Category="Combat")
 	int32 MaxMinionCount;
 	int32 MinionCount = 0;
+
+	UPROPERTY(BlueprintReadOnly)
 	bool bDead = false;
 	
 	UPROPERTY()

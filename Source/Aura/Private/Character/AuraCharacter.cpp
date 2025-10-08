@@ -110,7 +110,6 @@ void AAuraCharacter::LoadProgress()
 		if (LoadData == nullptr) return;
 		if (LoadData->IsFirstSaveData)
 		{
-			InitAbilityActorInfo();
 			AddCharacterAbilities();//添加开始能力
 		}
 		else
@@ -216,8 +215,8 @@ void AAuraCharacter::LevelUp_Implementation(int32 CurLevel, int32 NewLevel)
 	int32 AttributePointsReward = GetAttributePointsReward_Implementation(CurLevel, NewLevel);
 	int32 SpellPointsReward = GetSpellPointsReward_Implementation(CurLevel, NewLevel);
 
-	IAuraInterface::Execute_AddToAttributePoints(this,AttributePointsReward);
-	IAuraInterface::Execute_AddToSpellPoints(this,SpellPointsReward);
+	IAuraPlayerInterface::Execute_AddToAttributePoints(this,AttributePointsReward);
+	IAuraPlayerInterface::Execute_AddToSpellPoints(this,SpellPointsReward);
 	AddToPlayerLevel_Implementation(NewLevel-CurLevel);
 
 
@@ -361,13 +360,13 @@ void AAuraCharacter::OnStunTagCountChanged(const FGameplayTag GameplayTag, int32
 
 }
 
-
+/*  */
 void AAuraCharacter::InitAbilityActorInfo()
 {
 	TObjectPtr<AAuraPlayerState> AuraPlayerState = GetPlayerState<AAuraPlayerState>();
 	check(AuraPlayerState);
-	AuraPlayerState->GetAbilitySystemComponent()->InitAbilityActorInfo(AuraPlayerState, this);
 	AbilitySystemComponent = AuraPlayerState->GetAbilitySystemComponent();
+	AbilitySystemComponent->InitAbilityActorInfo(AuraPlayerState, this);
 	Cast<UAuraAbilitySystemComponent>(AbilitySystemComponent)->AblityActorInfoSet();//绑定gameplayEffect事件
 	AttributeSet = AuraPlayerState->GetAttributeSet();
 

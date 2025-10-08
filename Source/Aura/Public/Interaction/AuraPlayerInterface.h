@@ -4,11 +4,11 @@
 
 #include "CoreMinimal.h"
 #include "UObject/Interface.h"
-#include "AuraInterface.generated.h"
+#include "AuraPlayerInterface.generated.h"
 
 // This class does not need to be modified.
 UINTERFACE(MinimalAPI)
-class UAuraInterface : public UInterface
+class UAuraPlayerInterface : public UInterface
 {
 	GENERATED_BODY()
 };
@@ -16,7 +16,7 @@ class UAuraInterface : public UInterface
 /**
  * 
  */
-class AURA_API IAuraInterface
+class AURA_API IAuraPlayerInterface
 {
 	GENERATED_BODY()
 

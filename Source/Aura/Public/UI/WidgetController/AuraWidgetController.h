@@ -50,18 +50,18 @@ public:
 	UFUNCTION(BlueprintCallable)
 	void SetWidgetControllerParams(const FWidgetControllerParams& WidgetParams);
 
+	AAuraPlayerState* GetAuraPS();
+	UAuraAttributeSet* GetAuraAS();
+	UAuraAbilitySystemComponent* GetAuraASC();
+	AAuraPlayerController* GetAuraPC();
+	
 	UFUNCTION(BlueprintCallable)
 	virtual void BroadcastInitialValues(); //
 	virtual void BindCallbackToDependencies();
 
 	UPROPERTY(BlueprintAssignable, Category = "GAS|Abilities")
 	FAbilityInfoSignature FAbilityInfoDelegate;
-
-	AAuraPlayerState* GetAuraPS();
-	UAuraAttributeSet* GetAuraAS();
-	UAuraAbilitySystemComponent* GetAuraASC();
-	AAuraPlayerController* GetAuraPC();
-
+	
 	void BroadcastAbilityInfo();
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Widget Data")

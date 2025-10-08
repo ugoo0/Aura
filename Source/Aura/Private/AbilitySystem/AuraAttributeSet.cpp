@@ -8,10 +8,11 @@
 #include "AuraAbilityTypes.h"
 #include "AuraDamageStateStruct.h"
 #include "AuraGameplayTags.h"
+#include "GameplayEffectExtension.h"
 #include "Net/UnrealNetwork.h"
 #include "GameFramework/Actor.h"
 #include "GameFramework/Character.h"
-#include "Interaction/AuraInterface.h"
+#include "Interaction/AuraPlayerInterface.h"
 #include "Interaction/CombatInterface.h"
 #include "Player/AuraPlayerController.h"
 
@@ -191,22 +192,22 @@ void UAuraAttributeSet::HandleIncomingXP(const FEffectProperties& EffectProperti
 {
 	const int32 LocalIncomingXP = GetIncomingXP();
 	SetIncomingXP(0.f);
-	if (EffectProperties.SourceCharacter->Implements<UAuraInterface>())
+	if (EffectProperties.SourceCharacter->Implements<UAuraPlayerInterface>())
 	{
 
 		int32 CurLevel = ICombatInterface::Execute_GetPlayerLevel(EffectProperties.SourceCharacter);
-		int32 CurXP = IAuraInterface::Execute_GetXP(EffectProperties.SourceCharacter);
+		int32 CurXP = IAuraPlayerInterface::Execute_GetXP(EffectProperties.SourceCharacter);
 
 		int32 NewXP = CurXP + LocalIncomingXP;
-		int32 NewLevel = IAuraInterface::Execute_FindLevelForExperience(EffectProperties.SourceCharacter,NewXP);
+		int32 NewLevel = IAuraPlayerInterface::Execute_FindLevelForExperience(EffectProperties.SourceCharacter,NewXP);
 
 		int32 LevelUpCount = NewLevel - CurLevel;
-		IAuraInterface::Execute_AddToXP(EffectProperties.SourceCharacter,LocalIncomingXP);
+		IAuraPlayerInterface::Execute_AddToXP(EffectProperties.SourceCharacter,LocalIncomingXP);
 		if (LevelUpCount > 0)
 		{
 			// const int32 AttributePointsReward = IAuraInterface::Execute_GetAttributePointsReward(EffectProperties.SourceCharacter, CurLevel, NewLevel);
 			// const int32 SpellPointsReward = IAuraInterface::Execute_GetSpellPointsReward(EffectProperties.SourceCharacter, CurLevel, NewLevel);
-			IAuraInterface::Execute_LevelUp(EffectProperties.SourceCharacter,CurLevel, NewLevel);
+			IAuraPlayerInterface::Execute_LevelUp(EffectProperties.SourceCharacter,CurLevel, NewLevel);
 			bTopOffHealth = true;
 			bTopOffMana = true;
 		}

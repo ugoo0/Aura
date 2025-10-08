@@ -24,10 +24,15 @@ class AURA_API AAuraPlayerState : public APlayerState, public IAbilitySystemInte
 	GENERATED_BODY()
 public:
 	AAuraPlayerState();
-	virtual UAbilitySystemComponent* GetAbilitySystemComponent() const override;
-	virtual void GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const override;
-	UAttributeSet* GetAttributeSet() const { return AttributeSet; };
 
+	/* GAS */
+	virtual UAbilitySystemComponent* GetAbilitySystemComponent() const override;
+	UAttributeSet* GetAttributeSet() const { return AttributeSet; };
+	
+	/* 需要网络复制的属性时需要override这个函数 */
+	virtual void GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const override;
+	
+	/* Getter Setter */
 	int32 GetPlayerLevel() const {return Level;}
 	void SetPlayerLevel(int32 InLevel);
 	void AddToLevel(int32 InLevel);
@@ -48,15 +53,18 @@ public:
 	FOnPlayerStateChanged OnAttributePointsChangedDelegate;
 	FOnPlayerStateChanged OnSpellPointsChangedDelegate;
 
+	/* 每一个等级包含的信息 所需经验，奖励技能和属性点 */
 	UPROPERTY(EditDefaultsOnly, Category="GAS|LevelInfo")
 	TObjectPtr<ULevelInfo> AuraLevelInfo;
 protected:
+	/* GAS相关 */
 	UPROPERTY(VisibleAnywhere)
 	TObjectPtr<UAbilitySystemComponent> AbilitySystemComponent;
 
 	UPROPERTY()
 	TObjectPtr<UAttributeSet> AttributeSet;
 private:
+	/* 玩家基础信息 需要网络同步*/
 	UPROPERTY(VisibleAnywhere, ReplicatedUsing = OnRep_Level)
 	int32 Level = 1;
 

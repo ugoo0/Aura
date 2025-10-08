@@ -8,7 +8,7 @@
 #include "Engine/LevelStreamingDynamic.h"
 #include "Game/AuraGameModeBase.h"
 #include "GameFramework/Character.h"
-#include "Interaction/AuraInterface.h"
+#include "Interaction/AuraPlayerInterface.h"
 #include "Kismet/GameplayStatics.h"
 
 AMapEntrance::AMapEntrance(const FObjectInitializer& ObjectInitializer) : Super(ObjectInitializer)
@@ -30,14 +30,14 @@ void AMapEntrance::HighlightActor_Implementation()
 void AMapEntrance::OnSphereOverlay(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor,
 	UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
 {
-	if (OtherActor->Implements<UAuraInterface>())
+	if (OtherActor->Implements<UAuraPlayerInterface>())
 	{
 		bReached = true;
 		if (AAuraGameModeBase* AuraGameModeBase = Cast<AAuraGameModeBase>(UGameplayStatics::GetGameMode(this)))
 		{
 			AuraGameModeBase->SaveWorldState(GetWorld(), DestinationMap.ToSoftObjectPath().GetAssetName());
 		}
-		IAuraInterface::Execute_SaveProgress(OtherActor,DestinationPlayerStartTag);
+		IAuraPlayerInterface::Execute_SaveProgress(OtherActor,DestinationPlayerStartTag);
 		UGameplayStatics::OpenLevelBySoftObjectPtr(this,DestinationMap);
 	    // LoadDestinationLevel();
 	}

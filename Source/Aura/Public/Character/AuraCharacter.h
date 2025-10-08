@@ -6,7 +6,7 @@ DECLARE_MULTICAST_DELEGATE(FOnControlledStateChanged);
 #include "CoreMinimal.h"
 #include "NiagaraComponent.h"
 #include "Character/AuraCharacterBase.h"
-#include "Interaction/AuraInterface.h"
+#include "Interaction/AuraPlayerInterface.h"
 #include "AuraCharacter.generated.h"
 
 class USpringArmComponent;
@@ -15,7 +15,7 @@ class UCameraComponent;
  * 
  */
 UCLASS()
-class AURA_API AAuraCharacter : public AAuraCharacterBase, public  IAuraInterface
+class AURA_API AAuraCharacter : public AAuraCharacterBase, public  IAuraPlayerInterface
 {
 	GENERATED_BODY()
 	

@@ -134,13 +134,14 @@ protected:
 
 	UPROPERTY(BlueprintReadOnly)
 	bool bDead = false;
-	
+	/* GAS 相关*/
 	UPROPERTY()
 	TObjectPtr<UAbilitySystemComponent> AbilitySystemComponent;
 
 	UPROPERTY()
 	TObjectPtr<UAttributeSet> AttributeSet;
 
+	
 	virtual void InitAbilityActorInfo();
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Attributes")

@@ -8,7 +8,7 @@
 #include "AuraGameplayTags.h"
 #include "AbilitySystem/GameplayAbility/AuraGameplayAbility.h"
 #include "Aura/AuraLogChannels.h"
-#include "Interaction/AuraInterface.h"
+#include "Interaction/AuraPlayerInterface.h"
 
 void UAuraAbilitySystemComponent::AblityActorInfoSet()
 {
@@ -93,9 +93,9 @@ void UAuraAbilitySystemComponent::ServerSpendSpellPoints_Implementation(const FG
 		{
 			Spec->Level += 1;
 		}
-		if (GetAvatarActor()->Implements<UAuraInterface>())
+		if (GetAvatarActor()->Implements<UAuraPlayerInterface>())
 		{
-			IAuraInterface::Execute_AddToSpellPoints(GetAvatarActor(), -1);
+			IAuraPlayerInterface::Execute_AddToSpellPoints(GetAvatarActor(), -1);
 		}
 		MarkAbilitySpecDirty(*Spec);
 		ClientAbilityStatusChanged(AbilityTag, AbilityStatusTag, Spec->Level);
@@ -367,9 +367,9 @@ FGameplayTag UAuraAbilitySystemComponent::GetStatusTagForInputTag(const FGamepla
 
 void UAuraAbilitySystemComponent::UpgradeAttribute(const FGameplayTag& GameplayTag)
 {
-	if (GetAvatarActor()->Implements<UAuraInterface>())
+	if (GetAvatarActor()->Implements<UAuraPlayerInterface>())
 	{
-		if (IAuraInterface::Execute_GetAttributePoints(GetAvatarActor()) > 0)
+		if (IAuraPlayerInterface::Execute_GetAttributePoints(GetAvatarActor()) > 0)
 		{
 			ServerUpgradeAttribute(GameplayTag);
 		}
@@ -434,9 +434,9 @@ void UAuraAbilitySystemComponent::ServerUpgradeAttribute_Implementation(const FG
 	Payload.EventTag = GameplayTag;
 	Payload.EventMagnitude = 1;
 	UAbilitySystemBlueprintLibrary::SendGameplayEventToActor(GetAvatarActor(), Payload.EventTag, Payload);
-	if (GetAvatarActor()->Implements<UAuraInterface>())
+	if (GetAvatarActor()->Implements<UAuraPlayerInterface>())
 	{
-		IAuraInterface::Execute_AddToAttributePoints(GetAvatarActor(),-1);
+		IAuraPlayerInterface::Execute_AddToAttributePoints(GetAvatarActor(),-1);
 	}
 }
 

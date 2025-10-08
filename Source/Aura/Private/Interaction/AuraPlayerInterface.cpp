@@ -1,6 +1,6 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
 
-#include "Interaction/AuraInterface.h"
+#include "Interaction/AuraPlayerInterface.h"
 
 // Add default functionality here for any IAuraInterface functions that are not pure virtual.

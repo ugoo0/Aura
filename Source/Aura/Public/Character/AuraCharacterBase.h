@@ -189,7 +189,7 @@ protected:
 	/*Debuff States*/
 
 
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category="Combat")
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Combat")
 	float BaseWalkSpeed = 600.f;
 	
 private:
